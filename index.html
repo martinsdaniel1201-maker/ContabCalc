@@ -127,8 +127,9 @@
   .form-card { background: var(--paper-raised); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); }
   .field { margin-bottom: 16px; }
   .field label { display:block; font-size:12.5px; color: var(--ink-muted); margin-bottom:6px; }
-  .field input { width:100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); color: var(--ink); font-family:'IBM Plex Mono'; font-size:13.5px; }
-  .field input:focus { border-color: var(--selo); }
+  .field input, .field select { width:100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); color: var(--ink); font-family:'IBM Plex Mono'; font-size:13.5px; }
+  .field select { font-family:'IBM Plex Sans'; }
+  .field input:focus, .field select:focus { border-color: var(--selo); }
   .field-row { display:flex; gap:12px; }
   .field-row .field { flex:1; }
   .checkbox-field { display:flex; align-items:center; gap:8px; margin: 18px 0 4px; }
@@ -205,7 +206,7 @@
       <div class="modulo-card" onclick="document.getElementById('calculadora').scrollIntoView({behavior:'smooth'})">
         <span class="status pronto">● pronto</span>
         <div class="nome">Rescisão</div>
-        <div class="desc">Sem justa causa, com todas as verbas e descontos legais.</div>
+        <div class="desc">Sem justa causa, pedido de demissão, justa causa e acordo (Art. 484-A).</div>
       </div>
       <div class="modulo-card disabled"><span class="status embreve">em breve</span><div class="nome">Férias</div><div class="desc">Vencidas, proporcionais, abono pecuniário.</div></div>
       <div class="modulo-card disabled"><span class="status embreve">em breve</span><div class="nome">13º Salário</div><div class="desc">Integral, proporcional, 1ª e 2ª parcela.</div></div>
@@ -226,6 +227,15 @@
     <div class="calc-grid">
       <div class="form-card">
         <div class="field">
+          <label>Tipo de Rescisão</label>
+          <select id="tipoRescisao" onchange="atualizarCampoAvisoCumprido()">
+            <option value="sem_justa_causa">Demissão sem justa causa</option>
+            <option value="pedido_demissao">Pedido de demissão</option>
+            <option value="justa_causa">Demissão por justa causa</option>
+            <option value="acordo">Rescisão por acordo (Art. 484-A)</option>
+          </select>
+        </div>
+        <div class="field">
           <label>Salário Bruto (R$)</label>
           <input type="number" id="salario" value="3500" step="0.01">
         </div>
@@ -237,6 +247,10 @@
         <div class="checkbox-field">
           <input type="checkbox" id="feriasVencidas">
           <label for="feriasVencidas">Possui férias vencidas (12+ meses sem gozar)</label>
+        </div>
+        <div class="checkbox-field" id="campoAvisoCumprido" style="display:none;">
+          <input type="checkbox" id="avisoCumprido" checked>
+          <label for="avisoCumprido">Cumpriu o aviso prévio de 30 dias</label>
         </div>
         <button class="btn-calcular" onclick="calcular()">Calcular rescisão</button>
       </div>
@@ -394,6 +408,73 @@ function montarCalculo(salarioBruto, dataAdmissao, dataDesligamento, dependentes
   return { itens, descontos:[inss, irrf] };
 }
 
+function calcularPedidoDemissao(salarioBruto, dataAdmissao, dataDesligamento, dependentesIR, feriasVencidas, cumpriuAviso){
+  const itens=[]; const descontos=[];
+  const dataFim = new Date(dataDesligamento);
+  const diasMes = dataFim.getDate();
+  const saldo = (salarioBruto/30)*diasMes;
+  itens.push({codigo:"saldo",descricao:"Saldo de Salário",valor:round2(saldo),formula:`(salário ÷ 30) × ${diasMes} dias`,baseLegal:"Art. 459 CLT",explicacao:"Dias efetivamente trabalhados no mês do desligamento."});
+  itens.push(...calcularFerias(salarioBruto, contarMesesProporcionais(dataAdmissao,dataDesligamento), feriasVencidas));
+  const itens13 = calcularDecimoTerceiro(salarioBruto, contarMesesProporcionais(`${dataFim.getFullYear()}-01-01`, dataDesligamento));
+  itens.push(...itens13);
+  itens.push({codigo:"fgts_sem_saque",descricao:"FGTS — Sem Direito a Saque",valor:0,formula:"—",baseLegal:"Art. 20 da Lei 8.036/1990",explicacao:"No pedido de demissão o saldo do FGTS permanece retido na conta vinculada, sem multa e sem saque imediato."});
+  if (!cumpriuAviso){
+    descontos.push({codigo:"desconto_aviso",descricao:"Desconto por Aviso Prévio Não Cumprido",valor:-round2(salarioBruto),formula:"1 salário (30 dias)",baseLegal:"Art. 487, §2º CLT",explicacao:"A empresa pode descontar o aviso prévio não cumprido pelo empregado."});
+  }
+  const baseDesc = saldo + itens13[0].valor;
+  const inss = calcularInss(baseDesc);
+  descontos.push(inss);
+  descontos.push(calcularIrrf(baseDesc, Math.abs(inss.valor), dependentesIR));
+  return { itens, descontos };
+}
+
+function calcularJustaCausa(salarioBruto, dataAdmissao, dataDesligamento, dependentesIR, feriasVencidas){
+  const itens=[]; const descontos=[];
+  const dataFim = new Date(dataDesligamento);
+  const diasMes = dataFim.getDate();
+  const saldo = (salarioBruto/30)*diasMes;
+  itens.push({codigo:"saldo",descricao:"Saldo de Salário",valor:round2(saldo),formula:`(salário ÷ 30) × ${diasMes} dias`,baseLegal:"Art. 459 CLT",explicacao:"Mesmo na justa causa, os dias trabalhados são sempre devidos."});
+  if (feriasVencidas){
+    const v=salarioBruto, t=v/3;
+    itens.push({codigo:"ferias_vencidas",descricao:"Férias Vencidas",valor:round2(v),formula:"1 salário bruto integral",baseLegal:"Súmula 171 do TST",explicacao:"Férias já vencidas antes da falta cometida continuam devidas."});
+    itens.push({codigo:"terco_vencidas",descricao:"Terço Constitucional (Vencidas)",valor:round2(t),formula:"valor ÷ 3",baseLegal:"Art. 7º, XVII CF",explicacao:"Adicional de 1/3 sobre as férias vencidas."});
+  }
+  itens.push({codigo:"nao_devidas",descricao:"Verbas NÃO Devidas nesta Modalidade",valor:0,formula:"—",baseLegal:"Art. 482 CLT",explicacao:"Não há aviso prévio, 13º proporcional, férias proporcionais nem multa de FGTS na justa causa."});
+  const inss = calcularInss(saldo);
+  descontos.push(inss);
+  descontos.push(calcularIrrf(saldo, Math.abs(inss.valor), dependentesIR));
+  return { itens, descontos };
+}
+
+function calcularAcordo(salarioBruto, dataAdmissao, dataDesligamento, dependentesIR, feriasVencidas){
+  const itens=[]; const descontos=[];
+  const dataFim = new Date(dataDesligamento);
+  const diasMes = dataFim.getDate();
+  const saldo = (salarioBruto/30)*diasMes;
+  itens.push({codigo:"saldo",descricao:"Saldo de Salário",valor:round2(saldo),formula:`(salário ÷ 30) × ${diasMes} dias`,baseLegal:"Art. 459 CLT",explicacao:"Dias efetivamente trabalhados no mês."});
+  const diasAviso = calcularDiasAvisoPrevio(dataAdmissao, dataDesligamento);
+  const avisoMetade = (salarioBruto/30)*diasAviso*0.5;
+  itens.push({codigo:"aviso_metade",descricao:"Aviso Prévio Indenizado (50%)",valor:round2(avisoMetade),formula:`(salário ÷ 30) × ${diasAviso} dias × 50%`,baseLegal:"Art. 484-A, I CLT",explicacao:"No acordo, o aviso prévio indenizado é pago pela metade."});
+  itens.push(...calcularFerias(salarioBruto, contarMesesProporcionais(dataAdmissao,dataDesligamento), feriasVencidas));
+  const itens13 = calcularDecimoTerceiro(salarioBruto, contarMesesProporcionais(`${dataFim.getFullYear()}-01-01`, dataDesligamento));
+  itens.push(...itens13);
+  const depFgts = salarioBruto*FGTS_2026.aliquotaDeposito;
+  itens.push({codigo:"fgts",descricao:"Depósito de FGTS do Mês",valor:round2(depFgts),formula:"salário × 8%",baseLegal:"Lei 8.036/1990",explicacao:"Depósito mensal em conta vinculada."});
+  const multaMetade = depFgts*0.20;
+  itens.push({codigo:"multa_20",descricao:"Multa de 20% do FGTS",valor:round2(multaMetade),formula:"saldo FGTS × 20%",baseLegal:"Art. 484-A CLT",explicacao:"No acordo, a multa é reduzida à metade (20% em vez de 40%)."});
+  itens.push({codigo:"saque_80",descricao:"Direito de Saque do FGTS",valor:0,formula:"—",baseLegal:"Art. 484-A, §1º CLT",explicacao:"Pode sacar até 80% do saldo do FGTS. Não há direito a seguro-desemprego."});
+  const baseDesc = saldo + itens13[0].valor;
+  const inss = calcularInss(baseDesc);
+  descontos.push(inss);
+  descontos.push(calcularIrrf(baseDesc, Math.abs(inss.valor), dependentesIR));
+  return { itens, descontos };
+}
+
+function atualizarCampoAvisoCumprido(){
+  const tipo = document.getElementById('tipoRescisao').value;
+  document.getElementById('campoAvisoCumprido').style.display = tipo === 'pedido_demissao' ? 'flex' : 'none';
+}
+
 /* ===================== hero ledger (demo automática) ===================== */
 (function iniciarHero(){
   const r = montarCalculo(3500, "2023-03-10", "2026-07-10", 0, true);
@@ -412,11 +493,13 @@ function montarCalculo(salarioBruto, dataAdmissao, dataDesligamento, dependentes
 
 /* ===================== calculadora principal ===================== */
 function calcular(){
+  const tipo = document.getElementById('tipoRescisao').value;
   const salarioBruto = parseFloat(document.getElementById('salario').value);
   const dataAdmissao = document.getElementById('admissao').value;
   const dataDesligamento = document.getElementById('desligamento').value;
   const dependentesIR = parseInt(document.getElementById('dependentes').value) || 0;
   const feriasVencidas = document.getElementById('feriasVencidas').checked;
+  const avisoCumprido = document.getElementById('avisoCumprido').checked;
 
   const alertaBox = document.getElementById('alertaBox');
   alertaBox.style.display = 'none';
@@ -427,7 +510,13 @@ function calcular(){
     alertaBox.style.display='block'; alertaBox.textContent='Informe um salário bruto maior que zero.'; return;
   }
 
-  const { itens, descontos } = montarCalculo(salarioBruto, dataAdmissao, dataDesligamento, dependentesIR, feriasVencidas);
+  let resultado;
+  if (tipo === 'pedido_demissao') resultado = calcularPedidoDemissao(salarioBruto, dataAdmissao, dataDesligamento, dependentesIR, feriasVencidas, avisoCumprido);
+  else if (tipo === 'justa_causa') resultado = calcularJustaCausa(salarioBruto, dataAdmissao, dataDesligamento, dependentesIR, feriasVencidas);
+  else if (tipo === 'acordo') resultado = calcularAcordo(salarioBruto, dataAdmissao, dataDesligamento, dependentesIR, feriasVencidas);
+  else resultado = montarCalculo(salarioBruto, dataAdmissao, dataDesligamento, dependentesIR, feriasVencidas);
+
+  const { itens, descontos } = resultado;
   const valorFinal = itens.reduce((s,i)=>s+i.valor,0) + descontos.reduce((s,d)=>s+d.valor,0);
 
   document.getElementById('valorFinal').textContent = fmt(valorFinal);
