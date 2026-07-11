@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<title>ContabCalc AI — A calculadora trabalhista que explica cada centavo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #EEF0EC;
+    --paper-raised: #FFFFFF;
+    --ink: #14181F;
+    --ink-muted: #5B6270;
+    --line: #D6D9D1;
+    --selo: #16694A;
+    --selo-soft: rgba(22,105,74,0.09);
+    --real: #8A6A24;
+    --erro: #A8432E;
+    --erro-soft: rgba(168,67,46,0.08);
+    --radius: 3px;
+    --shadow: 0 1px 2px rgba(20,24,31,0.06), 0 8px 24px rgba(20,24,31,0.05);
+  }
+  html[data-theme="dark"] {
+    --paper: #10141C;
+    --paper-raised: #171C26;
+    --ink: #E7E9EE;
+    --ink-muted: #8A93A3;
+    --line: #262C38;
+    --selo: #2F9C6D;
+    --selo-soft: rgba(47,156,109,0.12);
+    --real: #C79A3E;
+    --erro: #D9695A;
+    --erro-soft: rgba(217,105,90,0.12);
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: 'IBM Plex Sans', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.25s ease, color 0.25s ease;
+  }
+  .serif { font-family: 'Newsreader', serif; }
+  .mono { font-family: 'IBM Plex Mono', monospace; font-variant-numeric: tabular-nums; }
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--selo); outline-offset: 2px; }
+
+  /* ---------- shell ---------- */
+  .shell { max-width: 1120px; margin: 0 auto; padding: 0 28px; }
+  header.top {
+    position: sticky; top: 0; z-index: 40; backdrop-filter: blur(8px);
+    background: color-mix(in srgb, var(--paper) 88%, transparent);
+    border-bottom: 1px solid var(--line);
+  }
+  .top-inner { display:flex; align-items:center; justify-content:space-between; padding: 16px 0; }
+  .brand { display:flex; align-items:center; gap:10px; font-family:'Newsreader', serif; font-weight:600; font-size:19px; letter-spacing:0.01em; }
+  .brand .mark { width:26px; height:26px; border:1.5px solid var(--ink); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono'; font-size:12px; font-weight:600; }
+  nav.modules { display:flex; gap: 22px; font-size: 13.5px; color: var(--ink-muted); }
+  nav.modules a { text-decoration:none; }
+  nav.modules a:hover { color: var(--ink); }
+  .theme-toggle {
+    border: 1px solid var(--line); background: var(--paper-raised); color: var(--ink);
+    width: 34px; height: 34px; border-radius: 50%; cursor:pointer; font-size: 15px;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  /* ---------- hero ---------- */
+  .hero { padding: 64px 0 40px; display:grid; grid-template-columns: 1.05fr 0.95fr; gap: 56px; align-items:center; }
+  .eyebrow { font-family:'IBM Plex Mono'; font-size: 11.5px; letter-spacing: 0.14em; text-transform:uppercase; color: var(--selo); margin-bottom:16px; }
+  h1.hero-title { font-family:'Newsreader', serif; font-weight:500; font-size: 44px; line-height:1.12; margin: 0 0 20px; letter-spacing: -0.01em; }
+  h1.hero-title em { font-style: italic; color: var(--selo); }
+  .hero-sub { font-size: 16.5px; line-height:1.6; color: var(--ink-muted); max-width: 46ch; margin-bottom: 28px; }
+  .cta-row { display:flex; gap:14px; align-items:center; }
+  .btn-primary {
+    background: var(--ink); color: var(--paper); border: none; padding: 13px 22px; border-radius: var(--radius);
+    font-size: 14.5px; font-weight:600; cursor:pointer; font-family:'IBM Plex Sans';
+  }
+  .btn-primary:hover { opacity:0.88; }
+  .cta-note { font-size: 12.5px; color: var(--ink-muted); }
+
+  /* live ledger card in hero */
+  .ledger-card {
+    background: var(--paper-raised); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 22px 24px 20px; position:relative; overflow:hidden;
+  }
+  .ledger-head { display:flex; justify-content:space-between; align-items:baseline; border-bottom: 1px dashed var(--line); padding-bottom: 12px; margin-bottom: 6px; }
+  .ledger-head .tipo { font-size:11.5px; text-transform:uppercase; letter-spacing:0.08em; color: var(--ink-muted); }
+  .ledger-head .id { font-family:'IBM Plex Mono'; font-size: 11px; color: var(--ink-muted); }
+  .ledger-row { display:flex; justify-content:space-between; padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 13.5px; opacity:0; transform: translateY(4px); animation: rise 0.5s ease forwards; }
+  .ledger-row .valor { font-family:'IBM Plex Mono'; font-weight:500; }
+  .ledger-row.desconto .valor { color: var(--erro); }
+  .ledger-row.provento .valor { color: var(--selo); }
+  @keyframes rise { to { opacity:1; transform:none; } }
+  .ledger-total { display:flex; justify-content:space-between; align-items:baseline; padding-top: 14px; }
+  .ledger-total .label { font-size: 12px; color: var(--ink-muted); text-transform:uppercase; letter-spacing:0.06em; }
+  .ledger-total .valor { font-family:'Newsreader', serif; font-weight:600; font-size: 26px; color: var(--real); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ledger-row { animation: none; opacity:1; transform:none; }
+  }
+
+  /* ---------- módulos grid ---------- */
+  section.modulos { padding: 56px 0 8px; }
+  .section-label { font-family:'IBM Plex Mono'; font-size:11.5px; letter-spacing:0.12em; text-transform:uppercase; color: var(--ink-muted); margin-bottom:18px; }
+  .grid-modulos { display:grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--radius); overflow:hidden; }
+  .modulo-card { background: var(--paper-raised); padding: 20px 18px; cursor:pointer; transition: background 0.15s ease; position:relative; }
+  .modulo-card:hover { background: color-mix(in srgb, var(--selo) 6%, var(--paper-raised)); }
+  .modulo-card.disabled { cursor:default; opacity:0.55; }
+  .modulo-card .nome { font-weight:600; font-size:14.5px; margin-bottom:6px; }
+  .modulo-card .desc { font-size:12px; color: var(--ink-muted); line-height:1.4; }
+  .modulo-card .status { position:absolute; top:16px; right:16px; font-family:'IBM Plex Mono'; font-size:9.5px; letter-spacing:0.06em; text-transform:uppercase; }
+  .modulo-card .status.pronto { color: var(--selo); }
+  .modulo-card .status.embreve { color: var(--ink-muted); }
+  @media (max-width: 860px) { .grid-modulos { grid-template-columns: repeat(2, 1fr); } .hero { grid-template-columns: 1fr; } }
+
+  /* ---------- calculadora ---------- */
+  section.calculadora { padding: 64px 0; scroll-margin-top: 80px; }
+  .calc-head { margin-bottom: 28px; }
+  .calc-head .eyebrow { margin-bottom:8px; }
+  h2.calc-title { font-family:'Newsreader', serif; font-weight:500; font-size:28px; margin:0; }
+  .calc-grid { display:grid; grid-template-columns: 380px 1fr; gap: 32px; align-items:start; }
+  @media (max-width: 860px) { .calc-grid { grid-template-columns: 1fr; } }
+
+  .form-card { background: var(--paper-raised); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); }
+  .field { margin-bottom: 16px; }
+  .field label { display:block; font-size:12.5px; color: var(--ink-muted); margin-bottom:6px; }
+  .field input { width:100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); color: var(--ink); font-family:'IBM Plex Mono'; font-size:13.5px; }
+  .field input:focus { border-color: var(--selo); }
+  .field-row { display:flex; gap:12px; }
+  .field-row .field { flex:1; }
+  .checkbox-field { display:flex; align-items:center; gap:8px; margin: 18px 0 4px; }
+  .checkbox-field input { width:auto; }
+  .checkbox-field label { font-size: 13px; color: var(--ink); margin:0; }
+  .btn-calcular { width:100%; margin-top: 18px; background: var(--selo); color: #fff; border:none; padding: 13px; border-radius: var(--radius); font-weight:600; font-size:14.5px; cursor:pointer; font-family:'IBM Plex Sans'; }
+  .btn-calcular:hover { opacity: 0.9; }
+  .alerta { background: var(--erro-soft); border:1px solid var(--erro); color: var(--erro); padding:10px 14px; border-radius: var(--radius); font-size:13px; margin-bottom:14px; display:none; }
+
+  /* ---------- resultado ---------- */
+  .resultado-card { background: var(--paper-raised); border:1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 28px 30px; display:none; position:relative; }
+  .resultado-topo { text-align:center; padding-bottom: 22px; border-bottom: 1px dashed var(--line); margin-bottom: 20px; position:relative; }
+  .resultado-topo .label { font-size:12px; text-transform:uppercase; letter-spacing:0.08em; color: var(--ink-muted); margin-bottom:8px; }
+  .resultado-topo .valor { font-family:'Newsreader', serif; font-weight:600; font-size:40px; color: var(--real); }
+  .resultado-topo .selo-texto { font-family:'IBM Plex Mono'; font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color: var(--selo); margin-top:10px; }
+
+  .subsecao-label { font-size:11.5px; text-transform:uppercase; letter-spacing:0.08em; color: var(--ink-muted); margin: 18px 0 6px; font-family:'IBM Plex Mono'; }
+  .item-linha { padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .item-linha:last-child { border-bottom:none; }
+  .item-topo { display:flex; justify-content:space-between; font-size:14px; font-weight:600; }
+  .item-topo .valor { font-family:'IBM Plex Mono'; }
+  .item-topo .valor.neg { color: var(--erro); }
+  .item-topo .valor.pos { color: var(--selo); }
+  .item-formula { font-family:'IBM Plex Mono'; font-size:11.5px; color: var(--ink-muted); margin-top:4px; }
+  .item-explicacao { font-size:13px; color: var(--ink-muted); line-height:1.55; margin-top:6px; }
+  .item-base { display:inline-block; margin-top:7px; font-size:10.5px; font-family:'IBM Plex Mono'; background: var(--selo-soft); color: var(--selo); padding:3px 9px; border-radius: var(--radius); }
+
+  .aviso-legal { text-align:center; font-size:12px; color: var(--ink-muted); margin-top: 22px; padding-top:16px; border-top:1px solid var(--line); }
+
+  footer { border-top:1px solid var(--line); padding: 32px 0; margin-top:60px; text-align:center; font-size:12.5px; color: var(--ink-muted); }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="shell top-inner">
+    <div class="brand"><span class="mark">§</span>ContabCalc<span class="serif" style="font-style:italic; color:var(--ink-muted); font-weight:400;">AI</span></div>
+    <nav class="modules">
+      <a href="#modulos">Módulos</a>
+      <a href="#calculadora">Calculadora</a>
+      <a href="#" onclick="return false;">Contadores</a>
+    </nav>
+    <button class="theme-toggle" onclick="alternarTema()" aria-label="Alternar tema claro/escuro" id="themeBtn">☾</button>
+  </div>
+</header>
+
+<div class="shell">
+  <section class="hero">
+    <div>
+      <div class="eyebrow">Cálculos trabalhistas · Brasil · 2026</div>
+      <h1 class="hero-title">A calculadora que explica <em>cada centavo</em>, não só o total.</h1>
+      <p class="hero-sub">Rescisão, férias, 13º, FGTS, INSS e IRRF — com a fórmula, o artigo de lei e a explicação por trás de cada valor. Para contadores, RH e quem só quer saber quanto vai receber.</p>
+      <div class="cta-row">
+        <button class="btn-primary" onclick="document.getElementById('calculadora').scrollIntoView({behavior:'smooth'})">Calcular minha rescisão</button>
+        <span class="cta-note">Grátis · sem cadastro</span>
+      </div>
+    </div>
+    <div class="ledger-card">
+      <div class="ledger-head">
+        <span class="tipo serif" style="font-style:italic;">Demonstrativo — Rescisão</span>
+        <span class="id">Nº 2026.0710</span>
+      </div>
+      <div id="heroLedgerRows"></div>
+      <div class="ledger-total">
+        <span class="label">Líquido a receber</span>
+        <span class="valor" id="heroLedgerTotal">R$ 0,00</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="modulos" id="modulos">
+    <div class="section-label">Módulos da plataforma</div>
+    <div class="grid-modulos">
+      <div class="modulo-card" onclick="document.getElementById('calculadora').scrollIntoView({behavior:'smooth'})">
+        <span class="status pronto">● pronto</span>
+        <div class="nome">Rescisão</div>
+        <div class="desc">Sem justa causa, com todas as verbas e descontos legais.</div>
+      </div>
+      <div class="modulo-card disabled"><span class="status embreve">em breve</span><div class="nome">Férias</div><div class="desc">Vencidas, proporcionais, abono pecuniário.</div></div>
+      <div class="modulo-card disabled"><span class="status embreve">em breve</span><div class="nome">13º Salário</div><div class="desc">Integral, proporcional, 1ª e 2ª parcela.</div></div>
+      <div class="modulo-card disabled"><span class="status embreve">em breve</span><div class="nome">FGTS</div><div class="desc">Depósitos, extrato estimado, multa 40%/20%.</div></div>
+      <div class="modulo-card disabled"><span class="status embreve">em breve</span><div class="nome">Seguro-Desemprego</div><div class="desc">Parcelas conforme regras vigentes.</div></div>
+      <div class="modulo-card disabled"><span class="status embreve">em breve</span><div class="nome">Salário Líquido</div><div class="desc">INSS, IRRF, VT, VA/VR e outros descontos.</div></div>
+      <div class="modulo-card disabled"><span class="status embreve">em breve</span><div class="nome">Horas Extras</div><div class="desc">50%, 100%, adicional noturno, banco de horas.</div></div>
+      <div class="modulo-card disabled"><span class="status embreve">em breve</span><div class="nome">Adicionais</div><div class="desc">Insalubridade, periculosidade, comissões.</div></div>
+    </div>
+  </section>
+
+  <section class="calculadora" id="calculadora">
+    <div class="calc-head">
+      <div class="eyebrow">Módulo · Rescisão</div>
+      <h2 class="calc-title">Demissão sem justa causa</h2>
+    </div>
+
+    <div class="calc-grid">
+      <div class="form-card">
+        <div class="field">
+          <label>Salário Bruto (R$)</label>
+          <input type="number" id="salario" value="3500" step="0.01">
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Data de Admissão</label><input type="date" id="admissao" value="2023-03-10"></div>
+          <div class="field"><label>Data de Desligamento</label><input type="date" id="desligamento" value="2026-07-10"></div>
+        </div>
+        <div class="field"><label>Dependentes (IRRF)</label><input type="number" id="dependentes" value="0" min="0"></div>
+        <div class="checkbox-field">
+          <input type="checkbox" id="feriasVencidas">
+          <label for="feriasVencidas">Possui férias vencidas (12+ meses sem gozar)</label>
+        </div>
+        <button class="btn-calcular" onclick="calcular()">Calcular rescisão</button>
+      </div>
+
+      <div>
+        <div class="alerta" id="alertaBox"></div>
+        <div class="resultado-card" id="resultadoBox">
+          <div class="resultado-topo">
+            <div class="label">Líquido estimado a receber</div>
+            <div class="valor mono" id="valorFinal">R$ 0,00</div>
+            <div class="selo-texto">✓ Cálculo conforme CLT · tabelas 2026</div>
+          </div>
+          <div class="subsecao-label">Proventos</div>
+          <div id="itensBox"></div>
+          <div class="subsecao-label">Descontos</div>
+          <div id="descontosBox"></div>
+          <div class="aviso-legal">Cálculo estimado, não substitui orientação de contador ou advogado trabalhista.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<footer>ContabCalc AI — feito para quem precisa entender a lei, não só o número.</footer>
+
+<script>
+/* ===================== tema ===================== */
+function alternarTema() {
+  const html = document.documentElement;
+  const atual = html.getAttribute('data-theme');
+  const novo = atual === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', novo);
+  document.getElementById('themeBtn').textContent = novo === 'dark' ? '☀' : '☾';
+}
+
+/* ===================== motor de cálculo (2026) ===================== */
+const TABELA_INSS_2026 = { faixas: [
+  { ate: 1621.00, aliquota: 0.075, deducao: 0 },
+  { ate: 2902.84, aliquota: 0.09, deducao: 24.32 },
+  { ate: 4354.27, aliquota: 0.12, deducao: 111.40 },
+  { ate: Infinity, aliquota: 0.14, deducao: 198.49 },
+]};
+const TETO_INSS_2026 = 8475.55;
+const TABELA_IRRF_2026 = {
+  faixas: [
+    { ate: 2428.80, aliquota: 0, deducao: 0 },
+    { ate: 2826.65, aliquota: 0.075, deducao: 182.16 },
+    { ate: 3751.05, aliquota: 0.15, deducao: 394.16 },
+    { ate: 4664.68, aliquota: 0.225, deducao: 675.49 },
+    { ate: Infinity, aliquota: 0.275, deducao: 908.73 },
+  ],
+  deducaoPorDependente: 189.59, descontoSimplificadoMaximo: 607.20,
+};
+const REDUTOR_IRRF_2026 = { isencaoTotalAte: 5000.00, faixaTransicaoAte: 7350.00, formula: (r) => 978.62 - 0.133145 * r };
+const FGTS_2026 = { aliquotaDeposito: 0.08, multaSemJustaCausa: 0.40 };
+
+function round2(v){ return Math.round(v*100)/100; }
+function fmt(v){ return v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); }
+
+function calcularInss(remuneracao){
+  const base = Math.min(remuneracao, TETO_INSS_2026);
+  const faixa = TABELA_INSS_2026.faixas.find(f => base <= f.ate);
+  const valor = Math.max(0, base*faixa.aliquota - faixa.deducao);
+  return { codigo:"inss", descricao:"Desconto de INSS", valor:-round2(valor),
+    formula:`min(remuneração, teto R$${TETO_INSS_2026.toFixed(2)}) × ${(faixa.aliquota*100).toFixed(1)}% − R$${faixa.deducao.toFixed(2)}`,
+    baseLegal:"Lei 8.212/1991", explicacao:"O INSS é progressivo: cada faixa salarial paga uma alíquota diferente (7,5% a 14%)." };
+}
+function calcularIrrf(rendaBrutaMensal, inssDoMes, dependentes){
+  const deducaoDep = dependentes * TABELA_IRRF_2026.deducaoPorDependente;
+  const deducoesLegais = inssDoMes + deducaoDep;
+  const usarSimplificado = TABELA_IRRF_2026.descontoSimplificadoMaximo > deducoesLegais;
+  const deducaoAplicada = usarSimplificado ? TABELA_IRRF_2026.descontoSimplificadoMaximo : deducoesLegais;
+  const base = Math.max(0, rendaBrutaMensal - deducaoAplicada);
+  const faixa = TABELA_IRRF_2026.faixas.find(f => base <= f.ate);
+  const irrfTabela = Math.max(0, base*faixa.aliquota - faixa.deducao);
+  let redutor = 0, explicacaoRedutor;
+  if (rendaBrutaMensal <= REDUTOR_IRRF_2026.isencaoTotalAte) { redutor = irrfTabela; explicacaoRedutor = "Renda até R$5.000 — IRRF zerado pela Lei 15.270/2025."; }
+  else if (rendaBrutaMensal <= REDUTOR_IRRF_2026.faixaTransicaoAte) { redutor = Math.max(0, REDUTOR_IRRF_2026.formula(rendaBrutaMensal)); explicacaoRedutor = "Renda entre R$5.000,01 e R$7.350 — redução parcial pela Lei 15.270/2025."; }
+  else { explicacaoRedutor = "Renda acima de R$7.350 — sem redução, tabela tradicional."; }
+  redutor = Math.min(redutor, irrfTabela);
+  const irrfFinal = round2(irrfTabela - redutor);
+  return { codigo:"irrf", descricao:"Desconto de IRRF", valor:-irrfFinal,
+    formula:`Base × ${(faixa.aliquota*100).toFixed(1)}% − R$${faixa.deducao.toFixed(2)} − redutor`,
+    baseLegal:"Lei 9.250/1995 + Lei 15.270/2025", explicacao: explicacaoRedutor };
+}
+function contarMesesProporcionais(ini, fimStr){
+  const inicio=new Date(ini), fim=new Date(fimStr);
+  let meses=(fim.getFullYear()-inicio.getFullYear())*12+(fim.getMonth()-inicio.getMonth());
+  const diaFim=fim.getDate(), diaInicio=inicio.getDate();
+  if (diaFim-diaInicio>=15 || (diaFim>=15 && diaInicio>diaFim)) meses+=1;
+  return Math.max(0, Math.min(12, meses));
+}
+function contarAnosCompletos(ini, fimStr){
+  const inicio=new Date(ini), fim=new Date(fimStr);
+  let anos=fim.getFullYear()-inicio.getFullYear();
+  const aindaNao = fim.getMonth()<inicio.getMonth() || (fim.getMonth()===inicio.getMonth() && fim.getDate()<inicio.getDate());
+  if (aindaNao) anos-=1;
+  return Math.max(0, anos);
+}
+function calcularDiasAvisoPrevio(ini, fimStr){ return Math.min(90, 30 + contarAnosCompletos(ini,fimStr)*3); }
+
+function calcularFerias(salarioBruto, mesesProp, temVencidas){
+  const itens=[];
+  if (temVencidas){
+    const v=salarioBruto, t=v/3;
+    itens.push({codigo:"ferias_vencidas",descricao:"Férias Vencidas",valor:round2(v),formula:"1 salário bruto integral",baseLegal:"Art. 7º, XVII CF / Art. 130 CLT",explicacao:"Período aquisitivo já vencido (12+ meses sem gozar)."});
+    itens.push({codigo:"terco_vencidas",descricao:"Terço Constitucional (Vencidas)",valor:round2(t),formula:"valor ÷ 3",baseLegal:"Art. 7º, XVII CF",explicacao:"Adicional constitucional de 1/3 sobre férias."});
+  }
+  if (mesesProp>0){
+    const v=(salarioBruto/12)*mesesProp, t=v/3;
+    itens.push({codigo:"ferias_prop",descricao:"Férias Proporcionais",valor:round2(v),formula:`(salário ÷ 12) × ${mesesProp} meses`,baseLegal:"Art. 146, § único CLT",explicacao:"Período aquisitivo atual, ainda não completou 12 meses."});
+    itens.push({codigo:"terco_prop",descricao:"Terço Constitucional (Proporcionais)",valor:round2(t),formula:"valor ÷ 3",baseLegal:"Art. 7º, XVII CF",explicacao:"Mesmo adicional de 1/3 sobre as proporcionais."});
+  }
+  return itens;
+}
+function calcularDecimoTerceiro(salarioBruto, meses){
+  const v=(salarioBruto/12)*meses;
+  return [{codigo:"decimo",descricao: meses>=12?"13º Salário Integral":"13º Salário Proporcional", valor:round2(v), formula:`(salário ÷ 12) × ${meses} meses`, baseLegal:"Lei 4.090/1962", explicacao:"1/12 do salário por mês trabalhado com 15+ dias no ano."}];
+}
+
+function renderItem(item){
+  const classe = item.valor<0 ? 'neg':'pos';
+  return `<div class="item-linha">
+    <div class="item-topo"><span>${item.descricao}</span><span class="valor ${classe}">${fmt(item.valor)}</span></div>
+    <div class="item-formula">${item.formula}</div>
+    <div class="item-explicacao">${item.explicacao}</div>
+    <span class="item-base">${item.baseLegal}</span>
+  </div>`;
+}
+
+function montarCalculo(salarioBruto, dataAdmissao, dataDesligamento, dependentesIR, feriasVencidas){
+  const itens=[];
+  const dataFim = new Date(dataDesligamento);
+  const diasMes = dataFim.getDate();
+  const saldo = (salarioBruto/30)*diasMes;
+  itens.push({codigo:"saldo",descricao:"Saldo de Salário",valor:round2(saldo),formula:`(salário ÷ 30) × ${diasMes} dias`,baseLegal:"Art. 459 CLT",explicacao:"Dias efetivamente trabalhados no mês da rescisão."});
+
+  const diasAviso = calcularDiasAvisoPrevio(dataAdmissao, dataDesligamento);
+  const aviso = (salarioBruto/30)*diasAviso;
+  itens.push({codigo:"aviso",descricao:"Aviso Prévio Indenizado",valor:round2(aviso),formula:`(salário ÷ 30) × ${diasAviso} dias`,baseLegal:"Lei 12.506/2011",explicacao:"30 dias + 3 por ano completo de casa, até 90 dias."});
+
+  itens.push(...calcularFerias(salarioBruto, contarMesesProporcionais(dataAdmissao,dataDesligamento), feriasVencidas));
+  const itens13 = calcularDecimoTerceiro(salarioBruto, contarMesesProporcionais(`${dataFim.getFullYear()}-01-01`, dataDesligamento));
+  itens.push(...itens13);
+
+  const depFgts = salarioBruto*FGTS_2026.aliquotaDeposito;
+  itens.push({codigo:"fgts",descricao:"Depósito de FGTS do Mês",valor:round2(depFgts),formula:"salário × 8%",baseLegal:"Lei 8.036/1990",explicacao:"Depósito mensal em conta vinculada."});
+  const multa = depFgts*FGTS_2026.multaSemJustaCausa;
+  itens.push({codigo:"multa",descricao:"Multa de 40% do FGTS",valor:round2(multa),formula:"saldo FGTS × 40%",baseLegal:"Art. 18, §1º Lei 8.036/1990",explicacao:"Multa rescisória por dispensa sem justa causa."});
+
+  const baseDesc = saldo + itens13[0].valor;
+  const inss = calcularInss(baseDesc);
+  const irrf = calcularIrrf(baseDesc, Math.abs(inss.valor), dependentesIR);
+
+  return { itens, descontos:[inss, irrf] };
+}
+
+/* ===================== hero ledger (demo automática) ===================== */
+(function iniciarHero(){
+  const r = montarCalculo(3500, "2023-03-10", "2026-07-10", 0, true);
+  const linhas = [...r.itens, ...r.descontos];
+  const total = linhas.reduce((s,i)=>s+i.valor,0);
+  const container = document.getElementById('heroLedgerRows');
+  linhas.slice(0,6).forEach((item, idx) => {
+    const div = document.createElement('div');
+    div.className = 'ledger-row ' + (item.valor<0?'desconto':'provento');
+    div.style.animationDelay = (idx*0.12)+'s';
+    div.innerHTML = `<span>${item.descricao}</span><span class="valor">${fmt(item.valor)}</span>`;
+    container.appendChild(div);
+  });
+  document.getElementById('heroLedgerTotal').textContent = fmt(total);
+})();
+
+/* ===================== calculadora principal ===================== */
+function calcular(){
+  const salarioBruto = parseFloat(document.getElementById('salario').value);
+  const dataAdmissao = document.getElementById('admissao').value;
+  const dataDesligamento = document.getElementById('desligamento').value;
+  const dependentesIR = parseInt(document.getElementById('dependentes').value) || 0;
+  const feriasVencidas = document.getElementById('feriasVencidas').checked;
+
+  const alertaBox = document.getElementById('alertaBox');
+  alertaBox.style.display = 'none';
+  if (new Date(dataDesligamento) < new Date(dataAdmissao)) {
+    alertaBox.style.display='block'; alertaBox.textContent='A data de desligamento não pode ser anterior à data de admissão.'; return;
+  }
+  if (!(salarioBruto>0)) {
+    alertaBox.style.display='block'; alertaBox.textContent='Informe um salário bruto maior que zero.'; return;
+  }
+
+  const { itens, descontos } = montarCalculo(salarioBruto, dataAdmissao, dataDesligamento, dependentesIR, feriasVencidas);
+  const valorFinal = itens.reduce((s,i)=>s+i.valor,0) + descontos.reduce((s,d)=>s+d.valor,0);
+
+  document.getElementById('valorFinal').textContent = fmt(valorFinal);
+  document.getElementById('itensBox').innerHTML = itens.map(renderItem).join('');
+  document.getElementById('descontosBox').innerHTML = descontos.map(renderItem).join('');
+  document.getElementById('resultadoBox').style.display = 'block';
+  document.getElementById('resultadoBox').scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+</script>
+</body>
+</html>
