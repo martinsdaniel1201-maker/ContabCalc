@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <title>ContabCalc AI — A calculadora trabalhista que explica cada centavo</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Rescisão, férias, 13º, FGTS, INSS e IRRF — com a fórmula, o artigo de lei e a explicação por trás de cada valor.">
+<meta name="theme-color" content="#14181F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ContabCalc">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -160,6 +168,22 @@
   .aviso-legal { text-align:center; font-size:12px; color: var(--ink-muted); margin-top: 22px; padding-top:16px; border-top:1px solid var(--line); }
 
   footer { border-top:1px solid var(--line); padding: 32px 0; margin-top:60px; text-align:center; font-size:12.5px; color: var(--ink-muted); }
+
+  /* ---------- PWA banners ---------- */
+  .pwa-banner {
+    position: fixed; left: 16px; right: 16px; bottom: 16px; z-index: 60;
+    background: var(--ink); color: var(--paper); border-radius: var(--radius);
+    padding: 14px 16px; display:none; align-items:center; justify-content:space-between; gap: 12px;
+    box-shadow: var(--shadow); max-width: 480px; margin: 0 auto;
+  }
+  .pwa-banner.show { display:flex; }
+  .pwa-banner .texto { font-size: 13px; line-height:1.4; }
+  .pwa-banner .texto strong { display:block; font-family:'Newsreader', serif; font-size:14.5px; margin-bottom:2px; }
+  .pwa-banner .acoes { display:flex; gap:8px; flex-shrink:0; }
+  .pwa-banner button { font-family:'IBM Plex Sans'; font-size:12.5px; font-weight:600; padding: 8px 12px; border-radius: var(--radius); border:none; cursor:pointer; }
+  .pwa-banner .btn-instalar { background: var(--selo); color:#fff; }
+  .pwa-banner .btn-dispensar { background: transparent; color: var(--paper); opacity:0.7; }
+  .pwa-banner .btn-dispensar:hover { opacity:1; }
 </style>
 </head>
 <body>
@@ -275,6 +299,22 @@
 </div>
 
 <footer>ContabCalc AI — feito para quem precisa entender a lei, não só o número.</footer>
+
+<div class="pwa-banner" id="bannerInstalar">
+  <div class="texto"><strong>Instalar o ContabCalc</strong>Acesso rápido, sem navegador, funciona offline.</div>
+  <div class="acoes">
+    <button class="btn-instalar" onclick="instalarPwa()">Instalar</button>
+    <button class="btn-dispensar" onclick="dispensarBanner('bannerInstalar')">Agora não</button>
+  </div>
+</div>
+
+<div class="pwa-banner" id="bannerAtualizar">
+  <div class="texto"><strong>Nova versão disponível</strong>Atualize para ver as últimas melhorias.</div>
+  <div class="acoes">
+    <button class="btn-instalar" onclick="aplicarAtualizacao()">Atualizar</button>
+    <button class="btn-dispensar" onclick="dispensarBanner('bannerAtualizar')">Depois</button>
+  </div>
+</div>
 
 <script>
 /* ===================== tema ===================== */
@@ -525,6 +565,54 @@ function calcular(){
   document.getElementById('resultadoBox').style.display = 'block';
   document.getElementById('resultadoBox').scrollIntoView({behavior:'smooth', block:'nearest'});
 }
+/* ===================== PWA: instalação e atualização ===================== */
+let deferredPrompt = null;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('bannerInstalar').classList.add('show');
+});
+
+function instalarPwa() {
+  dispensarBanner('bannerInstalar');
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  deferredPrompt = null;
+}
+
+function dispensarBanner(id) {
+  document.getElementById(id).classList.remove('show');
+}
+
+let swRegistration = null;
+
+function aplicarAtualizacao() {
+  dispensarBanner('bannerAtualizar');
+  if (swRegistration && swRegistration.waiting) {
+    swRegistration.waiting.postMessage('SKIP_WAITING');
+  }
+  window.location.reload();
+}
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').then((reg) => {
+      swRegistration = reg;
+      // Verifica atualização a cada 30 minutos, igual ao padrão do CTT/Meu Bolso
+      setInterval(() => reg.update(), 30 * 60 * 1000);
+      reg.addEventListener('updatefound', () => {
+        const novoWorker = reg.installing;
+        novoWorker.addEventListener('statechange', () => {
+          if (novoWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            document.getElementById('bannerAtualizar').classList.add('show');
+          }
+        });
+      });
+    }).catch(() => { /* PWA opcional — se falhar, o app continua funcionando normalmente */ });
+  });
+}
+
 </script>
 </body>
 </html>
