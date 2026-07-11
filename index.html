@@ -192,9 +192,10 @@
   <div class="shell top-inner">
     <div class="brand"><span class="mark">§</span>ContabCalc<span class="serif" style="font-style:italic; color:var(--ink-muted); font-weight:400;">AI</span></div>
     <nav class="modules">
-      <a href="#modulos">Módulos</a>
-      <a href="#calculadora">Calculadora</a>
-      <a href="#" onclick="return false;">Contadores</a>
+      <a href="#calculadora">Rescisão</a>
+      <a href="#ferias">Férias</a>
+      <a href="#decimo">13º</a>
+      <a href="#fgts">FGTS</a>
     </nav>
     <button class="theme-toggle" onclick="alternarTema()" aria-label="Alternar tema claro/escuro" id="themeBtn">☾</button>
   </div>
@@ -232,9 +233,21 @@
         <div class="nome">Rescisão</div>
         <div class="desc">Sem justa causa, pedido de demissão, justa causa e acordo (Art. 484-A).</div>
       </div>
-      <div class="modulo-card disabled"><span class="status embreve">em breve</span><div class="nome">Férias</div><div class="desc">Vencidas, proporcionais, abono pecuniário.</div></div>
-      <div class="modulo-card disabled"><span class="status embreve">em breve</span><div class="nome">13º Salário</div><div class="desc">Integral, proporcional, 1ª e 2ª parcela.</div></div>
-      <div class="modulo-card disabled"><span class="status embreve">em breve</span><div class="nome">FGTS</div><div class="desc">Depósitos, extrato estimado, multa 40%/20%.</div></div>
+      <div class="modulo-card" onclick="document.getElementById('ferias').scrollIntoView({behavior:'smooth'})">
+        <span class="status pronto">● pronto</span>
+        <div class="nome">Férias</div>
+        <div class="desc">Vencidas, proporcionais, abono pecuniário.</div>
+      </div>
+      <div class="modulo-card" onclick="document.getElementById('decimo').scrollIntoView({behavior:'smooth'})">
+        <span class="status pronto">● pronto</span>
+        <div class="nome">13º Salário</div>
+        <div class="desc">Integral, proporcional, desconto de 1ª parcela.</div>
+      </div>
+      <div class="modulo-card" onclick="document.getElementById('fgts').scrollIntoView({behavior:'smooth'})">
+        <span class="status pronto">● pronto</span>
+        <div class="nome">FGTS</div>
+        <div class="desc">Depósitos, extrato estimado, multa 40%/20%.</div>
+      </div>
       <div class="modulo-card disabled"><span class="status embreve">em breve</span><div class="nome">Seguro-Desemprego</div><div class="desc">Parcelas conforme regras vigentes.</div></div>
       <div class="modulo-card disabled"><span class="status embreve">em breve</span><div class="nome">Salário Líquido</div><div class="desc">INSS, IRRF, VT, VA/VR e outros descontos.</div></div>
       <div class="modulo-card disabled"><span class="status embreve">em breve</span><div class="nome">Horas Extras</div><div class="desc">50%, 100%, adicional noturno, banco de horas.</div></div>
@@ -292,6 +305,118 @@
           <div class="subsecao-label">Descontos</div>
           <div id="descontosBox"></div>
           <div class="aviso-legal">Cálculo estimado, não substitui orientação de contador ou advogado trabalhista.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="calculadora" id="ferias">
+    <div class="calc-head">
+      <div class="eyebrow">Módulo · Férias</div>
+      <h2 class="calc-title">Cálculo de férias</h2>
+    </div>
+    <div class="calc-grid">
+      <div class="form-card">
+        <div class="field"><label>Salário Bruto (R$)</label><input type="number" id="feriasSalario" value="3500" step="0.01"></div>
+        <div class="field-row">
+          <div class="field"><label>Início do Período Aquisitivo</label><input type="date" id="feriasInicio" value="2025-07-10"></div>
+          <div class="field"><label>Data de Referência</label><input type="date" id="feriasFim" value="2026-07-10"></div>
+        </div>
+        <div class="checkbox-field">
+          <input type="checkbox" id="feriasTemVencidas">
+          <label for="feriasTemVencidas">Tem um período completo (12 meses) já vencido, sem gozar</label>
+        </div>
+        <div class="checkbox-field">
+          <input type="checkbox" id="feriasVender">
+          <label for="feriasVender">Vender 1/3 das férias (abono pecuniário)</label>
+        </div>
+        <button class="btn-calcular" onclick="calcularModuloFerias()">Calcular férias</button>
+      </div>
+      <div>
+        <div class="alerta" id="alertaFerias"></div>
+        <div class="resultado-card" id="resultadoFerias">
+          <div class="resultado-topo">
+            <div class="label">Total estimado</div>
+            <div class="valor mono" id="valorFerias">R$ 0,00</div>
+            <div class="selo-texto">✓ Cálculo conforme CLT · tabelas 2026</div>
+          </div>
+          <div class="subsecao-label">Detalhamento</div>
+          <div id="itensFerias"></div>
+          <div class="aviso-legal">Cálculo estimado, não substitui orientação de contador ou advogado trabalhista.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="calculadora" id="decimo">
+    <div class="calc-head">
+      <div class="eyebrow">Módulo · 13º Salário</div>
+      <h2 class="calc-title">Cálculo do 13º salário</h2>
+    </div>
+    <div class="calc-grid">
+      <div class="form-card">
+        <div class="field"><label>Salário Bruto (R$)</label><input type="number" id="decimoSalario" value="3500" step="0.01"></div>
+        <div class="field"><label>Meses Trabalhados no Ano (0 a 12)</label><input type="number" id="decimoMeses" value="12" min="0" max="12"></div>
+        <div class="field"><label>Valor já Adiantado (1ª Parcela, se houver)</label><input type="number" id="decimoAdiantado" value="0" step="0.01"></div>
+        <button class="btn-calcular" onclick="calcularModuloDecimo()">Calcular 13º</button>
+      </div>
+      <div>
+        <div class="alerta" id="alertaDecimo"></div>
+        <div class="resultado-card" id="resultadoDecimo">
+          <div class="resultado-topo">
+            <div class="label">Valor líquido do 13º</div>
+            <div class="valor mono" id="valorDecimo">R$ 0,00</div>
+            <div class="selo-texto">✓ Cálculo conforme CLT · tabelas 2026</div>
+          </div>
+          <div class="subsecao-label">Detalhamento</div>
+          <div id="itensDecimo"></div>
+          <div class="subsecao-label">Descontos</div>
+          <div id="descontosDecimo"></div>
+          <div class="aviso-legal">Cálculo estimado, não substitui orientação de contador ou advogado trabalhista.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="calculadora" id="fgts">
+    <div class="calc-head">
+      <div class="eyebrow">Módulo · FGTS</div>
+      <h2 class="calc-title">Estimativa de FGTS</h2>
+    </div>
+    <div class="calc-grid">
+      <div class="form-card">
+        <div class="field"><label>Salário Bruto (R$)</label><input type="number" id="fgtsSalario" value="3500" step="0.01"></div>
+        <div class="field-row">
+          <div class="field"><label>Data de Admissão</label><input type="date" id="fgtsAdmissao" value="2023-03-10"></div>
+          <div class="field"><label>Data de Referência</label><input type="date" id="fgtsReferencia" value="2026-07-10"></div>
+        </div>
+        <div class="field">
+          <label>Saldo Real do FGTS (opcional — mais preciso que a estimativa)</label>
+          <input type="number" id="fgtsSaldoInformado" placeholder="deixe em branco para estimar" step="0.01">
+        </div>
+        <div class="field">
+          <label>Tipo de Saída</label>
+          <select id="fgtsTipoSaida">
+            <option value="nenhuma">Nenhuma (só quero ver o saldo)</option>
+            <option value="sem_justa_causa">Dispensa sem justa causa (multa 40%)</option>
+            <option value="acordo">Rescisão por acordo (multa 20%)</option>
+            <option value="pedido_demissao">Pedido de demissão (sem multa)</option>
+            <option value="justa_causa">Justa causa (sem multa)</option>
+          </select>
+        </div>
+        <button class="btn-calcular" onclick="calcularModuloFgts()">Calcular FGTS</button>
+      </div>
+      <div>
+        <div class="alerta" id="alertaFgts"></div>
+        <div class="resultado-card" id="resultadoFgts">
+          <div class="resultado-topo">
+            <div class="label">Saldo + multa (se aplicável)</div>
+            <div class="valor mono" id="valorFgts">R$ 0,00</div>
+            <div class="selo-texto">✓ Cálculo conforme Lei 8.036/1990</div>
+          </div>
+          <div class="subsecao-label">Detalhamento</div>
+          <div id="itensFgts"></div>
+          <div class="aviso-legal">Estimativa — para o valor exato, consulte o extrato oficial no app FGTS ou na Caixa Econômica Federal.</div>
         </div>
       </div>
     </div>
@@ -513,6 +638,96 @@ function calcularAcordo(salarioBruto, dataAdmissao, dataDesligamento, dependente
 function atualizarCampoAvisoCumprido(){
   const tipo = document.getElementById('tipoRescisao').value;
   document.getElementById('campoAvisoCumprido').style.display = tipo === 'pedido_demissao' ? 'flex' : 'none';
+}
+
+function calcularFgtsModulo(salarioBruto, dataAdmissao, dataReferencia, saldoInformado, tipoSaida){
+  const itens = [];
+  let saldo;
+  if (saldoInformado !== null && saldoInformado !== undefined && !isNaN(saldoInformado)) {
+    saldo = saldoInformado;
+    itens.push({codigo:"saldo_informado",descricao:"Saldo de FGTS (informado por você)",valor:round2(saldo),formula:"valor extraído do extrato oficial",baseLegal:"Lei 8.036/1990",explicacao:"Valor mais preciso, pois já reflete reajustes salariais e correção monetária reais da conta."});
+  } else {
+    const meses = Math.max(1, Math.round((new Date(dataReferencia) - new Date(dataAdmissao)) / (1000*60*60*24*30.44)));
+    saldo = salarioBruto * FGTS_2026.aliquotaDeposito * meses;
+    itens.push({codigo:"estimativa",descricao:"Estimativa de Saldo Acumulado",valor:round2(saldo),formula:`salário × 8% × ${meses} meses estimados`,baseLegal:"Lei 8.036/1990",explicacao:"Estimativa simplificada assumindo salário constante. NÃO substitui o extrato oficial — não considera reajustes nem correção monetária/juros. Para o valor exato, consulte o app FGTS."});
+  }
+  if (tipoSaida === 'sem_justa_causa') {
+    const multa = saldo * 0.40;
+    itens.push({codigo:"multa40",descricao:"Multa de 40% do FGTS",valor:round2(multa),formula:"saldo × 40%",baseLegal:"Art. 18, §1º Lei 8.036/1990",explicacao:"Devida na dispensa sem justa causa, sobre todo o saldo acumulado no contrato."});
+  } else if (tipoSaida === 'acordo') {
+    const multa = saldo * 0.20;
+    itens.push({codigo:"multa20",descricao:"Multa de 20% do FGTS (Acordo)",valor:round2(multa),formula:"saldo × 20%",baseLegal:"Art. 484-A CLT",explicacao:"Metade da multa da dispensa sem justa causa. Você pode sacar até 80% do saldo total."});
+  } else if (tipoSaida === 'pedido_demissao' || tipoSaida === 'justa_causa') {
+    itens.push({codigo:"sem_multa",descricao:"Sem Multa Aplicável",valor:0,formula:"—",baseLegal:"Lei 8.036/1990, Art. 20",explicacao:"Nesta modalidade não há multa, e o saldo permanece retido na conta vinculada até uma hipótese legal de saque."});
+  }
+  return { itens };
+}
+
+function calcularModuloFerias(){
+  const salario = parseFloat(document.getElementById('feriasSalario').value);
+  const inicio = document.getElementById('feriasInicio').value;
+  const fim = document.getElementById('feriasFim').value;
+  const temVencidas = document.getElementById('feriasTemVencidas').checked;
+  const vender = document.getElementById('feriasVender').checked;
+  const alertaBox = document.getElementById('alertaFerias');
+  alertaBox.style.display = 'none';
+  if (!(salario>0)) { alertaBox.style.display='block'; alertaBox.textContent='Informe um salário bruto maior que zero.'; return; }
+  if (new Date(fim) < new Date(inicio)) { alertaBox.style.display='block'; alertaBox.textContent='A data de referência não pode ser anterior ao início do período.'; return; }
+
+  const meses = contarMesesProporcionais(inicio, fim);
+  const itens = calcularFerias(salario, meses, temVencidas);
+  if (vender) {
+    const abono = salario/3, tercoAbono = abono/3;
+    itens.push({codigo:"abono",descricao:"Abono Pecuniário (Venda de 1/3)",valor:round2(abono),formula:"salário ÷ 3 (10 dias)",baseLegal:"Art. 143 CLT",explicacao:"Venda de até 1/3 do período de férias, recebido em dinheiro em vez de descanso."});
+    itens.push({codigo:"terco_abono",descricao:"Terço Constitucional (Abono)",valor:round2(tercoAbono),formula:"valor do abono ÷ 3",baseLegal:"Art. 7º, XVII CF",explicacao:"Adicional de 1/3 também incide sobre o valor vendido."});
+  }
+  const total = itens.reduce((s,i)=>s+i.valor,0);
+  document.getElementById('valorFerias').textContent = fmt(total);
+  document.getElementById('itensFerias').innerHTML = itens.map(renderItem).join('');
+  document.getElementById('resultadoFerias').style.display = 'block';
+}
+
+function calcularModuloDecimo(){
+  const salario = parseFloat(document.getElementById('decimoSalario').value);
+  const meses = parseInt(document.getElementById('decimoMeses').value);
+  const adiantado = parseFloat(document.getElementById('decimoAdiantado').value) || 0;
+  const alertaBox = document.getElementById('alertaDecimo');
+  alertaBox.style.display = 'none';
+  if (!(salario>0)) { alertaBox.style.display='block'; alertaBox.textContent='Informe um salário bruto maior que zero.'; return; }
+  if (meses < 0 || meses > 12) { alertaBox.style.display='block'; alertaBox.textContent='Meses trabalhados deve estar entre 0 e 12.'; return; }
+
+  const itens = calcularDecimoTerceiro(salario, meses);
+  const descontos = [];
+  if (adiantado > 0) {
+    descontos.push({codigo:"desconto_1a_parcela",descricao:"Dedução da 1ª Parcela já Adiantada",valor:-round2(adiantado),formula:"valor já pago ao funcionário",baseLegal:"Lei 4.749/1965, Art. 2º",explicacao:"A 1ª parcela (até 30/nov) é um adiantamento e deve ser descontada do total apurado."});
+  }
+  const inss = calcularInss(itens[0].valor);
+  descontos.push(inss);
+  descontos.push(calcularIrrf(itens[0].valor, Math.abs(inss.valor), 0));
+  const total = itens.reduce((s,i)=>s+i.valor,0) + descontos.reduce((s,d)=>s+d.valor,0);
+  document.getElementById('valorDecimo').textContent = fmt(total);
+  document.getElementById('itensDecimo').innerHTML = itens.map(renderItem).join('');
+  document.getElementById('descontosDecimo').innerHTML = descontos.map(renderItem).join('');
+  document.getElementById('resultadoDecimo').style.display = 'block';
+}
+
+function calcularModuloFgts(){
+  const salario = parseFloat(document.getElementById('fgtsSalario').value);
+  const admissao = document.getElementById('fgtsAdmissao').value;
+  const referencia = document.getElementById('fgtsReferencia').value;
+  const saldoInformadoStr = document.getElementById('fgtsSaldoInformado').value;
+  const saldoInformado = saldoInformadoStr === '' ? null : parseFloat(saldoInformadoStr);
+  const tipoSaida = document.getElementById('fgtsTipoSaida').value;
+  const alertaBox = document.getElementById('alertaFgts');
+  alertaBox.style.display = 'none';
+  if (!(salario>0) && saldoInformado===null) { alertaBox.style.display='block'; alertaBox.textContent='Informe um salário bruto maior que zero, ou o saldo real do FGTS.'; return; }
+  if (new Date(referencia) < new Date(admissao)) { alertaBox.style.display='block'; alertaBox.textContent='A data de referência não pode ser anterior à admissão.'; return; }
+
+  const { itens } = calcularFgtsModulo(salario, admissao, referencia, saldoInformado, tipoSaida);
+  const total = itens.reduce((s,i)=>s+i.valor,0);
+  document.getElementById('valorFgts').textContent = fmt(total);
+  document.getElementById('itensFgts').innerHTML = itens.map(renderItem).join('');
+  document.getElementById('resultadoFgts').style.display = 'block';
 }
 
 /* ===================== hero ledger (demo automática) ===================== */
