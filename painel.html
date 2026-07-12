@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<title>Painel do Contador — ContabCalc AI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root {
+    --paper: #EEF0EC; --paper-raised: #FFFFFF; --ink: #14181F; --ink-muted: #5B6270;
+    --line: #D6D9D1; --selo: #16694A; --selo-soft: rgba(22,105,74,0.09);
+    --real: #8A6A24; --erro: #A8432E; --erro-soft: rgba(168,67,46,0.08);
+    --radius: 3px; --shadow: 0 1px 2px rgba(20,24,31,0.06), 0 8px 24px rgba(20,24,31,0.05);
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; background: var(--paper); color: var(--ink); font-family:'IBM Plex Sans', sans-serif; -webkit-font-smoothing: antialiased; }
+  .serif { font-family:'Newsreader', serif; }
+  .mono { font-family:'IBM Plex Mono', monospace; font-variant-numeric: tabular-nums; }
+  a { color: inherit; }
+
+  header.top { position: sticky; top:0; z-index:40; background: color-mix(in srgb, var(--paper) 88%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+  .top-inner { max-width: 1040px; margin:0 auto; padding: 16px 24px; display:flex; align-items:center; justify-content:space-between; }
+  .brand { display:flex; align-items:center; gap:10px; font-family:'Newsreader', serif; font-weight:600; font-size:18px; }
+  .brand .mark { width:24px; height:24px; border:1.5px solid var(--ink); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono'; font-size:11px; }
+  .brand .tag { font-size:11px; color: var(--ink-muted); font-family:'IBM Plex Mono'; border:1px solid var(--line); padding: 2px 8px; border-radius: var(--radius); margin-left:4px; }
+  .btn-sair { border:1px solid var(--line); background: var(--paper-raised); padding: 8px 14px; border-radius: var(--radius); font-size:13px; cursor:pointer; }
+
+  .shell { max-width: 1040px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  /* --- tela de login --- */
+  #telaLogin { max-width: 380px; margin: 80px auto; }
+  .login-card { background: var(--paper-raised); border:1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 32px 28px; }
+  .login-card h1 { font-family:'Newsreader', serif; font-weight:500; font-size:24px; margin: 0 0 4px; text-align:center; }
+  .login-card .sub { text-align:center; color: var(--ink-muted); font-size:13px; margin-bottom:24px; }
+  .field { margin-bottom:14px; }
+  .field label { display:block; font-size:12.5px; color: var(--ink-muted); margin-bottom:6px; }
+  .field input { width:100%; padding:10px 12px; border:1px solid var(--line); border-radius: var(--radius); background: var(--paper); color: var(--ink); font-family:'IBM Plex Sans'; font-size:14px; }
+  .field input:focus { outline:none; border-color: var(--selo); }
+  .btn-primary { width:100%; background: var(--selo); color:#fff; border:none; padding:12px; border-radius: var(--radius); font-weight:600; font-size:14.5px; cursor:pointer; margin-top:6px; }
+  .btn-primary:hover { opacity:0.9; }
+  .link-alternar { text-align:center; font-size:13px; color: var(--ink-muted); margin-top:16px; cursor:pointer; }
+  .link-alternar span { color: var(--selo); font-weight:600; }
+  .msg { font-size:13px; padding:10px 12px; border-radius: var(--radius); margin-bottom:14px; display:none; }
+  .msg.erro { background: var(--erro-soft); color: var(--erro); border:1px solid var(--erro); }
+  .msg.ok { background: var(--selo-soft); color: var(--selo); border:1px solid var(--selo); }
+
+  /* --- app logado --- */
+  #app { display:none; }
+  .tabs { display:flex; gap:4px; border-bottom:1px solid var(--line); margin-bottom: 24px; }
+  .tab { padding: 10px 16px; font-size:14px; cursor:pointer; color: var(--ink-muted); border-bottom: 2px solid transparent; }
+  .tab.ativa { color: var(--ink); font-weight:600; border-bottom-color: var(--selo); }
+  .painel-secao { display:none; }
+  .painel-secao.ativa { display:block; }
+
+  .toolbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; gap:12px; }
+  .toolbar h2 { font-family:'Newsreader', serif; font-weight:500; font-size:20px; margin:0; }
+  .btn-novo { background: var(--ink); color: var(--paper); border:none; padding:9px 16px; border-radius: var(--radius); font-size:13.5px; font-weight:600; cursor:pointer; }
+
+  .lista-vazia { text-align:center; padding: 48px 20px; color: var(--ink-muted); font-size:14px; border:1px dashed var(--line); border-radius: var(--radius); }
+
+  table.tabela { width:100%; border-collapse: collapse; background: var(--paper-raised); border:1px solid var(--line); border-radius: var(--radius); overflow:hidden; }
+  table.tabela th { text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color: var(--ink-muted); padding:10px 14px; border-bottom:1px solid var(--line); background: var(--paper); }
+  table.tabela td { padding: 12px 14px; border-bottom:1px solid var(--line); font-size:13.5px; }
+  table.tabela tr:last-child td { border-bottom:none; }
+  table.tabela tr:hover { background: color-mix(in srgb, var(--selo) 4%, transparent); }
+  .acao-link { color: var(--selo); font-size:12.5px; cursor:pointer; font-weight:600; }
+  .acao-link.excluir { color: var(--erro); margin-left:12px; }
+
+  /* modal simples */
+  .modal-fundo { display:none; position:fixed; inset:0; background: rgba(20,24,31,0.5); z-index:80; align-items:center; justify-content:center; padding:20px; }
+  .modal-fundo.show { display:flex; }
+  .modal-card { background: var(--paper-raised); border-radius: var(--radius); padding:26px; max-width:440px; width:100%; max-height:86vh; overflow-y:auto; }
+  .modal-card h3 { font-family:'Newsreader', serif; font-weight:500; font-size:19px; margin: 0 0 18px; }
+  .modal-acoes { display:flex; gap:10px; margin-top: 18px; }
+  .modal-acoes button { flex:1; padding:11px; border-radius: var(--radius); font-size:13.5px; font-weight:600; cursor:pointer; }
+  .modal-acoes .salvar { background: var(--selo); color:#fff; border:none; }
+  .modal-acoes .cancelar { background: transparent; border:1px solid var(--line); color: var(--ink); }
+
+  .field-row { display:flex; gap:10px; }
+  .field-row .field { flex:1; }
+</style>
+</head>
+<body>
+
+<div id="telaLogin">
+  <div class="login-card">
+    <h1>Painel do Contador</h1>
+    <div class="sub">ContabCalc AI</div>
+    <div class="msg erro" id="msgErro"></div>
+    <div class="msg ok" id="msgOk"></div>
+    <div class="field"><label>Nome (só no cadastro)</label><input type="text" id="loginNome" placeholder="Seu nome"></div>
+    <div class="field"><label>E-mail</label><input type="email" id="loginEmail" placeholder="voce@escritorio.com.br"></div>
+    <div class="field"><label>Senha</label><input type="password" id="loginSenha" placeholder="••••••••"></div>
+    <button class="btn-primary" id="btnLoginAcao" onclick="entrar()">Entrar</button>
+    <div class="link-alternar" onclick="alternarModoLogin()" id="linkAlternar">Ainda não tem conta? <span>Cadastre-se</span></div>
+  </div>
+</div>
+
+<div id="app">
+  <header class="top">
+    <div class="top-inner">
+      <div class="brand"><span class="mark">§</span>ContabCalc<span class="tag">painel</span></div>
+      <button class="btn-sair" onclick="sair()">Sair</button>
+    </div>
+  </header>
+
+  <div class="shell">
+    <div class="tabs">
+      <div class="tab ativa" onclick="mudarAba('clientes')">Clientes</div>
+      <div class="tab" onclick="mudarAba('funcionarios')">Funcionários</div>
+      <div class="tab" onclick="mudarAba('historico')">Histórico de Cálculos</div>
+    </div>
+
+    <section class="painel-secao ativa" id="secaoClientes">
+      <div class="toolbar"><h2>Clientes</h2><button class="btn-novo" onclick="abrirModalCliente()">+ Novo cliente</button></div>
+      <div id="listaClientes"></div>
+    </section>
+
+    <section class="painel-secao" id="secaoFuncionarios">
+      <div class="toolbar"><h2>Funcionários</h2><button class="btn-novo" onclick="abrirModalFuncionario()">+ Novo funcionário</button></div>
+      <div id="listaFuncionarios"></div>
+    </section>
+
+    <section class="painel-secao" id="secaoHistorico">
+      <div class="toolbar"><h2>Histórico de Cálculos</h2></div>
+      <div id="listaHistorico"></div>
+    </section>
+  </div>
+</div>
+
+<!-- Modal Cliente -->
+<div class="modal-fundo" id="modalCliente">
+  <div class="modal-card">
+    <h3>Novo Cliente</h3>
+    <div class="field"><label>Nome</label><input type="text" id="clienteNome"></div>
+    <div class="field"><label>CPF/CNPJ</label><input type="text" id="clienteCpfCnpj"></div>
+    <div class="field-row">
+      <div class="field"><label>E-mail</label><input type="email" id="clienteEmail"></div>
+      <div class="field"><label>Telefone</label><input type="text" id="clienteTelefone"></div>
+    </div>
+    <div class="modal-acoes">
+      <button class="cancelar" onclick="fecharModal('modalCliente')">Cancelar</button>
+      <button class="salvar" onclick="salvarCliente()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Funcionário -->
+<div class="modal-fundo" id="modalFuncionario">
+  <div class="modal-card">
+    <h3>Novo Funcionário</h3>
+    <div class="field">
+      <label>Cliente</label>
+      <select id="funcionarioClienteId"></select>
+    </div>
+    <div class="field"><label>Nome</label><input type="text" id="funcionarioNome"></div>
+    <div class="field-row">
+      <div class="field"><label>Cargo</label><input type="text" id="funcionarioCargo"></div>
+      <div class="field"><label>Salário (R$)</label><input type="number" id="funcionarioSalario" step="0.01"></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Data de Admissão</label><input type="date" id="funcionarioAdmissao"></div>
+      <div class="field"><label>Data de Desligamento</label><input type="date" id="funcionarioDesligamento"></div>
+    </div>
+    <div class="modal-acoes">
+      <button class="cancelar" onclick="fecharModal('modalFuncionario')">Cancelar</button>
+      <button class="salvar" onclick="salvarFuncionario()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===================== configuração Supabase ===================== */
+// Projeto reaproveitado do CTT — schema isolado "contabcalc", sem custo adicional.
+const SUPABASE_URL = "https://umlwcilvhpoxhnqaalqn.supabase.co";
+const SUPABASE_ANON_KEY = "COLE_AQUI_A_CHAVE_ANON_PUBLIC"; // Settings → API → anon/public key
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  db: { schema: "contabcalc" },
+});
+
+let modoCadastro = false;
+let clientesCache = [];
+
+/* ===================== autenticação ===================== */
+function mostrarMsg(tipo, texto) {
+  document.getElementById('msgErro').style.display = 'none';
+  document.getElementById('msgOk').style.display = 'none';
+  const el = document.getElementById(tipo === 'erro' ? 'msgErro' : 'msgOk');
+  el.textContent = texto;
+  el.style.display = 'block';
+}
+
+function alternarModoLogin() {
+  modoCadastro = !modoCadastro;
+  document.getElementById('btnLoginAcao').textContent = modoCadastro ? 'Criar conta' : 'Entrar';
+  document.getElementById('linkAlternar').innerHTML = modoCadastro
+    ? 'Já tem conta? <span>Entrar</span>'
+    : 'Ainda não tem conta? <span>Cadastre-se</span>';
+}
+
+async function entrar() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const senha = document.getElementById('loginSenha').value;
+  const nome = document.getElementById('loginNome').value.trim();
+
+  if (!email || !senha) { mostrarMsg('erro', 'Preencha e-mail e senha.'); return; }
+
+  if (modoCadastro) {
+    const { error } = await sb.auth.signUp({ email, password: senha, options: { data: { nome } } });
+    if (error) { mostrarMsg('erro', error.message); return; }
+    mostrarMsg('ok', 'Conta criada! Verifique seu e-mail para confirmar, depois faça login.');
+  } else {
+    const { error } = await sb.auth.signInWithPassword({ email, password: senha });
+    if (error) { mostrarMsg('erro', error.message); return; }
+    await iniciarApp();
+  }
+}
+
+async function sair() {
+  await sb.auth.signOut();
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('telaLogin').style.display = 'block';
+}
+
+async function verificarSessao() {
+  const { data } = await sb.auth.getSession();
+  if (data.session) await iniciarApp();
+}
+
+/* ===================== app ===================== */
+async function iniciarApp() {
+  document.getElementById('telaLogin').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  await carregarClientes();
+  await carregarFuncionarios();
+  await carregarHistorico();
+}
+
+function mudarAba(nome) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('ativa'));
+  document.querySelectorAll('.painel-secao').forEach(s => s.classList.remove('ativa'));
+  event.target.classList.add('ativa');
+  document.getElementById('secao' + nome.charAt(0).toUpperCase() + nome.slice(1)).classList.add('ativa');
+}
+
+/* --- clientes --- */
+async function carregarClientes() {
+  const { data, error } = await sb.from('clientes').select('*').order('created_at', { ascending: false });
+  const container = document.getElementById('listaClientes');
+  if (error) { container.innerHTML = `<div class="lista-vazia">Erro ao carregar: ${error.message}</div>`; return; }
+  clientesCache = data || [];
+  preencherSelectClientes();
+  if (!data || data.length === 0) {
+    container.innerHTML = '<div class="lista-vazia">Nenhum cliente cadastrado ainda. Clique em "+ Novo cliente" para começar.</div>';
+    return;
+  }
+  container.innerHTML = `<table class="tabela"><thead><tr><th>Nome</th><th>CPF/CNPJ</th><th>Contato</th><th></th></tr></thead><tbody>
+    ${data.map(c => `<tr>
+      <td>${escapeHtml(c.nome)}</td>
+      <td class="mono">${escapeHtml(c.cnpj_cpf || '—')}</td>
+      <td>${escapeHtml(c.email || c.telefone || '—')}</td>
+      <td><span class="acao-link excluir" onclick="excluirCliente('${c.id}')">Excluir</span></td>
+    </tr>`).join('')}
+  </tbody></table>`;
+}
+
+function preencherSelectClientes() {
+  const select = document.getElementById('funcionarioClienteId');
+  select.innerHTML = clientesCache.map(c => `<option value="${c.id}">${escapeHtml(c.nome)}</option>`).join('');
+}
+
+function abrirModalCliente() {
+  document.getElementById('clienteNome').value = '';
+  document.getElementById('clienteCpfCnpj').value = '';
+  document.getElementById('clienteEmail').value = '';
+  document.getElementById('clienteTelefone').value = '';
+  document.getElementById('modalCliente').classList.add('show');
+}
+
+async function salvarCliente() {
+  const nome = document.getElementById('clienteNome').value.trim();
+  if (!nome) { alert('Informe o nome do cliente.'); return; }
+  const { data: userData } = await sb.auth.getUser();
+  const { error } = await sb.from('clientes').insert({
+    contador_id: userData.user.id,
+    nome,
+    cnpj_cpf: document.getElementById('clienteCpfCnpj').value.trim() || null,
+    email: document.getElementById('clienteEmail').value.trim() || null,
+    telefone: document.getElementById('clienteTelefone').value.trim() || null,
+  });
+  if (error) { alert('Erro ao salvar: ' + error.message); return; }
+  fecharModal('modalCliente');
+  await carregarClientes();
+}
+
+async function excluirCliente(id) {
+  if (!confirm('Excluir este cliente? Isso também remove seus funcionários cadastrados.')) return;
+  const { error } = await sb.from('clientes').delete().eq('id', id);
+  if (error) { alert('Erro ao excluir: ' + error.message); return; }
+  await carregarClientes();
+  await carregarFuncionarios();
+}
+
+/* --- funcionários --- */
+async function carregarFuncionarios() {
+  const { data, error } = await sb.from('funcionarios').select('*, clientes(nome)').order('created_at', { ascending: false });
+  const container = document.getElementById('listaFuncionarios');
+  if (error) { container.innerHTML = `<div class="lista-vazia">Erro ao carregar: ${error.message}</div>`; return; }
+  if (!data || data.length === 0) {
+    container.innerHTML = '<div class="lista-vazia">Nenhum funcionário cadastrado ainda.</div>';
+    return;
+  }
+  container.innerHTML = `<table class="tabela"><thead><tr><th>Nome</th><th>Cliente</th><th>Cargo</th><th>Salário</th><th>Admissão</th><th></th></tr></thead><tbody>
+    ${data.map(f => `<tr>
+      <td>${escapeHtml(f.nome)}</td>
+      <td>${escapeHtml(f.clientes?.nome || '—')}</td>
+      <td>${escapeHtml(f.cargo || '—')}</td>
+      <td class="mono">${f.salario ? 'R$ ' + Number(f.salario).toLocaleString('pt-BR',{minimumFractionDigits:2}) : '—'}</td>
+      <td class="mono">${f.data_admissao || '—'}</td>
+      <td><span class="acao-link excluir" onclick="excluirFuncionario('${f.id}')">Excluir</span></td>
+    </tr>`).join('')}
+  </tbody></table>`;
+}
+
+function abrirModalFuncionario() {
+  if (clientesCache.length === 0) { alert('Cadastre um cliente antes de adicionar funcionários.'); return; }
+  document.getElementById('funcionarioNome').value = '';
+  document.getElementById('funcionarioCargo').value = '';
+  document.getElementById('funcionarioSalario').value = '';
+  document.getElementById('funcionarioAdmissao').value = '';
+  document.getElementById('funcionarioDesligamento').value = '';
+  preencherSelectClientes();
+  document.getElementById('modalFuncionario').classList.add('show');
+}
+
+async function salvarFuncionario() {
+  const nome = document.getElementById('funcionarioNome').value.trim();
+  if (!nome) { alert('Informe o nome do funcionário.'); return; }
+  const { error } = await sb.from('funcionarios').insert({
+    cliente_id: document.getElementById('funcionarioClienteId').value,
+    nome,
+    cargo: document.getElementById('funcionarioCargo').value.trim() || null,
+    salario: parseFloat(document.getElementById('funcionarioSalario').value) || null,
+    data_admissao: document.getElementById('funcionarioAdmissao').value || null,
+    data_desligamento: document.getElementById('funcionarioDesligamento').value || null,
+  });
+  if (error) { alert('Erro ao salvar: ' + error.message); return; }
+  fecharModal('modalFuncionario');
+  await carregarFuncionarios();
+}
+
+async function excluirFuncionario(id) {
+  if (!confirm('Excluir este funcionário?')) return;
+  const { error } = await sb.from('funcionarios').delete().eq('id', id);
+  if (error) { alert('Erro ao excluir: ' + error.message); return; }
+  await carregarFuncionarios();
+}
+
+/* --- histórico --- */
+async function carregarHistorico() {
+  const { data, error } = await sb.from('calculos').select('*').order('criado_em', { ascending: false }).limit(50);
+  const container = document.getElementById('listaHistorico');
+  if (error) { container.innerHTML = `<div class="lista-vazia">Erro ao carregar: ${error.message}</div>`; return; }
+  if (!data || data.length === 0) {
+    container.innerHTML = '<div class="lista-vazia">Nenhum cálculo salvo ainda. Em breve você poderá salvar cálculos direto da calculadora pública.</div>';
+    return;
+  }
+  container.innerHTML = `<table class="tabela"><thead><tr><th>Tipo</th><th>Valor Final</th><th>Data</th></tr></thead><tbody>
+    ${data.map(c => `<tr>
+      <td>${escapeHtml(c.tipo_calculo)}</td>
+      <td class="mono">R$ ${Number(c.valor_final).toLocaleString('pt-BR',{minimumFractionDigits:2})}</td>
+      <td class="mono">${new Date(c.criado_em).toLocaleDateString('pt-BR')}</td>
+    </tr>`).join('')}
+  </tbody></table>`;
+}
+
+/* --- utilitários --- */
+function fecharModal(id) { document.getElementById(id).classList.remove('show'); }
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str).replace(/[&<>"']/g, (m) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+verificarSessao();
+</script>
+</body>
+</html>
