@@ -18,7 +18,8 @@
     --radius: 3px; --shadow: 0 1px 2px rgba(20,24,31,0.06), 0 8px 24px rgba(20,24,31,0.05);
   }
   * { box-sizing: border-box; }
-  body { margin:0; background: var(--paper); color: var(--ink); font-family:'IBM Plex Sans', sans-serif; -webkit-font-smoothing: antialiased; }
+  html { overflow-x: hidden; }
+  body { margin:0; background: var(--paper); color: var(--ink); font-family:'IBM Plex Sans', sans-serif; -webkit-font-smoothing: antialiased; max-width:100vw; overflow-x: hidden; }
   .serif { font-family:'Newsreader', serif; }
   .mono { font-family:'IBM Plex Mono', monospace; font-variant-numeric: tabular-nums; }
   a { color: inherit; }
@@ -63,7 +64,8 @@
 
   .lista-vazia { text-align:center; padding: 48px 20px; color: var(--ink-muted); font-size:14px; border:1px dashed var(--line); border-radius: var(--radius); }
 
-  table.tabela { width:100%; border-collapse: collapse; background: var(--paper-raised); border:1px solid var(--line); border-radius: var(--radius); overflow:hidden; }
+  .tabela-scroll { width:100%; overflow-x:auto; -webkit-overflow-scrolling:touch; border:1px solid var(--line); border-radius: var(--radius); }
+  table.tabela { width:100%; min-width: 480px; border-collapse: collapse; background: var(--paper-raised); }
   table.tabela th { text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color: var(--ink-muted); padding:10px 14px; border-bottom:1px solid var(--line); background: var(--paper); }
   table.tabela td { padding: 12px 14px; border-bottom:1px solid var(--line); font-size:13.5px; }
   table.tabela tr:last-child td { border-bottom:none; }
@@ -260,14 +262,14 @@ async function carregarClientes() {
     container.innerHTML = '<div class="lista-vazia">Nenhum cliente cadastrado ainda. Clique em "+ Novo cliente" para começar.</div>';
     return;
   }
-  container.innerHTML = `<table class="tabela"><thead><tr><th>Nome</th><th>CPF/CNPJ</th><th>Contato</th><th></th></tr></thead><tbody>
+  container.innerHTML = `<div class="tabela-scroll"><table class="tabela"><thead><tr><th>Nome</th><th>CPF/CNPJ</th><th>Contato</th><th></th></tr></thead><tbody>
     ${data.map(c => `<tr>
       <td>${escapeHtml(c.nome)}</td>
       <td class="mono">${escapeHtml(c.cnpj_cpf || '—')}</td>
       <td>${escapeHtml(c.email || c.telefone || '—')}</td>
       <td><span class="acao-link excluir" onclick="excluirCliente('${c.id}')">Excluir</span></td>
     </tr>`).join('')}
-  </tbody></table>`;
+  </tbody></table></div>`;
 }
 
 function preencherSelectClientes() {
@@ -316,7 +318,7 @@ async function carregarFuncionarios() {
     container.innerHTML = '<div class="lista-vazia">Nenhum funcionário cadastrado ainda.</div>';
     return;
   }
-  container.innerHTML = `<table class="tabela"><thead><tr><th>Nome</th><th>Cliente</th><th>Cargo</th><th>Salário</th><th>Admissão</th><th></th></tr></thead><tbody>
+  container.innerHTML = `<div class="tabela-scroll"><table class="tabela"><thead><tr><th>Nome</th><th>Cliente</th><th>Cargo</th><th>Salário</th><th>Admissão</th><th></th></tr></thead><tbody>
     ${data.map(f => `<tr>
       <td>${escapeHtml(f.nome)}</td>
       <td>${escapeHtml(f.clientes?.nome || '—')}</td>
@@ -325,7 +327,7 @@ async function carregarFuncionarios() {
       <td class="mono">${f.data_admissao || '—'}</td>
       <td><span class="acao-link excluir" onclick="excluirFuncionario('${f.id}')">Excluir</span></td>
     </tr>`).join('')}
-  </tbody></table>`;
+  </tbody></table></div>`;
 }
 
 function abrirModalFuncionario() {
@@ -371,13 +373,13 @@ async function carregarHistorico() {
     container.innerHTML = '<div class="lista-vazia">Nenhum cálculo salvo ainda. Em breve você poderá salvar cálculos direto da calculadora pública.</div>';
     return;
   }
-  container.innerHTML = `<table class="tabela"><thead><tr><th>Tipo</th><th>Valor Final</th><th>Data</th></tr></thead><tbody>
+  container.innerHTML = `<div class="tabela-scroll"><table class="tabela"><thead><tr><th>Tipo</th><th>Valor Final</th><th>Data</th></tr></thead><tbody>
     ${data.map(c => `<tr>
       <td>${escapeHtml(c.tipo_calculo)}</td>
       <td class="mono">R$ ${Number(c.valor_final).toLocaleString('pt-BR',{minimumFractionDigits:2})}</td>
       <td class="mono">${new Date(c.criado_em).toLocaleDateString('pt-BR')}</td>
     </tr>`).join('')}
-  </tbody></table>`;
+  </tbody></table></div>`;
 }
 
 /* --- utilitários --- */
