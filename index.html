@@ -946,7 +946,8 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('sw.js').then((reg) => {
       swRegistration = reg;
-      // Verifica atualização a cada 30 minutos, igual ao padrão do CTT/Meu Bolso
+      reg.update(); // verifica na hora, toda vez que o app abre — não espera os 30 min
+      // Verifica atualização a cada 30 minutos também, para quem deixa o app aberto
       setInterval(() => reg.update(), 30 * 60 * 1000);
       reg.addEventListener('updatefound', () => {
         const novoWorker = reg.installing;
