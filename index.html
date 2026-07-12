@@ -66,8 +66,9 @@
   .top-inner { display:flex; align-items:center; justify-content:space-between; padding: 16px 0; }
   .brand { display:flex; align-items:center; gap:10px; font-family:'Newsreader', serif; font-weight:600; font-size:19px; letter-spacing:0.01em; }
   .brand .mark { width:26px; height:26px; border:1.5px solid var(--ink); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono'; font-size:12px; font-weight:600; }
-  nav.modules { display:flex; gap: 22px; font-size: 13.5px; color: var(--ink-muted); }
-  nav.modules a { text-decoration:none; }
+  nav.modules { display:flex; gap: 22px; font-size: 13.5px; color: var(--ink-muted); overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+  nav.modules::-webkit-scrollbar { display:none; }
+  nav.modules a { text-decoration:none; white-space:nowrap; }
   nav.modules a:hover { color: var(--ink); }
   .theme-toggle {
     border: 1px solid var(--line); background: var(--paper-raised); color: var(--ink);
@@ -196,6 +197,8 @@
       <a href="#ferias">Férias</a>
       <a href="#decimo">13º</a>
       <a href="#fgts">FGTS</a>
+      <a href="#salarioliquido">Salário</a>
+      <a href="#horas">Horas</a>
     </nav>
     <button class="theme-toggle" onclick="alternarTema()" aria-label="Alternar tema claro/escuro" id="themeBtn">☾</button>
   </div>
@@ -248,9 +251,17 @@
         <div class="nome">FGTS</div>
         <div class="desc">Depósitos, extrato estimado, multa 40%/20%.</div>
       </div>
+      <div class="modulo-card" onclick="document.getElementById('salarioliquido').scrollIntoView({behavior:'smooth'})">
+        <span class="status pronto">● pronto</span>
+        <div class="nome">Salário Líquido</div>
+        <div class="desc">INSS, IRRF, VT, VA/VR e outros descontos.</div>
+      </div>
+      <div class="modulo-card" onclick="document.getElementById('horas').scrollIntoView({behavior:'smooth'})">
+        <span class="status pronto">● pronto</span>
+        <div class="nome">Horas Extras</div>
+        <div class="desc">50%, 100%, adicional noturno.</div>
+      </div>
       <div class="modulo-card disabled"><span class="status embreve">em breve</span><div class="nome">Seguro-Desemprego</div><div class="desc">Parcelas conforme regras vigentes.</div></div>
-      <div class="modulo-card disabled"><span class="status embreve">em breve</span><div class="nome">Salário Líquido</div><div class="desc">INSS, IRRF, VT, VA/VR e outros descontos.</div></div>
-      <div class="modulo-card disabled"><span class="status embreve">em breve</span><div class="nome">Horas Extras</div><div class="desc">50%, 100%, adicional noturno, banco de horas.</div></div>
       <div class="modulo-card disabled"><span class="status embreve">em breve</span><div class="nome">Adicionais</div><div class="desc">Insalubridade, periculosidade, comissões.</div></div>
     </div>
   </section>
@@ -417,6 +428,72 @@
           <div class="subsecao-label">Detalhamento</div>
           <div id="itensFgts"></div>
           <div class="aviso-legal">Estimativa — para o valor exato, consulte o extrato oficial no app FGTS ou na Caixa Econômica Federal.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="calculadora" id="salarioliquido">
+    <div class="calc-head">
+      <div class="eyebrow">Módulo · Salário</div>
+      <h2 class="calc-title">Salário líquido</h2>
+    </div>
+    <div class="calc-grid">
+      <div class="form-card">
+        <div class="field"><label>Salário Bruto (R$)</label><input type="number" id="slSalario" value="3500" step="0.01"></div>
+        <div class="field"><label>Dependentes (IRRF)</label><input type="number" id="slDependentes" value="0" min="0"></div>
+        <div class="checkbox-field">
+          <input type="checkbox" id="slVt">
+          <label for="slVt">Desconta Vale Transporte (até 6% do salário)</label>
+        </div>
+        <div class="field"><label>Desconto de Vale Alimentação/Refeição (R$)</label><input type="number" id="slVa" value="0" step="0.01"></div>
+        <div class="field"><label>Desconto de Plano de Saúde (R$)</label><input type="number" id="slPlano" value="0" step="0.01"></div>
+        <div class="field"><label>Outros Descontos — empréstimos, pensão, etc. (R$)</label><input type="number" id="slOutros" value="0" step="0.01"></div>
+        <button class="btn-calcular" onclick="calcularModuloSalarioLiquido()">Calcular salário líquido</button>
+      </div>
+      <div>
+        <div class="alerta" id="alertaSl"></div>
+        <div class="resultado-card" id="resultadoSl">
+          <div class="resultado-topo">
+            <div class="label">Salário líquido</div>
+            <div class="valor mono" id="valorSl">R$ 0,00</div>
+            <div class="selo-texto">✓ Cálculo conforme CLT · tabelas 2026</div>
+          </div>
+          <div class="subsecao-label">Proventos</div>
+          <div id="itensSl"></div>
+          <div class="subsecao-label">Descontos</div>
+          <div id="descontosSl"></div>
+          <div class="aviso-legal">Cálculo estimado, não substitui orientação de contador.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="calculadora" id="horas">
+    <div class="calc-head">
+      <div class="eyebrow">Módulo · Jornada</div>
+      <h2 class="calc-title">Horas extras e adicional noturno</h2>
+    </div>
+    <div class="calc-grid">
+      <div class="form-card">
+        <div class="field"><label>Salário Bruto (R$)</label><input type="number" id="hSalario" value="3500" step="0.01"></div>
+        <div class="field"><label>Carga Horária Mensal (h)</label><input type="number" id="hCarga" value="220"></div>
+        <div class="field"><label>Horas Extras 50% (h)</label><input type="number" id="hExtra50" value="10" step="0.5"></div>
+        <div class="field"><label>Horas Extras 100% (h)</label><input type="number" id="hExtra100" value="0" step="0.5"></div>
+        <div class="field"><label>Horas Noturnas — adicional 20% (h)</label><input type="number" id="hNoturno" value="0" step="0.5"></div>
+        <button class="btn-calcular" onclick="calcularModuloHoras()">Calcular horas</button>
+      </div>
+      <div>
+        <div class="alerta" id="alertaHoras"></div>
+        <div class="resultado-card" id="resultadoHoras">
+          <div class="resultado-topo">
+            <div class="label">Total de adicionais</div>
+            <div class="valor mono" id="valorHoras">R$ 0,00</div>
+            <div class="selo-texto">✓ Cálculo conforme CLT · tabelas 2026</div>
+          </div>
+          <div class="subsecao-label">Detalhamento</div>
+          <div id="itensHoras"></div>
+          <div class="aviso-legal">Não inclui reflexo em DSR — consulte o RH para o valor com esse reflexo incluído.</div>
         </div>
       </div>
     </div>
@@ -728,6 +805,60 @@ function calcularModuloFgts(){
   document.getElementById('valorFgts').textContent = fmt(total);
   document.getElementById('itensFgts').innerHTML = itens.map(renderItem).join('');
   document.getElementById('resultadoFgts').style.display = 'block';
+}
+
+function calcularModuloSalarioLiquido(){
+  const salario = parseFloat(document.getElementById('slSalario').value);
+  const dependentes = parseInt(document.getElementById('slDependentes').value) || 0;
+  const descontaVt = document.getElementById('slVt').checked;
+  const va = parseFloat(document.getElementById('slVa').value) || 0;
+  const plano = parseFloat(document.getElementById('slPlano').value) || 0;
+  const outros = parseFloat(document.getElementById('slOutros').value) || 0;
+  const alertaBox = document.getElementById('alertaSl');
+  alertaBox.style.display = 'none';
+  if (!(salario>0)) { alertaBox.style.display='block'; alertaBox.textContent='Informe um salário bruto maior que zero.'; return; }
+
+  const itens = [{codigo:"bruto",descricao:"Salário Bruto",valor:round2(salario),formula:"valor informado no contrato",baseLegal:"Art. 457 CLT",explicacao:"Valor total combinado antes de qualquer desconto."}];
+  const descontos = [];
+  const inss = calcularInss(salario);
+  descontos.push(inss);
+  descontos.push(calcularIrrf(salario, Math.abs(inss.valor), dependentes));
+  if (descontaVt) {
+    const valorVt = salario * 0.06;
+    descontos.push({codigo:"vt",descricao:"Desconto de Vale Transporte",valor:-round2(valorVt),formula:"6% do salário bruto (teto legal)",baseLegal:"Lei 7.418/1985, Art. 4º",explicacao:"O desconto do VT é limitado a 6% do salário bruto, mesmo que o custo real seja maior."});
+  }
+  if (va > 0) descontos.push({codigo:"va",descricao:"Desconto de Vale Alimentação/Refeição",valor:-round2(va),formula:"valor informado",baseLegal:"Lei 6.321/1976 (PAT)",explicacao:"Parte do custo do benefício que cabe ao funcionário."});
+  if (plano > 0) descontos.push({codigo:"plano",descricao:"Desconto de Plano de Saúde",valor:-round2(plano),formula:"valor informado",baseLegal:"Cláusula contratual",explicacao:"Parte da mensalidade descontada do funcionário."});
+  if (outros > 0) descontos.push({codigo:"outros",descricao:"Outros Descontos",valor:-round2(outros),formula:"valor informado",baseLegal:"Art. 462 CLT",explicacao:"Descontos autorizados (consignado, pensão, etc.)."});
+
+  const total = itens.reduce((s,i)=>s+i.valor,0) + descontos.reduce((s,d)=>s+d.valor,0);
+  document.getElementById('valorSl').textContent = fmt(total);
+  document.getElementById('itensSl').innerHTML = itens.map(renderItem).join('');
+  document.getElementById('descontosSl').innerHTML = descontos.map(renderItem).join('');
+  document.getElementById('resultadoSl').style.display = 'block';
+}
+
+function calcularModuloHoras(){
+  const salario = parseFloat(document.getElementById('hSalario').value);
+  const carga = parseFloat(document.getElementById('hCarga').value) || 220;
+  const he50 = parseFloat(document.getElementById('hExtra50').value) || 0;
+  const he100 = parseFloat(document.getElementById('hExtra100').value) || 0;
+  const noturno = parseFloat(document.getElementById('hNoturno').value) || 0;
+  const alertaBox = document.getElementById('alertaHoras');
+  alertaBox.style.display = 'none';
+  if (!(salario>0)) { alertaBox.style.display='block'; alertaBox.textContent='Informe um salário bruto maior que zero.'; return; }
+
+  const valorHora = salario / carga;
+  const itens = [{codigo:"valor_hora",descricao:"Valor da Hora Normal",valor:round2(valorHora),formula:`salário ÷ ${carga}h`,baseLegal:"Súmula 431 TST",explicacao:"Base de cálculo para os adicionais abaixo."}];
+  if (he50>0) itens.push({codigo:"he50",descricao:"Horas Extras (50%)",valor:round2(valorHora*1.5*he50),formula:`valor hora × 1,5 × ${he50}h`,baseLegal:"Art. 7º, XVI CF",explicacao:"Adicional mínimo de 50% em dias úteis."});
+  if (he100>0) itens.push({codigo:"he100",descricao:"Horas Extras (100%)",valor:round2(valorHora*2*he100),formula:`valor hora × 2 × ${he100}h`,baseLegal:"Súmula 146 TST",explicacao:"Geralmente aplicado a domingos/feriados."});
+  if (noturno>0) itens.push({codigo:"noturno",descricao:"Adicional Noturno (20%)",valor:round2(valorHora*0.20*noturno),formula:`valor hora × 20% × ${noturno}h`,baseLegal:"Art. 73 CLT",explicacao:"Para trabalho entre 22h e 5h. Não inclui a redução da hora noturna (52min30s)."});
+  itens.push({codigo:"nota_dsr",descricao:"Nota sobre Reflexo em DSR",valor:0,formula:"—",baseLegal:"Lei 605/1949",explicacao:"Este cálculo não inclui o reflexo das horas extras no DSR — consulte o RH para o valor com esse reflexo."});
+
+  const total = itens.filter(i=>i.codigo!=='valor_hora' && i.codigo!=='nota_dsr').reduce((s,i)=>s+i.valor,0);
+  document.getElementById('valorHoras').textContent = fmt(total);
+  document.getElementById('itensHoras').innerHTML = itens.map(renderItem).join('');
+  document.getElementById('resultadoHoras').style.display = 'block';
 }
 
 /* ===================== hero ledger (demo automática) ===================== */
