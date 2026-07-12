@@ -204,6 +204,8 @@
       <a href="#fgts">FGTS</a>
       <a href="#salarioliquido">Salário</a>
       <a href="#horas">Horas</a>
+      <a href="#segurodesemprego">Seguro</a>
+      <a href="#adicionais">Adicionais</a>
       <a href="painel.html">Painel do Contador</a>
     </nav>
     <button class="theme-toggle" onclick="alternarTema()" aria-label="Alternar tema claro/escuro" id="themeBtn">☾</button>
@@ -267,8 +269,16 @@
         <div class="nome">Horas Extras</div>
         <div class="desc">50%, 100%, adicional noturno.</div>
       </div>
-      <div class="modulo-card disabled"><span class="status embreve">em breve</span><div class="nome">Seguro-Desemprego</div><div class="desc">Parcelas conforme regras vigentes.</div></div>
-      <div class="modulo-card disabled"><span class="status embreve">em breve</span><div class="nome">Adicionais</div><div class="desc">Insalubridade, periculosidade, comissões.</div></div>
+      <div class="modulo-card" onclick="document.getElementById('segurodesemprego').scrollIntoView({behavior:'smooth'})">
+        <span class="status pronto">● pronto</span>
+        <div class="nome">Seguro-Desemprego</div>
+        <div class="desc">Parcelas conforme regras vigentes.</div>
+      </div>
+      <div class="modulo-card" onclick="document.getElementById('adicionais').scrollIntoView({behavior:'smooth'})">
+        <span class="status pronto">● pronto</span>
+        <div class="nome">Adicionais</div>
+        <div class="desc">Insalubridade, periculosidade, comissões.</div>
+      </div>
     </div>
   </section>
 
@@ -500,6 +510,82 @@
           <div class="subsecao-label">Detalhamento</div>
           <div id="itensHoras"></div>
           <div class="aviso-legal">Não inclui reflexo em DSR — consulte o RH para o valor com esse reflexo incluído.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="calculadora" id="segurodesemprego">
+    <div class="calc-head">
+      <div class="eyebrow">Módulo · Benefício</div>
+      <h2 class="calc-title">Seguro-Desemprego</h2>
+    </div>
+    <div class="calc-grid">
+      <div class="form-card">
+        <div class="field"><label>Média dos Últimos 3 Salários (R$)</label><input type="number" id="sdMedia" value="2000" step="0.01"></div>
+        <div class="field"><label>Meses Trabalhados nos Últimos 36 Meses</label><input type="number" id="sdMeses" value="18" min="0" max="36"></div>
+        <div class="field">
+          <label>Número desta Solicitação</label>
+          <select id="sdSolicitacao">
+            <option value="1">1ª solicitação</option>
+            <option value="2">2ª solicitação</option>
+            <option value="3">3ª solicitação ou mais</option>
+          </select>
+        </div>
+        <button class="btn-calcular" onclick="calcularModuloSeguro()">Calcular seguro-desemprego</button>
+      </div>
+      <div>
+        <div class="alerta" id="alertaSeguro"></div>
+        <div class="resultado-card" id="resultadoSeguro">
+          <div class="resultado-topo">
+            <div class="label">Total estimado do benefício</div>
+            <div class="valor mono" id="valorSeguro">R$ 0,00</div>
+            <div class="selo-texto">✓ Tabela vigente desde 11/01/2026</div>
+          </div>
+          <div class="subsecao-label">Detalhamento</div>
+          <div id="itensSeguro"></div>
+          <div class="aviso-legal">Só têm direito ao benefício quem foi dispensado sem justa causa ou por rescisão indireta.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="calculadora" id="adicionais">
+    <div class="calc-head">
+      <div class="eyebrow">Módulo · Adicionais</div>
+      <h2 class="calc-title">Insalubridade, periculosidade e comissões</h2>
+    </div>
+    <div class="calc-grid">
+      <div class="form-card">
+        <div class="field"><label>Salário Base (R$)</label><input type="number" id="adSalario" value="3500" step="0.01"></div>
+        <div class="field">
+          <label>Grau de Insalubridade</label>
+          <select id="adInsalubridade">
+            <option value="nenhum">Nenhum</option>
+            <option value="minimo">Mínimo (10%)</option>
+            <option value="medio">Médio (20%)</option>
+            <option value="maximo">Máximo (40%)</option>
+          </select>
+        </div>
+        <div class="checkbox-field">
+          <input type="checkbox" id="adPericulosidade">
+          <label for="adPericulosidade">Tem direito a periculosidade (30%)</label>
+        </div>
+        <div class="field"><label>Valor de Vendas no Mês (R$, opcional)</label><input type="number" id="adVendas" value="0" step="0.01"></div>
+        <div class="field"><label>Percentual de Comissão (%, opcional)</label><input type="number" id="adComissao" value="0" step="0.1"></div>
+        <button class="btn-calcular" onclick="calcularModuloAdicionais()">Calcular adicionais</button>
+      </div>
+      <div>
+        <div class="alerta" id="alertaAdicionais"></div>
+        <div class="resultado-card" id="resultadoAdicionais">
+          <div class="resultado-topo">
+            <div class="label">Total de adicionais</div>
+            <div class="valor mono" id="valorAdicionais">R$ 0,00</div>
+            <div class="selo-texto">✓ Cálculo conforme CLT · tabelas 2026</div>
+          </div>
+          <div class="subsecao-label">Detalhamento</div>
+          <div id="itensAdicionais"></div>
+          <div class="aviso-legal">Cálculo estimado, não substitui orientação de contador ou advogado trabalhista.</div>
         </div>
       </div>
     </div>
@@ -865,6 +951,90 @@ function calcularModuloHoras(){
   document.getElementById('valorHoras').textContent = fmt(total);
   document.getElementById('itensHoras').innerHTML = itens.map(renderItem).join('');
   document.getElementById('resultadoHoras').style.display = 'block';
+}
+
+const SALARIO_MINIMO_2026 = 1621.00;
+const TETO_SEGURO_2026 = 2518.65;
+const FAIXA1_LIMITE = 2222.17;
+const FAIXA2_LIMITE = 3703.99;
+const FAIXA2_BASE = 1777.74;
+
+function calcularValorParcelaSeguro(media){
+  let valor, faixa;
+  if (media <= FAIXA1_LIMITE) { valor = media*0.8; faixa = "1ª faixa (até R$2.222,17): média × 80%"; }
+  else if (media <= FAIXA2_LIMITE) { valor = FAIXA2_BASE + (media-FAIXA1_LIMITE)*0.5; faixa = "2ª faixa (R$2.222,18 a R$3.703,99): R$1.777,74 + 50% do excedente"; }
+  else { valor = TETO_SEGURO_2026; faixa = "3ª faixa (acima de R$3.703,99): valor fixo (teto)"; }
+  valor = Math.max(SALARIO_MINIMO_2026, Math.min(valor, TETO_SEGURO_2026));
+  return { valor, faixa };
+}
+function calcularNumeroParcelasSeguro(meses36, solicitacao){
+  if (solicitacao === 1) { if (meses36>=24) return 5; if (meses36>=12) return 4; return 0; }
+  if (solicitacao === 2) { if (meses36>=24) return 5; if (meses36>=12) return 4; if (meses36>=9) return 3; return 0; }
+  if (meses36>=24) return 5; if (meses36>=12) return 4; if (meses36>=6) return 3; return 0;
+}
+
+function calcularModuloSeguro(){
+  const media = parseFloat(document.getElementById('sdMedia').value);
+  const meses36 = parseInt(document.getElementById('sdMeses').value) || 0;
+  const solicitacao = parseInt(document.getElementById('sdSolicitacao').value);
+  const alertaBox = document.getElementById('alertaSeguro');
+  alertaBox.style.display = 'none';
+  if (!(media>0)) { alertaBox.style.display='block'; alertaBox.textContent='Informe uma média salarial maior que zero.'; return; }
+
+  const { valor: valorParcela, faixa } = calcularValorParcelaSeguro(media);
+  const numeroParcelas = calcularNumeroParcelasSeguro(meses36, solicitacao);
+  const itens = [];
+
+  if (numeroParcelas === 0) {
+    itens.push({codigo:"sem_direito",descricao:"Sem Direito ao Benefício",valor:0,formula:"—",baseLegal:"Lei 7.998/1990, Art. 3º",explicacao:"O tempo mínimo trabalhado nos últimos 36 meses não foi atingido para esta solicitação (12 meses na 1ª, 9 na 2ª, 6 na 3ª ou mais)."});
+    document.getElementById('valorSeguro').textContent = fmt(0);
+  } else {
+    itens.push({codigo:"parcela",descricao:"Valor de Cada Parcela",valor:round2(valorParcela),formula:faixa,baseLegal:"Resolução CODEFAT nº 957/2022 (tabela 2026)",explicacao:`Nunca inferior ao salário mínimo (R$${SALARIO_MINIMO_2026.toFixed(2)}) nem superior ao teto (R$${TETO_SEGURO_2026.toFixed(2)}).`});
+    itens.push({codigo:"parcelas",descricao:"Número de Parcelas",valor:numeroParcelas,formula:`${meses36} meses nos últimos 36, ${solicitacao}ª solicitação`,baseLegal:"Lei 7.998/1990, Art. 4º",explicacao:"Depende do tempo trabalhado e de quantas vezes já solicitou o benefício antes."});
+    const total = valorParcela*numeroParcelas;
+    itens.push({codigo:"total",descricao:"Total Estimado do Benefício",valor:round2(total),formula:`R$${valorParcela.toFixed(2)} × ${numeroParcelas} parcelas`,baseLegal:"Lei 7.998/1990",explicacao:"Soma de todas as parcelas, pagas mensalmente pela Caixa."});
+    document.getElementById('valorSeguro').textContent = fmt(total);
+  }
+  document.getElementById('itensSeguro').innerHTML = itens.map(renderItem).join('');
+  document.getElementById('resultadoSeguro').style.display = 'block';
+}
+
+function calcularModuloAdicionais(){
+  const salario = parseFloat(document.getElementById('adSalario').value);
+  const grauInsalubridade = document.getElementById('adInsalubridade').value;
+  const temPericulosidade = document.getElementById('adPericulosidade').checked;
+  const vendas = parseFloat(document.getElementById('adVendas').value) || 0;
+  const percComissao = parseFloat(document.getElementById('adComissao').value) || 0;
+  const alertaBox = document.getElementById('alertaAdicionais');
+  alertaBox.style.display = 'none';
+  if (!(salario>0)) { alertaBox.style.display='block'; alertaBox.textContent='Informe um salário base maior que zero.'; return; }
+
+  const itens = [];
+  const percentuaisInsalubridade = { minimo:0.10, medio:0.20, maximo:0.40 };
+  if (grauInsalubridade !== 'nenhum') {
+    const pct = percentuaisInsalubridade[grauInsalubridade];
+    const valor = SALARIO_MINIMO_2026 * pct;
+    const nomeGrau = grauInsalubridade==='minimo'?'Mínimo (10%)':grauInsalubridade==='medio'?'Médio (20%)':'Máximo (40%)';
+    itens.push({codigo:"insalubridade",descricao:`Adicional de Insalubridade — Grau ${nomeGrau}`,valor:round2(valor),formula:`salário mínimo (R$${SALARIO_MINIMO_2026.toFixed(2)}) × ${(pct*100).toFixed(0)}%`,baseLegal:"Art. 192 CLT e NR-15",explicacao:"O grau depende de laudo técnico de insalubridade. Por padrão a base é o salário mínimo, mas convenção coletiva pode definir outra."});
+  }
+  if (temPericulosidade) {
+    const valor = salario*0.30;
+    itens.push({codigo:"periculosidade",descricao:"Adicional de Periculosidade (30%)",valor:round2(valor),formula:"salário base × 30%",baseLegal:"Art. 193, §1º CLT",explicacao:"Incide sobre o salário base (não o mínimo). Aplica-se a atividades com explosivos, inflamáveis, energia elétrica ou risco de violência."});
+  }
+  if (grauInsalubridade !== 'nenhum' && temPericulosidade) {
+    alertaBox.style.display = 'block';
+    alertaBox.textContent = 'Atenção: insalubridade e periculosidade não podem ser recebidas ao mesmo tempo (Art. 193, §2º CLT) — escolha o mais vantajoso. Mostrando os dois valores para comparação.';
+  }
+  if (vendas>0 && percComissao>0) {
+    const valor = vendas*(percComissao/100);
+    itens.push({codigo:"comissao",descricao:"Comissão sobre Vendas",valor:round2(valor),formula:`R$${vendas.toFixed(2)} × ${percComissao}%`,baseLegal:"Art. 457, §1º CLT",explicacao:"Comissões pactuadas integram o salário para 13º, férias, FGTS e aviso prévio."});
+  }
+  if (itens.length===0) { alertaBox.style.display='block'; alertaBox.textContent='Selecione ao menos um adicional para calcular.'; return; }
+
+  const total = itens.reduce((s,i)=>s+i.valor,0);
+  document.getElementById('valorAdicionais').textContent = fmt(total);
+  document.getElementById('itensAdicionais').innerHTML = itens.map(renderItem).join('');
+  document.getElementById('resultadoAdicionais').style.display = 'block';
 }
 
 /* ===================== hero ledger (demo automática) ===================== */
