@@ -12,6 +12,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/favicon-32.png" sizes="32x32">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -172,6 +173,9 @@
   .item-base { display:inline-block; margin-top:7px; font-size:10.5px; font-family:'IBM Plex Mono'; background: var(--selo-soft); color: var(--selo); padding:3px 9px; border-radius: var(--radius); max-width:100%; overflow-wrap: anywhere; }
 
   .aviso-legal { text-align:center; font-size:12px; color: var(--ink-muted); margin-top: 22px; padding-top:16px; border-top:1px solid var(--line); }
+  .acoes-exportar { display:flex; gap:8px; margin-top:20px; flex-wrap:wrap; }
+  .acoes-exportar button { flex:1; min-width:90px; display:flex; align-items:center; justify-content:center; gap:6px; padding:10px 8px; border-radius: var(--radius); border:1px solid var(--line); background: var(--paper); color: var(--ink); font-family:'IBM Plex Sans'; font-size:12.5px; font-weight:600; cursor:pointer; }
+  .acoes-exportar button:hover { background: color-mix(in srgb, var(--selo) 8%, var(--paper)); border-color: var(--selo); }
 
   footer { border-top:1px solid var(--line); padding: 32px 0; margin-top:60px; text-align:center; font-size:12.5px; color: var(--ink-muted); }
 
@@ -331,7 +335,8 @@
           <div id="itensBox"></div>
           <div class="subsecao-label">Descontos</div>
           <div id="descontosBox"></div>
-          <div class="aviso-legal">Cálculo estimado, não substitui orientação de contador ou advogado trabalhista.</div>
+          <div class="aviso-legal"><div class="acoes-exportar"><button onclick="gerarPdf('rescisao')">📄 PDF</button><button onclick="compartilharWhatsapp('rescisao')">💬 WhatsApp</button><button onclick="enviarEmail('rescisao')">✉️ E-mail</button></div>
+          Cálculo estimado, não substitui orientação de contador ou advogado trabalhista.</div>
         </div>
       </div>
     </div>
@@ -369,7 +374,8 @@
           </div>
           <div class="subsecao-label">Detalhamento</div>
           <div id="itensFerias"></div>
-          <div class="aviso-legal">Cálculo estimado, não substitui orientação de contador ou advogado trabalhista.</div>
+          <div class="aviso-legal"><div class="acoes-exportar"><button onclick="gerarPdf('ferias')">📄 PDF</button><button onclick="compartilharWhatsapp('ferias')">💬 WhatsApp</button><button onclick="enviarEmail('ferias')">✉️ E-mail</button></div>
+          Cálculo estimado, não substitui orientação de contador ou advogado trabalhista.</div>
         </div>
       </div>
     </div>
@@ -399,7 +405,8 @@
           <div id="itensDecimo"></div>
           <div class="subsecao-label">Descontos</div>
           <div id="descontosDecimo"></div>
-          <div class="aviso-legal">Cálculo estimado, não substitui orientação de contador ou advogado trabalhista.</div>
+          <div class="aviso-legal"><div class="acoes-exportar"><button onclick="gerarPdf('decimo')">📄 PDF</button><button onclick="compartilharWhatsapp('decimo')">💬 WhatsApp</button><button onclick="enviarEmail('decimo')">✉️ E-mail</button></div>
+          Cálculo estimado, não substitui orientação de contador ou advogado trabalhista.</div>
         </div>
       </div>
     </div>
@@ -443,7 +450,8 @@
           </div>
           <div class="subsecao-label">Detalhamento</div>
           <div id="itensFgts"></div>
-          <div class="aviso-legal">Estimativa — para o valor exato, consulte o extrato oficial no app FGTS ou na Caixa Econômica Federal.</div>
+          <div class="aviso-legal"><div class="acoes-exportar"><button onclick="gerarPdf('fgts')">📄 PDF</button><button onclick="compartilharWhatsapp('fgts')">💬 WhatsApp</button><button onclick="enviarEmail('fgts')">✉️ E-mail</button></div>
+          Estimativa — para o valor exato, consulte o extrato oficial no app FGTS ou na Caixa Econômica Federal.</div>
         </div>
       </div>
     </div>
@@ -479,7 +487,8 @@
           <div id="itensSl"></div>
           <div class="subsecao-label">Descontos</div>
           <div id="descontosSl"></div>
-          <div class="aviso-legal">Cálculo estimado, não substitui orientação de contador.</div>
+          <div class="aviso-legal"><div class="acoes-exportar"><button onclick="gerarPdf('salarioliquido')">📄 PDF</button><button onclick="compartilharWhatsapp('salarioliquido')">💬 WhatsApp</button><button onclick="enviarEmail('salarioliquido')">✉️ E-mail</button></div>
+          Cálculo estimado, não substitui orientação de contador.</div>
         </div>
       </div>
     </div>
@@ -509,6 +518,7 @@
           </div>
           <div class="subsecao-label">Detalhamento</div>
           <div id="itensHoras"></div>
+          <div class="acoes-exportar"><button onclick="gerarPdf('horas')">📄 PDF</button><button onclick="compartilharWhatsapp('horas')">💬 WhatsApp</button><button onclick="enviarEmail('horas')">✉️ E-mail</button></div>
           <div class="aviso-legal">Não inclui reflexo em DSR — consulte o RH para o valor com esse reflexo incluído.</div>
         </div>
       </div>
@@ -544,6 +554,7 @@
           </div>
           <div class="subsecao-label">Detalhamento</div>
           <div id="itensSeguro"></div>
+          <div class="acoes-exportar"><button onclick="gerarPdf('seguro')">📄 PDF</button><button onclick="compartilharWhatsapp('seguro')">💬 WhatsApp</button><button onclick="enviarEmail('seguro')">✉️ E-mail</button></div>
           <div class="aviso-legal">Só têm direito ao benefício quem foi dispensado sem justa causa ou por rescisão indireta.</div>
         </div>
       </div>
@@ -585,6 +596,7 @@
           </div>
           <div class="subsecao-label">Detalhamento</div>
           <div id="itensAdicionais"></div>
+          <div class="acoes-exportar"><button onclick="gerarPdf('adicionais')">📄 PDF</button><button onclick="compartilharWhatsapp('adicionais')">💬 WhatsApp</button><button onclick="enviarEmail('adicionais')">✉️ E-mail</button></div>
           <div class="aviso-legal">Cálculo estimado, não substitui orientação de contador ou advogado trabalhista.</div>
         </div>
       </div>
@@ -851,6 +863,7 @@ function calcularModuloFerias(){
     itens.push({codigo:"terco_abono",descricao:"Terço Constitucional (Abono)",valor:round2(tercoAbono),formula:"valor do abono ÷ 3",baseLegal:"Art. 7º, XVII CF",explicacao:"Adicional de 1/3 também incide sobre o valor vendido."});
   }
   const total = itens.reduce((s,i)=>s+i.valor,0);
+  RESULTADOS['ferias'] = { titulo: 'Cálculo de Férias', itens, descontos: [], valorFinal: total };
   document.getElementById('valorFerias').textContent = fmt(total);
   document.getElementById('itensFerias').innerHTML = itens.map(renderItem).join('');
   document.getElementById('resultadoFerias').style.display = 'block';
@@ -874,6 +887,7 @@ function calcularModuloDecimo(){
   descontos.push(inss);
   descontos.push(calcularIrrf(itens[0].valor, Math.abs(inss.valor), 0));
   const total = itens.reduce((s,i)=>s+i.valor,0) + descontos.reduce((s,d)=>s+d.valor,0);
+  RESULTADOS['decimo'] = { titulo: '13º Salário', itens, descontos, valorFinal: total };
   document.getElementById('valorDecimo').textContent = fmt(total);
   document.getElementById('itensDecimo').innerHTML = itens.map(renderItem).join('');
   document.getElementById('descontosDecimo').innerHTML = descontos.map(renderItem).join('');
@@ -894,6 +908,7 @@ function calcularModuloFgts(){
 
   const { itens } = calcularFgtsModulo(salario, admissao, referencia, saldoInformado, tipoSaida);
   const total = itens.reduce((s,i)=>s+i.valor,0);
+  RESULTADOS['fgts'] = { titulo: 'FGTS', itens, descontos: [], valorFinal: total };
   document.getElementById('valorFgts').textContent = fmt(total);
   document.getElementById('itensFgts').innerHTML = itens.map(renderItem).join('');
   document.getElementById('resultadoFgts').style.display = 'block';
@@ -924,6 +939,7 @@ function calcularModuloSalarioLiquido(){
   if (outros > 0) descontos.push({codigo:"outros",descricao:"Outros Descontos",valor:-round2(outros),formula:"valor informado",baseLegal:"Art. 462 CLT",explicacao:"Descontos autorizados (consignado, pensão, etc.)."});
 
   const total = itens.reduce((s,i)=>s+i.valor,0) + descontos.reduce((s,d)=>s+d.valor,0);
+  RESULTADOS['salarioliquido'] = { titulo: 'Salário Líquido', itens, descontos, valorFinal: total };
   document.getElementById('valorSl').textContent = fmt(total);
   document.getElementById('itensSl').innerHTML = itens.map(renderItem).join('');
   document.getElementById('descontosSl').innerHTML = descontos.map(renderItem).join('');
@@ -948,6 +964,7 @@ function calcularModuloHoras(){
   itens.push({codigo:"nota_dsr",descricao:"Nota sobre Reflexo em DSR",valor:0,formula:"—",baseLegal:"Lei 605/1949",explicacao:"Este cálculo não inclui o reflexo das horas extras no DSR — consulte o RH para o valor com esse reflexo."});
 
   const total = itens.filter(i=>i.codigo!=='valor_hora' && i.codigo!=='nota_dsr').reduce((s,i)=>s+i.valor,0);
+  RESULTADOS['horas'] = { titulo: 'Horas Extras e Adicional Noturno', itens, descontos: [], valorFinal: total };
   document.getElementById('valorHoras').textContent = fmt(total);
   document.getElementById('itensHoras').innerHTML = itens.map(renderItem).join('');
   document.getElementById('resultadoHoras').style.display = 'block';
@@ -987,12 +1004,14 @@ function calcularModuloSeguro(){
 
   if (numeroParcelas === 0) {
     itens.push({codigo:"sem_direito",descricao:"Sem Direito ao Benefício",valor:0,formula:"—",baseLegal:"Lei 7.998/1990, Art. 3º",explicacao:"O tempo mínimo trabalhado nos últimos 36 meses não foi atingido para esta solicitação (12 meses na 1ª, 9 na 2ª, 6 na 3ª ou mais)."});
+    RESULTADOS['seguro'] = { titulo: 'Seguro-Desemprego', itens, descontos: [], valorFinal: 0 };
     document.getElementById('valorSeguro').textContent = fmt(0);
   } else {
     itens.push({codigo:"parcela",descricao:"Valor de Cada Parcela",valor:round2(valorParcela),formula:faixa,baseLegal:"Resolução CODEFAT nº 957/2022 (tabela 2026)",explicacao:`Nunca inferior ao salário mínimo (R$${SALARIO_MINIMO_2026.toFixed(2)}) nem superior ao teto (R$${TETO_SEGURO_2026.toFixed(2)}).`});
     itens.push({codigo:"parcelas",descricao:"Número de Parcelas",valor:numeroParcelas,formula:`${meses36} meses nos últimos 36, ${solicitacao}ª solicitação`,baseLegal:"Lei 7.998/1990, Art. 4º",explicacao:"Depende do tempo trabalhado e de quantas vezes já solicitou o benefício antes."});
     const total = valorParcela*numeroParcelas;
     itens.push({codigo:"total",descricao:"Total Estimado do Benefício",valor:round2(total),formula:`R$${valorParcela.toFixed(2)} × ${numeroParcelas} parcelas`,baseLegal:"Lei 7.998/1990",explicacao:"Soma de todas as parcelas, pagas mensalmente pela Caixa."});
+    RESULTADOS['seguro'] = { titulo: 'Seguro-Desemprego', itens, descontos: [], valorFinal: total };
     document.getElementById('valorSeguro').textContent = fmt(total);
   }
   document.getElementById('itensSeguro').innerHTML = itens.map(renderItem).join('');
@@ -1032,9 +1051,130 @@ function calcularModuloAdicionais(){
   if (itens.length===0) { alertaBox.style.display='block'; alertaBox.textContent='Selecione ao menos um adicional para calcular.'; return; }
 
   const total = itens.reduce((s,i)=>s+i.valor,0);
+  RESULTADOS['adicionais'] = { titulo: 'Adicionais', itens, descontos: [], valorFinal: total };
   document.getElementById('valorAdicionais').textContent = fmt(total);
   document.getElementById('itensAdicionais').innerHTML = itens.map(renderItem).join('');
   document.getElementById('resultadoAdicionais').style.display = 'block';
+}
+
+/* ===================== exportação (PDF, WhatsApp, e-mail) ===================== */
+const RESULTADOS = {};
+
+function montarTextoResumo(chave) {
+  const r = RESULTADOS[chave];
+  if (!r) return '';
+  let linhas = [`*ContabCalc AI — ${r.titulo}*`, ''];
+  r.itens.forEach(i => { if (i.valor !== 0 || r.itens.length <= 3) linhas.push(`${i.descricao}: ${fmt(i.valor)}`); });
+  if (r.descontos && r.descontos.length) {
+    linhas.push('');
+    r.descontos.forEach(d => linhas.push(`${d.descricao}: ${fmt(d.valor)}`));
+  }
+  linhas.push('');
+  linhas.push(`*Total: ${fmt(r.valorFinal)}*`);
+  linhas.push('');
+  linhas.push('Cálculo estimado, não substitui orientação de contador ou advogado trabalhista.');
+  return linhas.join('\n');
+}
+
+function gerarPdf(chave) {
+  const r = RESULTADOS[chave];
+  if (!r) return;
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  let y = 20;
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(16);
+  doc.text('ContabCalc AI', 14, y);
+  doc.setFontSize(11);
+  doc.setFont('helvetica', 'normal');
+  y += 8;
+  doc.text(r.titulo, 14, y);
+  y += 10;
+
+  doc.setDrawColor(200);
+  doc.line(14, y, 196, y);
+  y += 10;
+
+  doc.setFontSize(10);
+  doc.setTextColor(90);
+  doc.text('PROVENTOS', 14, y);
+  y += 6;
+  doc.setTextColor(20);
+  r.itens.forEach(item => {
+    if (y > 270) { doc.addPage(); y = 20; }
+    doc.setFont('helvetica', 'bold');
+    doc.text(item.descricao, 14, y);
+    doc.text(fmt(item.valor), 196, y, { align: 'right' });
+    doc.setFont('helvetica', 'normal');
+    y += 5;
+    const formulaLinhas = doc.splitTextToSize(item.formula, 182);
+    doc.setFontSize(8);
+    doc.setTextColor(120);
+    doc.text(formulaLinhas, 14, y);
+    y += formulaLinhas.length * 4 + 1;
+    doc.setTextColor(140);
+    doc.text(`Base legal: ${item.baseLegal}`, 14, y);
+    y += 6;
+    doc.setFontSize(10);
+    doc.setTextColor(20);
+  });
+
+  if (r.descontos && r.descontos.length) {
+    y += 2;
+    doc.setTextColor(90);
+    doc.text('DESCONTOS', 14, y);
+    y += 6;
+    doc.setTextColor(20);
+    r.descontos.forEach(item => {
+      if (y > 270) { doc.addPage(); y = 20; }
+      doc.setFont('helvetica', 'bold');
+      doc.text(item.descricao, 14, y);
+      doc.text(fmt(item.valor), 196, y, { align: 'right' });
+      doc.setFont('helvetica', 'normal');
+      y += 5;
+      const formulaLinhas = doc.splitTextToSize(item.formula, 182);
+      doc.setFontSize(8);
+      doc.setTextColor(120);
+      doc.text(formulaLinhas, 14, y);
+      y += formulaLinhas.length * 4 + 1;
+      doc.setTextColor(140);
+      doc.text(`Base legal: ${item.baseLegal}`, 14, y);
+      y += 6;
+      doc.setFontSize(10);
+      doc.setTextColor(20);
+    });
+  }
+
+  if (y > 260) { doc.addPage(); y = 20; }
+  y += 6;
+  doc.setDrawColor(200);
+  doc.line(14, y, 196, y);
+  y += 10;
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(14);
+  doc.text('TOTAL', 14, y);
+  doc.text(fmt(r.valorFinal), 196, y, { align: 'right' });
+  y += 12;
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8);
+  doc.setTextColor(120);
+  const avisoLinhas = doc.splitTextToSize('Cálculo estimado, não substitui orientação de contador ou advogado trabalhista.', 182);
+  doc.text(avisoLinhas, 14, y);
+
+  doc.save(`contabcalc-${chave}-${new Date().toISOString().slice(0,10)}.pdf`);
+}
+
+function compartilharWhatsapp(chave) {
+  const texto = montarTextoResumo(chave);
+  window.open('https://wa.me/?text=' + encodeURIComponent(texto), '_blank');
+}
+
+function enviarEmail(chave) {
+  const r = RESULTADOS[chave];
+  const texto = montarTextoResumo(chave).replace(/\*/g, '');
+  const assunto = encodeURIComponent(`ContabCalc AI — ${r ? r.titulo : 'Cálculo'}`);
+  window.location.href = `mailto:?subject=${assunto}&body=${encodeURIComponent(texto)}`;
 }
 
 /* ===================== hero ledger (demo automática) ===================== */
@@ -1080,6 +1220,9 @@ function calcular(){
 
   const { itens, descontos } = resultado;
   const valorFinal = itens.reduce((s,i)=>s+i.valor,0) + descontos.reduce((s,d)=>s+d.valor,0);
+
+  const titulos = { sem_justa_causa: 'Rescisão — Demissão sem Justa Causa', pedido_demissao: 'Rescisão — Pedido de Demissão', justa_causa: 'Rescisão — Demissão por Justa Causa', acordo: 'Rescisão — Acordo (Art. 484-A)' };
+  RESULTADOS['rescisao'] = { titulo: titulos[tipo] || 'Rescisão', itens, descontos, valorFinal };
 
   document.getElementById('valorFinal').textContent = fmt(valorFinal);
   document.getElementById('itensBox').innerHTML = itens.map(renderItem).join('');
