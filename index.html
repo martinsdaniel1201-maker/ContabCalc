@@ -13,6 +13,7 @@
 <link rel="icon" href="icons/favicon-32.png" sizes="32x32">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -76,6 +77,10 @@
     width: 34px; height: 34px; border-radius: 50%; cursor:pointer; font-size: 15px;
     display:flex; align-items:center; justify-content:center;
   }
+  .conta-area { display:flex; align-items:center; gap:10px; }
+  .uso-pill { font-family:'IBM Plex Mono'; font-size:11.5px; color: var(--ink-muted); border:1px solid var(--line); padding:5px 10px; border-radius:999px; white-space:nowrap; }
+  .btn-conta { border:1px solid var(--line); background: var(--paper-raised); color: var(--ink); padding:8px 14px; border-radius:999px; font-size:13px; font-weight:600; cursor:pointer; font-family:'IBM Plex Sans'; }
+  .btn-conta:hover { border-color: var(--selo); color: var(--selo); }
 
   /* ---------- hero ---------- */
   .hero { padding: 64px 0 40px; display:grid; grid-template-columns: 1.05fr 0.95fr; gap: 56px; align-items:center; }
@@ -209,6 +214,27 @@
   .pwa-banner .btn-instalar { background: var(--selo); color:#fff; }
   .pwa-banner .btn-dispensar { background: transparent; color: var(--paper); opacity:0.7; }
   .pwa-banner .btn-dispensar:hover { opacity:1; }
+
+  /* ---------- modais de conta e paywall ---------- */
+  .modal-fundo { display:none; position:fixed; inset:0; background: rgba(20,24,31,0.55); z-index:90; align-items:center; justify-content:center; padding:20px; }
+  .modal-fundo.show { display:flex; }
+  .modal-card { background: var(--paper-raised); border-radius: var(--radius); padding:28px; max-width:400px; width:100%; box-shadow: var(--shadow); }
+  .modal-card h3 { font-family:'Newsreader', serif; font-weight:500; font-size:21px; margin:0 0 4px; }
+  .modal-card .sub { font-size:13px; color: var(--ink-muted); margin-bottom:20px; }
+  .modal-card .field { margin-bottom:12px; }
+  .modal-card .field label { display:block; font-size:12.5px; color: var(--ink-muted); margin-bottom:6px; }
+  .modal-card .field input { width:100%; padding:10px 12px; border:1px solid var(--line); border-radius: var(--radius); background: var(--paper); color: var(--ink); font-family:'IBM Plex Sans'; font-size:14px; }
+  .modal-msg { font-size:13px; padding:9px 12px; border-radius: var(--radius); margin-bottom:12px; display:none; }
+  .modal-msg.erro { background: var(--erro-soft); color: var(--erro); border:1px solid var(--erro); }
+  .modal-msg.ok { background: var(--selo-soft); color: var(--selo); border:1px solid var(--selo); }
+  .modal-card .btn-primary { width:100%; background: var(--selo); color:#fff; border:none; padding:12px; border-radius: var(--radius); font-weight:600; font-size:14.5px; cursor:pointer; margin-top:6px; }
+  .modal-link-alternar { text-align:center; font-size:13px; color: var(--ink-muted); margin-top:14px; cursor:pointer; }
+  .modal-link-alternar span { color: var(--selo); font-weight:600; }
+  .modal-fechar { position:absolute; top:14px; right:14px; background:none; border:none; font-size:18px; color: var(--ink-muted); cursor:pointer; }
+
+  .paywall-icon { width:48px; height:48px; border-radius:50%; background: var(--selo-soft); color: var(--selo); display:flex; align-items:center; justify-content:center; font-size:22px; margin-bottom:14px; }
+  .paywall-preco { font-family:'Newsreader', serif; font-weight:600; font-size:15px; color: var(--ink-muted); margin: 14px 0 4px; }
+  .btn-secundario { width:100%; background:transparent; border:1px solid var(--line); color: var(--ink); padding:11px; border-radius: var(--radius); font-weight:600; font-size:13.5px; cursor:pointer; margin-top:8px; }
 </style>
 </head>
 <body>
@@ -216,9 +242,10 @@
 <header class="top">
   <div class="shell top-inner">
     <div class="brand" style="cursor:pointer;" onclick="voltarHome()"><span class="mark">§</span>ContabCalc<span class="serif" style="font-style:italic; color:var(--ink-muted); font-weight:400;">AI</span></div>
-    <nav class="modules">
-      <a href="painel.html">Painel do Contador</a>
-    </nav>
+    <div class="conta-area" id="contaArea">
+      <span class="uso-pill" id="usoPill" style="display:none;"></span>
+      <button class="btn-conta" id="btnConta" onclick="cliqueConta()">Entrar</button>
+    </div>
     <button class="theme-toggle" onclick="alternarTema()" aria-label="Alternar tema claro/escuro" id="themeBtn">☾</button>
   </div>
 </header>
@@ -623,6 +650,32 @@
 
 <footer>ContabCalc AI — feito para quem precisa entender a lei, não só o número.</footer>
 
+<div class="modal-fundo" id="modalAuth">
+  <div class="modal-card" style="position:relative;">
+    <button class="modal-fechar" onclick="fecharModal('modalAuth')">✕</button>
+    <h3>Criar conta grátis</h3>
+    <div class="sub">3 cálculos grátis pra você testar. Sem cartão de crédito.</div>
+    <div class="modal-msg erro" id="authMsgErro"></div>
+    <div class="modal-msg ok" id="authMsgOk"></div>
+    <div class="field" id="campoNomeAuth"><label>Nome</label><input type="text" id="authNome" placeholder="Seu nome"></div>
+    <div class="field"><label>E-mail</label><input type="email" id="authEmail" placeholder="voce@email.com"></div>
+    <div class="field"><label>Senha</label><input type="password" id="authSenha" placeholder="••••••••"></div>
+    <button class="btn-primary" id="btnAuthAcao" onclick="executarAuth()">Criar conta e continuar</button>
+    <div class="modal-link-alternar" onclick="alternarModoAuth()" id="linkAlternarAuth">Já tem conta? <span>Entrar</span></div>
+  </div>
+</div>
+
+<div class="modal-fundo" id="modalPaywall">
+  <div class="modal-card" style="position:relative; text-align:center;">
+    <button class="modal-fechar" onclick="fecharModal('modalPaywall')">✕</button>
+    <div class="paywall-icon" style="margin:0 auto 14px;">🔒</div>
+    <h3>Seus 3 cálculos grátis acabaram</h3>
+    <div class="sub">Assine o ContabCalc AI e calcule sem limites, com todos os 8 módulos liberados.</div>
+    <a class="btn-primary" style="display:block; text-decoration:none; box-sizing:border-box;" href="https://pay.hotmart.com/SEU-CODIGO-AQUI" target="_blank" rel="noopener">Assinar agora</a>
+    <button class="btn-secundario" onclick="verificarPagamento()">Já assinei — verificar acesso</button>
+  </div>
+</div>
+
 <div class="pwa-banner" id="bannerInstalar">
   <div class="texto"><strong>Instalar o ContabCalc</strong>Acesso rápido, sem navegador, funciona offline.</div>
   <div class="acoes">
@@ -667,6 +720,151 @@ document.addEventListener('DOMContentLoaded', () => {
   const hash = location.hash.replace('#', '');
   if (MODULOS_IDS.includes(hash)) mostrarTela(hash);
 });
+
+/* ===================== autenticação e paywall ===================== */
+const SUPABASE_URL = "https://umlwcilvhpoxhnqaalqn.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_JncXnt4TujKmX7AHgoivLw_O7a_mk15";
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { db: { schema: "contabcalc" } });
+
+const LIMITE_TRIAL = 3;
+let sessaoAtual = null;
+let perfilAtual = null;
+let modoCadastro = true;
+
+function fecharModal(id) { document.getElementById(id).classList.remove('show'); }
+
+function abrirModalAuth() {
+  document.getElementById('authMsgErro').style.display = 'none';
+  document.getElementById('authMsgOk').style.display = 'none';
+  document.getElementById('modalAuth').classList.add('show');
+}
+
+function alternarModoAuth() {
+  modoCadastro = !modoCadastro;
+  document.getElementById('btnAuthAcao').textContent = modoCadastro ? 'Criar conta e continuar' : 'Entrar';
+  document.getElementById('campoNomeAuth').style.display = modoCadastro ? 'block' : 'none';
+  document.getElementById('linkAlternarAuth').innerHTML = modoCadastro
+    ? 'Já tem conta? <span>Entrar</span>'
+    : 'Ainda não tem conta? <span>Criar conta grátis</span>';
+}
+
+async function executarAuth() {
+  const email = document.getElementById('authEmail').value.trim();
+  const senha = document.getElementById('authSenha').value;
+  const nome = document.getElementById('authNome').value.trim();
+  const erroBox = document.getElementById('authMsgErro');
+  const okBox = document.getElementById('authMsgOk');
+  erroBox.style.display = 'none';
+  okBox.style.display = 'none';
+
+  if (!email || !senha) { erroBox.textContent = 'Preencha e-mail e senha.'; erroBox.style.display = 'block'; return; }
+
+  if (modoCadastro) {
+    const { error } = await sb.auth.signUp({ email, password: senha, options: { data: { nome } } });
+    if (error) { erroBox.textContent = error.message; erroBox.style.display = 'block'; return; }
+    const { error: erroLogin } = await sb.auth.signInWithPassword({ email, password: senha });
+    if (erroLogin) {
+      okBox.textContent = 'Conta criada! Verifique seu e-mail para confirmar antes de entrar.';
+      okBox.style.display = 'block';
+      return;
+    }
+  } else {
+    const { error } = await sb.auth.signInWithPassword({ email, password: senha });
+    if (error) { erroBox.textContent = error.message; erroBox.style.display = 'block'; return; }
+  }
+
+  await atualizarEstadoSessao();
+  fecharModal('modalAuth');
+}
+
+async function cliqueConta() {
+  if (sessaoAtual) {
+    await sb.auth.signOut();
+    await atualizarEstadoSessao();
+  } else {
+    abrirModalAuth();
+  }
+}
+
+async function atualizarEstadoSessao() {
+  const { data } = await sb.auth.getSession();
+  sessaoAtual = data.session;
+  const btn = document.getElementById('btnConta');
+  const pill = document.getElementById('usoPill');
+
+  if (!sessaoAtual) {
+    btn.textContent = 'Entrar';
+    pill.style.display = 'none';
+    perfilAtual = null;
+    return;
+  }
+
+  btn.textContent = 'Sair';
+  await carregarPerfilAtual();
+  atualizarUsoPill();
+}
+
+async function carregarPerfilAtual() {
+  if (!sessaoAtual) return;
+  const { data, error } = await sb.from('perfis').select('plano, calculos_usados').eq('id', sessaoAtual.user.id).single();
+  if (!error) perfilAtual = data;
+}
+
+function atualizarUsoPill() {
+  const pill = document.getElementById('usoPill');
+  if (!perfilAtual) { pill.style.display = 'none'; return; }
+  if (perfilAtual.plano === 'pago') {
+    pill.textContent = '✓ Acesso completo';
+    pill.style.display = 'inline-block';
+  } else {
+    const restantes = Math.max(0, LIMITE_TRIAL - perfilAtual.calculos_usados);
+    pill.textContent = `${restantes}/${LIMITE_TRIAL} cálculos grátis`;
+    pill.style.display = 'inline-block';
+  }
+}
+
+function abrirModalPaywall() {
+  document.getElementById('modalPaywall').classList.add('show');
+}
+
+async function verificarPagamento() {
+  await carregarPerfilAtual();
+  atualizarUsoPill();
+  if (perfilAtual && perfilAtual.plano === 'pago') {
+    fecharModal('modalPaywall');
+  } else {
+    alert('Ainda não identificamos seu pagamento. Se você acabou de assinar, aguarde alguns instantes e tente de novo.');
+  }
+}
+
+/**
+ * Gate chamado no início de toda função de cálculo. Retorna true se pode calcular.
+ */
+async function garantirAcesso() {
+  if (!sessaoAtual) { abrirModalAuth(); return false; }
+  if (!perfilAtual) await carregarPerfilAtual();
+  if (perfilAtual && perfilAtual.plano === 'pago') return true;
+  if (perfilAtual && perfilAtual.calculos_usados >= LIMITE_TRIAL) { abrirModalPaywall(); return false; }
+  return true;
+}
+
+/**
+ * Chamado após um cálculo bem-sucedido para contabilizar o uso do trial.
+ */
+async function registrarUso() {
+  if (!sessaoAtual || (perfilAtual && perfilAtual.plano === 'pago')) return;
+  const { data, error } = await sb.rpc('incrementar_calculo');
+  if (!error && data && data[0]) {
+    perfilAtual = { ...perfilAtual, ...data[0] };
+    atualizarUsoPill();
+  }
+}
+
+sb.auth.onAuthStateChange((_event, session) => {
+  sessaoAtual = session;
+});
+
+atualizarEstadoSessao();
 
 /* ===================== tema ===================== */
 function alternarTema() {
@@ -889,7 +1087,8 @@ function calcularFgtsModulo(salarioBruto, dataAdmissao, dataReferencia, saldoInf
   return { itens };
 }
 
-function calcularModuloFerias(){
+async function calcularModuloFerias(){
+  if (!(await garantirAcesso())) return;
   const salario = parseFloat(document.getElementById('feriasSalario').value);
   const inicio = document.getElementById('feriasInicio').value;
   const fim = document.getElementById('feriasFim').value;
@@ -909,12 +1108,14 @@ function calcularModuloFerias(){
   }
   const total = itens.reduce((s,i)=>s+i.valor,0);
   RESULTADOS['ferias'] = { titulo: 'Cálculo de Férias', itens, descontos: [], valorFinal: total };
+  await registrarUso();
   document.getElementById('valorFerias').textContent = fmt(total);
   document.getElementById('itensFerias').innerHTML = itens.map(renderItem).join('');
   document.getElementById('resultadoFerias').style.display = 'block';
 }
 
-function calcularModuloDecimo(){
+async function calcularModuloDecimo(){
+  if (!(await garantirAcesso())) return;
   const salario = parseFloat(document.getElementById('decimoSalario').value);
   const meses = parseInt(document.getElementById('decimoMeses').value);
   const adiantado = parseFloat(document.getElementById('decimoAdiantado').value) || 0;
@@ -933,13 +1134,15 @@ function calcularModuloDecimo(){
   descontos.push(calcularIrrf(itens[0].valor, Math.abs(inss.valor), 0));
   const total = itens.reduce((s,i)=>s+i.valor,0) + descontos.reduce((s,d)=>s+d.valor,0);
   RESULTADOS['decimo'] = { titulo: '13º Salário', itens, descontos, valorFinal: total };
+  await registrarUso();
   document.getElementById('valorDecimo').textContent = fmt(total);
   document.getElementById('itensDecimo').innerHTML = itens.map(renderItem).join('');
   document.getElementById('descontosDecimo').innerHTML = descontos.map(renderItem).join('');
   document.getElementById('resultadoDecimo').style.display = 'block';
 }
 
-function calcularModuloFgts(){
+async function calcularModuloFgts(){
+  if (!(await garantirAcesso())) return;
   const salario = parseFloat(document.getElementById('fgtsSalario').value);
   const admissao = document.getElementById('fgtsAdmissao').value;
   const referencia = document.getElementById('fgtsReferencia').value;
@@ -954,12 +1157,14 @@ function calcularModuloFgts(){
   const { itens } = calcularFgtsModulo(salario, admissao, referencia, saldoInformado, tipoSaida);
   const total = itens.reduce((s,i)=>s+i.valor,0);
   RESULTADOS['fgts'] = { titulo: 'FGTS', itens, descontos: [], valorFinal: total };
+  await registrarUso();
   document.getElementById('valorFgts').textContent = fmt(total);
   document.getElementById('itensFgts').innerHTML = itens.map(renderItem).join('');
   document.getElementById('resultadoFgts').style.display = 'block';
 }
 
-function calcularModuloSalarioLiquido(){
+async function calcularModuloSalarioLiquido(){
+  if (!(await garantirAcesso())) return;
   const salario = parseFloat(document.getElementById('slSalario').value);
   const dependentes = parseInt(document.getElementById('slDependentes').value) || 0;
   const descontaVt = document.getElementById('slVt').checked;
@@ -985,13 +1190,15 @@ function calcularModuloSalarioLiquido(){
 
   const total = itens.reduce((s,i)=>s+i.valor,0) + descontos.reduce((s,d)=>s+d.valor,0);
   RESULTADOS['salarioliquido'] = { titulo: 'Salário Líquido', itens, descontos, valorFinal: total };
+  await registrarUso();
   document.getElementById('valorSl').textContent = fmt(total);
   document.getElementById('itensSl').innerHTML = itens.map(renderItem).join('');
   document.getElementById('descontosSl').innerHTML = descontos.map(renderItem).join('');
   document.getElementById('resultadoSl').style.display = 'block';
 }
 
-function calcularModuloHoras(){
+async function calcularModuloHoras(){
+  if (!(await garantirAcesso())) return;
   const salario = parseFloat(document.getElementById('hSalario').value);
   const carga = parseFloat(document.getElementById('hCarga').value) || 220;
   const he50 = parseFloat(document.getElementById('hExtra50').value) || 0;
@@ -1010,6 +1217,7 @@ function calcularModuloHoras(){
 
   const total = itens.filter(i=>i.codigo!=='valor_hora' && i.codigo!=='nota_dsr').reduce((s,i)=>s+i.valor,0);
   RESULTADOS['horas'] = { titulo: 'Horas Extras e Adicional Noturno', itens, descontos: [], valorFinal: total };
+  await registrarUso();
   document.getElementById('valorHoras').textContent = fmt(total);
   document.getElementById('itensHoras').innerHTML = itens.map(renderItem).join('');
   document.getElementById('resultadoHoras').style.display = 'block';
@@ -1035,7 +1243,8 @@ function calcularNumeroParcelasSeguro(meses36, solicitacao){
   if (meses36>=24) return 5; if (meses36>=12) return 4; if (meses36>=6) return 3; return 0;
 }
 
-function calcularModuloSeguro(){
+async function calcularModuloSeguro(){
+  if (!(await garantirAcesso())) return;
   const media = parseFloat(document.getElementById('sdMedia').value);
   const meses36 = parseInt(document.getElementById('sdMeses').value) || 0;
   const solicitacao = parseInt(document.getElementById('sdSolicitacao').value);
@@ -1050,6 +1259,7 @@ function calcularModuloSeguro(){
   if (numeroParcelas === 0) {
     itens.push({codigo:"sem_direito",descricao:"Sem Direito ao Benefício",valor:0,formula:"—",baseLegal:"Lei 7.998/1990, Art. 3º",explicacao:"O tempo mínimo trabalhado nos últimos 36 meses não foi atingido para esta solicitação (12 meses na 1ª, 9 na 2ª, 6 na 3ª ou mais)."});
     RESULTADOS['seguro'] = { titulo: 'Seguro-Desemprego', itens, descontos: [], valorFinal: 0 };
+    await registrarUso();
     document.getElementById('valorSeguro').textContent = fmt(0);
   } else {
     itens.push({codigo:"parcela",descricao:"Valor de Cada Parcela",valor:round2(valorParcela),formula:faixa,baseLegal:"Resolução CODEFAT nº 957/2022 (tabela 2026)",explicacao:`Nunca inferior ao salário mínimo (R$${SALARIO_MINIMO_2026.toFixed(2)}) nem superior ao teto (R$${TETO_SEGURO_2026.toFixed(2)}).`});
@@ -1057,13 +1267,15 @@ function calcularModuloSeguro(){
     const total = valorParcela*numeroParcelas;
     itens.push({codigo:"total",descricao:"Total Estimado do Benefício",valor:round2(total),formula:`R$${valorParcela.toFixed(2)} × ${numeroParcelas} parcelas`,baseLegal:"Lei 7.998/1990",explicacao:"Soma de todas as parcelas, pagas mensalmente pela Caixa."});
     RESULTADOS['seguro'] = { titulo: 'Seguro-Desemprego', itens, descontos: [], valorFinal: total };
+    await registrarUso();
     document.getElementById('valorSeguro').textContent = fmt(total);
   }
   document.getElementById('itensSeguro').innerHTML = itens.map(renderItem).join('');
   document.getElementById('resultadoSeguro').style.display = 'block';
 }
 
-function calcularModuloAdicionais(){
+async function calcularModuloAdicionais(){
+  if (!(await garantirAcesso())) return;
   const salario = parseFloat(document.getElementById('adSalario').value);
   const grauInsalubridade = document.getElementById('adInsalubridade').value;
   const temPericulosidade = document.getElementById('adPericulosidade').checked;
@@ -1097,6 +1309,7 @@ function calcularModuloAdicionais(){
 
   const total = itens.reduce((s,i)=>s+i.valor,0);
   RESULTADOS['adicionais'] = { titulo: 'Adicionais', itens, descontos: [], valorFinal: total };
+  await registrarUso();
   document.getElementById('valorAdicionais').textContent = fmt(total);
   document.getElementById('itensAdicionais').innerHTML = itens.map(renderItem).join('');
   document.getElementById('resultadoAdicionais').style.display = 'block';
@@ -1239,7 +1452,8 @@ function enviarEmail(chave) {
 })();
 
 /* ===================== calculadora principal ===================== */
-function calcular(){
+async function calcular(){
+  if (!(await garantirAcesso())) return;
   const tipo = document.getElementById('tipoRescisao').value;
   const salarioBruto = parseFloat(document.getElementById('salario').value);
   const dataAdmissao = document.getElementById('admissao').value;
@@ -1268,6 +1482,7 @@ function calcular(){
 
   const titulos = { sem_justa_causa: 'Rescisão — Demissão sem Justa Causa', pedido_demissao: 'Rescisão — Pedido de Demissão', justa_causa: 'Rescisão — Demissão por Justa Causa', acordo: 'Rescisão — Acordo (Art. 484-A)' };
   RESULTADOS['rescisao'] = { titulo: titulos[tipo] || 'Rescisão', itens, descontos, valorFinal };
+  await registrarUso();
 
   document.getElementById('valorFinal').textContent = fmt(valorFinal);
   document.getElementById('itensBox').innerHTML = itens.map(renderItem).join('');
