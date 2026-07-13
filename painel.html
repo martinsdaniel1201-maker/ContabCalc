@@ -30,6 +30,11 @@
   .brand .mark { width:24px; height:24px; border:1.5px solid var(--ink); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono'; font-size:11px; }
   .brand .tag { font-size:11px; color: var(--ink-muted); font-family:'IBM Plex Mono'; border:1px solid var(--line); padding: 2px 8px; border-radius: var(--radius); margin-left:4px; }
   .btn-sair { border:1px solid var(--line); background: var(--paper-raised); padding: 8px 14px; border-radius: var(--radius); font-size:13px; cursor:pointer; }
+  .brand-group { display:flex; align-items:center; gap:12px; }
+  .btn-voltar-icone { display:flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:50%; border:1px solid var(--line); background: var(--paper-raised); color: var(--ink); text-decoration:none; font-size:15px; }
+  .btn-voltar-icone:hover { border-color: var(--selo); color: var(--selo); }
+  .link-voltar-topo { display:block; text-align:center; font-size:13px; color: var(--ink-muted); text-decoration:none; margin: 0 auto 16px; max-width:380px; }
+  .link-voltar-topo:hover { color: var(--selo); }
 
   .shell { max-width: 1040px; margin: 0 auto; padding: 40px 24px 80px; }
 
@@ -91,6 +96,7 @@
 <body>
 
 <div id="telaLogin">
+  <a href="index.html" class="link-voltar-topo">← Voltar à calculadora</a>
   <div class="login-card">
     <h1>Painel do Contador</h1>
     <div class="sub">ContabCalc AI</div>
@@ -107,7 +113,10 @@
 <div id="app">
   <header class="top">
     <div class="top-inner">
-      <div class="brand"><span class="mark">§</span>ContabCalc<span class="tag">painel</span></div>
+      <div class="brand-group">
+        <a href="index.html" class="btn-voltar-icone" title="Voltar à calculadora">←</a>
+        <div class="brand"><span class="mark">§</span>ContabCalc<span class="tag">painel</span></div>
+      </div>
       <button class="btn-sair" onclick="sair()">Sair</button>
     </div>
   </header>
