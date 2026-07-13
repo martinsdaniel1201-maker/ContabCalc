@@ -179,6 +179,21 @@
 
   footer { border-top:1px solid var(--line); padding: 32px 0; margin-top:60px; text-align:center; font-size:12.5px; color: var(--ink-muted); }
 
+  /* ---------- navegação em telas (app-like) ---------- */
+  .tela-modulo { display:none; }
+  .tela-modulo.ativa { display:block; animation: entrada 0.22s ease; }
+  @keyframes entrada { from { opacity:0; transform: translateX(8px);} to { opacity:1; transform:none; } }
+  @media (prefers-reduced-motion: reduce) { .tela-modulo.ativa { animation:none; } }
+
+  .topo-modulo { display:flex; align-items:center; gap:14px; margin-bottom: 22px; }
+  .btn-voltar {
+    display:flex; align-items:center; gap:6px; background: var(--paper-raised); border:1px solid var(--line);
+    color: var(--ink); padding: 9px 14px; border-radius: 999px; font-size:13.5px; font-weight:600; cursor:pointer;
+    font-family:'IBM Plex Sans';
+  }
+  .btn-voltar:hover { border-color: var(--selo); color: var(--selo); }
+  .topo-modulo-titulo { font-family:'Newsreader', serif; font-style:italic; color: var(--ink-muted); font-size:14.5px; }
+
   /* ---------- PWA banners ---------- */
   .pwa-banner {
     position: fixed; left: 16px; right: 16px; bottom: 16px; z-index: 60;
@@ -200,16 +215,8 @@
 
 <header class="top">
   <div class="shell top-inner">
-    <div class="brand"><span class="mark">§</span>ContabCalc<span class="serif" style="font-style:italic; color:var(--ink-muted); font-weight:400;">AI</span></div>
+    <div class="brand" style="cursor:pointer;" onclick="voltarHome()"><span class="mark">§</span>ContabCalc<span class="serif" style="font-style:italic; color:var(--ink-muted); font-weight:400;">AI</span></div>
     <nav class="modules">
-      <a href="#calculadora">Rescisão</a>
-      <a href="#ferias">Férias</a>
-      <a href="#decimo">13º</a>
-      <a href="#fgts">FGTS</a>
-      <a href="#salarioliquido">Salário</a>
-      <a href="#horas">Horas</a>
-      <a href="#segurodesemprego">Seguro</a>
-      <a href="#adicionais">Adicionais</a>
       <a href="painel.html">Painel do Contador</a>
     </nav>
     <button class="theme-toggle" onclick="alternarTema()" aria-label="Alternar tema claro/escuro" id="themeBtn">☾</button>
@@ -217,13 +224,14 @@
 </header>
 
 <div class="shell">
+  <div id="telaHome">
   <section class="hero">
     <div>
       <div class="eyebrow">Cálculos trabalhistas · Brasil · 2026</div>
       <h1 class="hero-title">A calculadora que explica <em>cada centavo</em>, não só o total.</h1>
       <p class="hero-sub">Rescisão, férias, 13º, FGTS, INSS e IRRF — com a fórmula, o artigo de lei e a explicação por trás de cada valor. Para contadores, RH e quem só quer saber quanto vai receber.</p>
       <div class="cta-row">
-        <button class="btn-primary" onclick="document.getElementById('calculadora').scrollIntoView({behavior:'smooth'})">Calcular minha rescisão</button>
+        <button class="btn-primary" onclick="abrirModulo('calculadora')">Calcular minha rescisão</button>
         <span class="cta-note">Grátis · sem cadastro</span>
       </div>
     </div>
@@ -243,50 +251,52 @@
   <section class="modulos" id="modulos">
     <div class="section-label">Módulos da plataforma</div>
     <div class="grid-modulos">
-      <div class="modulo-card" onclick="document.getElementById('calculadora').scrollIntoView({behavior:'smooth'})">
+      <div class="modulo-card" onclick="abrirModulo('calculadora')">
         <span class="status pronto">● pronto</span>
         <div class="nome">Rescisão</div>
         <div class="desc">Sem justa causa, pedido de demissão, justa causa e acordo (Art. 484-A).</div>
       </div>
-      <div class="modulo-card" onclick="document.getElementById('ferias').scrollIntoView({behavior:'smooth'})">
+      <div class="modulo-card" onclick="abrirModulo('ferias')">
         <span class="status pronto">● pronto</span>
         <div class="nome">Férias</div>
         <div class="desc">Vencidas, proporcionais, abono pecuniário.</div>
       </div>
-      <div class="modulo-card" onclick="document.getElementById('decimo').scrollIntoView({behavior:'smooth'})">
+      <div class="modulo-card" onclick="abrirModulo('decimo')">
         <span class="status pronto">● pronto</span>
         <div class="nome">13º Salário</div>
         <div class="desc">Integral, proporcional, desconto de 1ª parcela.</div>
       </div>
-      <div class="modulo-card" onclick="document.getElementById('fgts').scrollIntoView({behavior:'smooth'})">
+      <div class="modulo-card" onclick="abrirModulo('fgts')">
         <span class="status pronto">● pronto</span>
         <div class="nome">FGTS</div>
         <div class="desc">Depósitos, extrato estimado, multa 40%/20%.</div>
       </div>
-      <div class="modulo-card" onclick="document.getElementById('salarioliquido').scrollIntoView({behavior:'smooth'})">
+      <div class="modulo-card" onclick="abrirModulo('salarioliquido')">
         <span class="status pronto">● pronto</span>
         <div class="nome">Salário Líquido</div>
         <div class="desc">INSS, IRRF, VT, VA/VR e outros descontos.</div>
       </div>
-      <div class="modulo-card" onclick="document.getElementById('horas').scrollIntoView({behavior:'smooth'})">
+      <div class="modulo-card" onclick="abrirModulo('horas')">
         <span class="status pronto">● pronto</span>
         <div class="nome">Horas Extras</div>
         <div class="desc">50%, 100%, adicional noturno.</div>
       </div>
-      <div class="modulo-card" onclick="document.getElementById('segurodesemprego').scrollIntoView({behavior:'smooth'})">
+      <div class="modulo-card" onclick="abrirModulo('segurodesemprego')">
         <span class="status pronto">● pronto</span>
         <div class="nome">Seguro-Desemprego</div>
         <div class="desc">Parcelas conforme regras vigentes.</div>
       </div>
-      <div class="modulo-card" onclick="document.getElementById('adicionais').scrollIntoView({behavior:'smooth'})">
+      <div class="modulo-card" onclick="abrirModulo('adicionais')">
         <span class="status pronto">● pronto</span>
         <div class="nome">Adicionais</div>
         <div class="desc">Insalubridade, periculosidade, comissões.</div>
       </div>
     </div>
   </section>
+  </div>
 
-  <section class="calculadora" id="calculadora">
+  <section class="calculadora tela-modulo" id="calculadora">
+    <div class="topo-modulo"><button class="btn-voltar" onclick="voltarHome()">← Voltar</button><span class="topo-modulo-titulo">Rescisão</span></div>
     <div class="calc-head">
       <div class="eyebrow">Módulo · Rescisão</div>
       <h2 class="calc-title">Demissão sem justa causa</h2>
@@ -342,7 +352,8 @@
     </div>
   </section>
 
-  <section class="calculadora" id="ferias">
+  <section class="calculadora tela-modulo" id="ferias">
+    <div class="topo-modulo"><button class="btn-voltar" onclick="voltarHome()">← Voltar</button><span class="topo-modulo-titulo">Férias</span></div>
     <div class="calc-head">
       <div class="eyebrow">Módulo · Férias</div>
       <h2 class="calc-title">Cálculo de férias</h2>
@@ -381,7 +392,8 @@
     </div>
   </section>
 
-  <section class="calculadora" id="decimo">
+  <section class="calculadora tela-modulo" id="decimo">
+    <div class="topo-modulo"><button class="btn-voltar" onclick="voltarHome()">← Voltar</button><span class="topo-modulo-titulo">13º Salário</span></div>
     <div class="calc-head">
       <div class="eyebrow">Módulo · 13º Salário</div>
       <h2 class="calc-title">Cálculo do 13º salário</h2>
@@ -412,7 +424,8 @@
     </div>
   </section>
 
-  <section class="calculadora" id="fgts">
+  <section class="calculadora tela-modulo" id="fgts">
+    <div class="topo-modulo"><button class="btn-voltar" onclick="voltarHome()">← Voltar</button><span class="topo-modulo-titulo">FGTS</span></div>
     <div class="calc-head">
       <div class="eyebrow">Módulo · FGTS</div>
       <h2 class="calc-title">Estimativa de FGTS</h2>
@@ -457,7 +470,8 @@
     </div>
   </section>
 
-  <section class="calculadora" id="salarioliquido">
+  <section class="calculadora tela-modulo" id="salarioliquido">
+    <div class="topo-modulo"><button class="btn-voltar" onclick="voltarHome()">← Voltar</button><span class="topo-modulo-titulo">Salário Líquido</span></div>
     <div class="calc-head">
       <div class="eyebrow">Módulo · Salário</div>
       <h2 class="calc-title">Salário líquido</h2>
@@ -494,7 +508,8 @@
     </div>
   </section>
 
-  <section class="calculadora" id="horas">
+  <section class="calculadora tela-modulo" id="horas">
+    <div class="topo-modulo"><button class="btn-voltar" onclick="voltarHome()">← Voltar</button><span class="topo-modulo-titulo">Horas Extras</span></div>
     <div class="calc-head">
       <div class="eyebrow">Módulo · Jornada</div>
       <h2 class="calc-title">Horas extras e adicional noturno</h2>
@@ -525,7 +540,8 @@
     </div>
   </section>
 
-  <section class="calculadora" id="segurodesemprego">
+  <section class="calculadora tela-modulo" id="segurodesemprego">
+    <div class="topo-modulo"><button class="btn-voltar" onclick="voltarHome()">← Voltar</button><span class="topo-modulo-titulo">Seguro-Desemprego</span></div>
     <div class="calc-head">
       <div class="eyebrow">Módulo · Benefício</div>
       <h2 class="calc-title">Seguro-Desemprego</h2>
@@ -561,7 +577,8 @@
     </div>
   </section>
 
-  <section class="calculadora" id="adicionais">
+  <section class="calculadora tela-modulo" id="adicionais">
+    <div class="topo-modulo"><button class="btn-voltar" onclick="voltarHome()">← Voltar</button><span class="topo-modulo-titulo">Adicionais</span></div>
     <div class="calc-head">
       <div class="eyebrow">Módulo · Adicionais</div>
       <h2 class="calc-title">Insalubridade, periculosidade e comissões</h2>
@@ -623,6 +640,34 @@
 </div>
 
 <script>
+/* ===================== navegação entre telas (app-like) ===================== */
+const MODULOS_IDS = ['calculadora','ferias','decimo','fgts','salarioliquido','horas','segurodesemprego','adicionais'];
+
+function mostrarTela(id) {
+  document.getElementById('telaHome').style.display = id ? 'none' : 'block';
+  MODULOS_IDS.forEach(m => document.getElementById(m).classList.toggle('ativa', m === id));
+  window.scrollTo(0, 0);
+}
+
+function abrirModulo(id) {
+  mostrarTela(id);
+  history.pushState({ modulo: id }, '', '#' + id);
+}
+
+function voltarHome() {
+  mostrarTela(null);
+  history.pushState({ modulo: null }, '', location.pathname + location.search);
+}
+
+window.addEventListener('popstate', (e) => {
+  mostrarTela(e.state && e.state.modulo ? e.state.modulo : null);
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  const hash = location.hash.replace('#', '');
+  if (MODULOS_IDS.includes(hash)) mostrarTela(hash);
+});
+
 /* ===================== tema ===================== */
 function alternarTema() {
   const html = document.documentElement;
