@@ -2,8 +2,8 @@
 <html lang="pt-BR" data-theme="light">
 <head>
 <meta charset="UTF-8">
-<title>ContabCalc AI — A calculadora trabalhista que explica cada centavo</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ContabCalc — A calculadora trabalhista que explica cada centavo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="description" content="Rescisão, férias, 13º, FGTS, INSS e IRRF — com a fórmula, o artigo de lei e a explicação por trás de cada valor.">
 <meta name="theme-color" content="#14181F">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -46,12 +46,13 @@
     --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
   }
   * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; overflow-x: hidden; }
+  html { scroll-behavior: smooth; overflow-x: hidden; touch-action: manipulation; }
   body {
     margin: 0; background: var(--paper); color: var(--ink); max-width: 100vw; overflow-x: hidden;
     font-family: 'IBM Plex Sans', sans-serif;
     -webkit-font-smoothing: antialiased;
     transition: background 0.25s ease, color 0.25s ease;
+    touch-action: manipulation;
   }
   .serif { font-family: 'Newsreader', serif; }
   .mono { font-family: 'IBM Plex Mono', monospace; font-variant-numeric: tabular-nums; }
@@ -65,9 +66,17 @@
     background: color-mix(in srgb, var(--paper) 88%, transparent);
     border-bottom: 1px solid var(--line);
   }
-  .top-inner { display:flex; align-items:center; justify-content:space-between; padding: 16px 0; }
-  .brand { display:flex; align-items:center; gap:10px; font-family:'Newsreader', serif; font-weight:600; font-size:19px; letter-spacing:0.01em; }
-  .brand .mark { width:26px; height:26px; border:1.5px solid var(--ink); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono'; font-size:12px; font-weight:600; }
+  .top-inner { display:flex; align-items:center; justify-content:space-between; padding: 14px 0; gap:10px; }
+  .brand { display:flex; align-items:center; gap:8px; font-family:'Newsreader', serif; font-weight:600; font-size:19px; letter-spacing:0.01em; flex-shrink:0; white-space:nowrap; }
+  .brand .mark { width:26px; height:26px; border:1.5px solid var(--ink); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono'; font-size:12px; font-weight:600; flex-shrink:0; }
+  .conta-area { display:flex; align-items:center; gap:8px; flex-shrink:0; }
+  .uso-pill { font-family:'IBM Plex Mono'; font-size:11px; color: var(--ink-muted); border:1px solid var(--line); padding:5px 8px; border-radius:999px; white-space:nowrap; }
+  .btn-conta { border:1px solid var(--line); background: var(--paper-raised); color: var(--ink); padding:8px 12px; border-radius:999px; font-size:12.5px; font-weight:600; cursor:pointer; font-family:'IBM Plex Sans'; white-space:nowrap; flex-shrink:0; }
+  @media (max-width: 400px) {
+    .uso-pill { display:none !important; }
+    .brand { font-size:16px; }
+    .btn-conta { padding:7px 10px; font-size:12px; }
+  }
   nav.modules { display:flex; gap: 22px; font-size: 13.5px; color: var(--ink-muted); overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
   nav.modules::-webkit-scrollbar { display:none; }
   nav.modules a { text-decoration:none; white-space:nowrap; }
@@ -75,11 +84,9 @@
   .theme-toggle {
     border: 1px solid var(--line); background: var(--paper-raised); color: var(--ink);
     width: 34px; height: 34px; border-radius: 50%; cursor:pointer; font-size: 15px;
-    display:flex; align-items:center; justify-content:center;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
   }
-  .conta-area { display:flex; align-items:center; gap:10px; }
-  .uso-pill { font-family:'IBM Plex Mono'; font-size:11.5px; color: var(--ink-muted); border:1px solid var(--line); padding:5px 10px; border-radius:999px; white-space:nowrap; }
-  .btn-conta { border:1px solid var(--line); background: var(--paper-raised); color: var(--ink); padding:8px 14px; border-radius:999px; font-size:13px; font-weight:600; cursor:pointer; font-family:'IBM Plex Sans'; }
+  @media (max-width: 400px) { .theme-toggle { width:30px; height:30px; font-size:13px; } }
   .btn-conta:hover { border-color: var(--selo); color: var(--selo); }
 
   /* ---------- hero ---------- */
@@ -244,12 +251,12 @@
 
 <header class="top">
   <div class="shell top-inner">
-    <div class="brand" style="cursor:pointer;" onclick="voltarHome()"><span class="mark">§</span>ContabCalc<span class="serif" style="font-style:italic; color:var(--ink-muted); font-weight:400;">AI</span></div>
+    <div class="brand" style="cursor:pointer;" onclick="voltarHome()"><span class="mark">§</span>ContabCalc</div>
     <div class="conta-area" id="contaArea">
       <span class="uso-pill" id="usoPill" style="display:none;"></span>
       <button class="btn-conta" id="btnConta" onclick="cliqueConta()">Entrar</button>
+      <button class="theme-toggle" onclick="alternarTema()" aria-label="Alternar tema claro/escuro" id="themeBtn">☾</button>
     </div>
-    <button class="theme-toggle" onclick="alternarTema()" aria-label="Alternar tema claro/escuro" id="themeBtn">☾</button>
   </div>
 </header>
 
@@ -1050,7 +1057,7 @@
   </section>
 </div>
 
-<footer>ContabCalc AI — feito para quem precisa entender a lei, não só o número.</footer>
+<footer>ContabCalc — feito para quem precisa entender a lei, não só o número.</footer>
 
 <div class="modal-fundo" id="modalAuth">
   <div class="modal-card" style="position:relative;">
@@ -1072,7 +1079,7 @@
     <button class="modal-fechar" onclick="fecharModal('modalPaywall')">✕</button>
     <div class="paywall-icon" style="margin:0 auto 14px;">🔒</div>
     <h3>Seus 3 cálculos grátis acabaram</h3>
-    <div class="sub">Assine o ContabCalc AI e calcule sem limites, com todos os 8 módulos liberados.</div>
+    <div class="sub">Assine o ContabCalc e calcule sem limites, com todos os 8 módulos liberados.</div>
     <a class="btn-primary" style="display:block; text-decoration:none; box-sizing:border-box;" href="https://pay.hotmart.com/SEU-CODIGO-AQUI" target="_blank" rel="noopener">Assinar agora</a>
     <button class="btn-secundario" onclick="verificarPagamento()">Já assinei — verificar acesso</button>
   </div>
@@ -1733,7 +1740,7 @@ const RESULTADOS = {};
 function montarTextoResumo(chave) {
   const r = RESULTADOS[chave];
   if (!r) return '';
-  let linhas = [`*ContabCalc AI — ${r.titulo}*`, ''];
+  let linhas = [`*ContabCalc — ${r.titulo}*`, ''];
   r.itens.forEach(i => { if (i.valor !== 0 || r.itens.length <= 3) linhas.push(`${i.descricao}: ${fmt(i.valor)}`); });
   if (r.descontos && r.descontos.length) {
     linhas.push('');
@@ -1755,7 +1762,7 @@ function gerarPdf(chave) {
 
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(16);
-  doc.text('ContabCalc AI', 14, y);
+  doc.text('ContabCalc', 14, y);
   doc.setFontSize(11);
   doc.setFont('helvetica', 'normal');
   y += 8;
@@ -1843,7 +1850,7 @@ function compartilharWhatsapp(chave) {
 function enviarEmail(chave) {
   const r = RESULTADOS[chave];
   const texto = montarTextoResumo(chave).replace(/\*/g, '');
-  const assunto = encodeURIComponent(`ContabCalc AI — ${r ? r.titulo : 'Cálculo'}`);
+  const assunto = encodeURIComponent(`ContabCalc — ${r ? r.titulo : 'Cálculo'}`);
   window.location.href = `mailto:?subject=${assunto}&body=${encodeURIComponent(texto)}`;
 }
 
