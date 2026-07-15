@@ -60,11 +60,12 @@
   :focus-visible { outline: 2px solid var(--selo); outline-offset: 2px; }
 
   /* ---------- shell ---------- */
-  .shell { max-width: 1120px; margin: 0 auto; padding: 0 28px; }
+  .shell { max-width: 1120px; margin: 0 auto; padding: 0 max(28px, env(safe-area-inset-left)) 0 max(28px, env(safe-area-inset-right)); }
   header.top {
     position: sticky; top: 0; z-index: 40; backdrop-filter: blur(8px);
     background: color-mix(in srgb, var(--paper) 88%, transparent);
     border-bottom: 1px solid var(--line);
+    padding-top: env(safe-area-inset-top);
   }
   .top-inner { display:flex; align-items:center; justify-content:space-between; padding: 14px 0; gap:10px; }
   .brand { display:flex; align-items:center; gap:8px; font-family:'Newsreader', serif; font-weight:600; font-size:19px; letter-spacing:0.01em; flex-shrink:0; white-space:nowrap; }
@@ -211,7 +212,7 @@
 
   /* ---------- PWA banners ---------- */
   .pwa-banner {
-    position: fixed; left: 16px; right: 16px; bottom: 16px; z-index: 60;
+    position: fixed; left: 16px; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); z-index: 60;
     background: var(--ink); color: var(--paper); border-radius: var(--radius);
     padding: 14px 16px; display:none; align-items:center; justify-content:space-between; gap: 12px;
     box-shadow: var(--shadow); max-width: 480px; margin: 0 auto;
