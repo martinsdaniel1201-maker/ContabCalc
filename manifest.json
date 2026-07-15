@@ -1,5 +1,5 @@
 {
-  "name": "ContabCalc AI — Calculadora Trabalhista",
+  "name": "ContabCalc — Calculadora Trabalhista",
   "short_name": "ContabCalc",
   "description": "A calculadora trabalhista que explica cada centavo: rescisão, férias, 13º, FGTS, INSS e IRRF com base legal.",
   "start_url": "./index.html",
