@@ -166,6 +166,9 @@
   .resultado-topo .selo-texto { font-family:'IBM Plex Mono'; font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color: var(--selo); margin-top:10px; }
 
   .subsecao-label { font-size:11.5px; text-transform:uppercase; letter-spacing:0.08em; color: var(--ink-muted); margin: 18px 0 6px; font-family:'IBM Plex Mono'; }
+  .entenda-box { background: var(--selo-soft); border:1px solid var(--selo); border-radius: var(--radius); padding:14px 16px; margin: 16px 0 4px; }
+  .entenda-box .titulo { font-family:'Newsreader', serif; font-style:italic; font-weight:600; font-size:14px; color: var(--selo); margin-bottom:6px; }
+  .entenda-box p { font-size:13.5px; line-height:1.6; color: var(--ink); margin:0; }
   .item-linha { padding: 12px 0; border-bottom: 1px solid var(--line); }
   .item-linha:last-child { border-bottom:none; }
   .item-topo { display:flex; justify-content:space-between; gap:10px; font-size:14px; font-weight:600; }
@@ -276,48 +279,44 @@
   </section>
 
   <section class="modulos" id="modulos">
-    <div class="section-label">Módulos da plataforma</div>
+    <div class="section-label">Rescisão &amp; Verbas</div>
     <div class="grid-modulos">
-      <div class="modulo-card" onclick="abrirModulo('calculadora')">
-        <span class="status pronto">● pronto</span>
-        <div class="nome">Rescisão</div>
-        <div class="desc">Sem justa causa, pedido de demissão, justa causa e acordo (Art. 484-A).</div>
-      </div>
-      <div class="modulo-card" onclick="abrirModulo('ferias')">
-        <span class="status pronto">● pronto</span>
-        <div class="nome">Férias</div>
-        <div class="desc">Vencidas, proporcionais, abono pecuniário.</div>
-      </div>
-      <div class="modulo-card" onclick="abrirModulo('decimo')">
-        <span class="status pronto">● pronto</span>
-        <div class="nome">13º Salário</div>
-        <div class="desc">Integral, proporcional, desconto de 1ª parcela.</div>
-      </div>
-      <div class="modulo-card" onclick="abrirModulo('fgts')">
-        <span class="status pronto">● pronto</span>
-        <div class="nome">FGTS</div>
-        <div class="desc">Depósitos, extrato estimado, multa 40%/20%.</div>
-      </div>
-      <div class="modulo-card" onclick="abrirModulo('salarioliquido')">
-        <span class="status pronto">● pronto</span>
-        <div class="nome">Salário Líquido</div>
-        <div class="desc">INSS, IRRF, VT, VA/VR e outros descontos.</div>
-      </div>
-      <div class="modulo-card" onclick="abrirModulo('horas')">
-        <span class="status pronto">● pronto</span>
-        <div class="nome">Horas Extras</div>
-        <div class="desc">50%, 100%, adicional noturno.</div>
-      </div>
-      <div class="modulo-card" onclick="abrirModulo('segurodesemprego')">
-        <span class="status pronto">● pronto</span>
-        <div class="nome">Seguro-Desemprego</div>
-        <div class="desc">Parcelas conforme regras vigentes.</div>
-      </div>
-      <div class="modulo-card" onclick="abrirModulo('adicionais')">
-        <span class="status pronto">● pronto</span>
-        <div class="nome">Adicionais</div>
-        <div class="desc">Insalubridade, periculosidade, comissões.</div>
-      </div>
+      <div class="modulo-card" onclick="abrirModulo('calculadora')"><span class="status pronto">● pronto</span><div class="nome">Rescisão</div><div class="desc">Sem justa causa, pedido de demissão, justa causa e acordo.</div></div>
+      <div class="modulo-card" onclick="abrirModulo('ferias')"><span class="status pronto">● pronto</span><div class="nome">Férias</div><div class="desc">Vencidas, proporcionais, abono pecuniário.</div></div>
+      <div class="modulo-card" onclick="abrirModulo('decimo')"><span class="status pronto">● pronto</span><div class="nome">13º Salário</div><div class="desc">Integral, proporcional, desconto de 1ª parcela.</div></div>
+      <div class="modulo-card" onclick="abrirModulo('fgts')"><span class="status pronto">● pronto</span><div class="nome">FGTS</div><div class="desc">Depósitos, extrato estimado, multa 40%/20%.</div></div>
+      <div class="modulo-card" onclick="abrirModulo('avisoprevio')"><span class="status pronto">● pronto</span><div class="nome">Aviso Prévio</div><div class="desc">Trabalhado, indenizado, proporcional ou descontado.</div></div>
+      <div class="modulo-card" onclick="abrirModulo('segurodesemprego')"><span class="status pronto">● pronto</span><div class="nome">Seguro-Desemprego</div><div class="desc">Parcelas conforme regras vigentes.</div></div>
+    </div>
+
+    <div class="section-label" style="margin-top:32px;">Salário &amp; Descontos</div>
+    <div class="grid-modulos">
+      <div class="modulo-card" onclick="abrirModulo('salarioliquido')"><span class="status pronto">● pronto</span><div class="nome">Salário Líquido</div><div class="desc">INSS, IRRF, VT, VA/VR e outros descontos.</div></div>
+      <div class="modulo-card" onclick="abrirModulo('calcinss')"><span class="status pronto">● pronto</span><div class="nome">Calculadora de INSS</div><div class="desc">Faixa, alíquota e desconto.</div></div>
+      <div class="modulo-card" onclick="abrirModulo('calcirrf')"><span class="status pronto">● pronto</span><div class="nome">Calculadora de IRRF</div><div class="desc">Imposto, faixa e explicação.</div></div>
+      <div class="modulo-card" onclick="abrirModulo('valetransporte')"><span class="status pronto">● pronto</span><div class="nome">Vale Transporte</div><div class="desc">Desconto máximo e participação da empresa.</div></div>
+      <div class="modulo-card" onclick="abrirModulo('adicionais')"><span class="status pronto">● pronto</span><div class="nome">Adicionais</div><div class="desc">Insalubridade, periculosidade, comissões.</div></div>
+      <div class="modulo-card" onclick="abrirModulo('reajuste')"><span class="status pronto">● pronto</span><div class="nome">Reajuste Salarial</div><div class="desc">Aplica um percentual e mostra o novo salário.</div></div>
+    </div>
+
+    <div class="section-label" style="margin-top:32px;">Jornada &amp; Horas</div>
+    <div class="grid-modulos">
+      <div class="modulo-card" onclick="abrirModulo('horas')"><span class="status pronto">● pronto</span><div class="nome">Horas Extras</div><div class="desc">50%, 100%, adicional noturno.</div></div>
+      <div class="modulo-card" onclick="abrirModulo('adicionalnoturno')"><span class="status pronto">● pronto</span><div class="nome">Adicional Noturno</div><div class="desc">Com a redução da hora noturna aplicada.</div></div>
+      <div class="modulo-card" onclick="abrirModulo('bancohoras')"><span class="status pronto">● pronto</span><div class="nome">Banco de Horas</div><div class="desc">Saldo positivo ou negativo, em horas e em R$.</div></div>
+      <div class="modulo-card" onclick="abrirModulo('atrasos')"><span class="status pronto">● pronto</span><div class="nome">Atrasos</div><div class="desc">Informe os minutos, veja o desconto.</div></div>
+      <div class="modulo-card" onclick="abrirModulo('dsr')"><span class="status pronto">● pronto</span><div class="nome">DSR</div><div class="desc">Reflexo das horas extras no descanso semanal.</div></div>
+      <div class="modulo-card" onclick="abrirModulo('conversores')"><span class="status pronto">● pronto</span><div class="nome">Quanto Vale Minha Hora</div><div class="desc">Mês, semana, dia, hora e minuto.</div></div>
+    </div>
+
+    <div class="section-label" style="margin-top:32px;">Planejamento &amp; Simuladores</div>
+    <div class="grid-modulos">
+      <div class="modulo-card" onclick="abrirModulo('simulacaoaumento')"><span class="status pronto">● pronto</span><div class="nome">Simulador de Aumento</div><div class="desc">Compare seu salário atual com uma proposta nova.</div></div>
+      <div class="modulo-card" onclick="abrirModulo('cltpj')"><span class="status pronto">● pronto</span><div class="nome">CLT x PJ</div><div class="desc">Comparação financeira entre os dois regimes.</div></div>
+      <div class="modulo-card" onclick="abrirModulo('planejamentoferias')"><span class="status pronto">● pronto</span><div class="nome">Planejamento de Férias</div><div class="desc">Quando vencem e quando você pode tirar.</div></div>
+      <div class="modulo-card" onclick="abrirModulo('comparador')"><span class="status pronto">● pronto</span><div class="nome">Comparador de Propostas</div><div class="desc">Compare duas ofertas de emprego lado a lado.</div></div>
+      <div class="modulo-card" onclick="abrirModulo('custocontratacao')"><span class="status pronto">● pronto</span><div class="nome">Custo de Contratar</div><div class="desc">Para empresários: quanto custa um funcionário de verdade.</div></div>
+      <div class="modulo-card" onclick="abrirModulo('direitos')"><span class="status pronto">● pronto</span><div class="nome">Meus Direitos</div><div class="desc">Responda perguntas simples, veja seus direitos.</div></div>
     </div>
   </section>
   </div>
@@ -646,6 +645,409 @@
       </div>
     </div>
   </section>
+
+  <section class="calculadora tela-modulo" id="avisoprevio">
+    <div class="topo-modulo"><button class="btn-voltar" onclick="voltarHome()">← Voltar</button><span class="topo-modulo-titulo">Aviso Prévio</span></div>
+    <div class="calc-head"><div class="eyebrow">Módulo · Rescisão</div><h2 class="calc-title">Aviso Prévio</h2></div>
+    <div class="calc-grid">
+      <div class="form-card">
+        <div class="field"><label>Salário Bruto (R$)</label><input type="number" id="apSalario" value="3500" step="0.01"></div>
+        <div class="field-row">
+          <div class="field"><label>Data de Admissão</label><input type="date" id="apAdmissao" value="2023-03-10"></div>
+          <div class="field"><label>Data de Desligamento</label><input type="date" id="apDesligamento" value="2026-07-10"></div>
+        </div>
+        <div class="field"><label>Como foi o aviso?</label>
+          <select id="apTipo">
+            <option value="indenizado">Indenizado (empresa dispensou, não cumpriu)</option>
+            <option value="trabalhado">Trabalhado (cumpriu o período)</option>
+            <option value="desconto">Não cumprido — pedido de demissão (desconto)</option>
+          </select>
+        </div>
+        <button class="btn-calcular" onclick="calcularAvisoPrevio()">Calcular aviso prévio</button>
+      </div>
+      <div>
+        <div class="alerta" id="alertaAp"></div>
+        <div class="resultado-card" id="resultadoAp">
+          <div class="resultado-topo"><div class="label">Valor do aviso prévio</div><div class="valor mono" id="valorAp">R$ 0,00</div><div class="selo-texto">✓ Lei 12.506/2011</div></div>
+          <div class="entenda-box"><div class="titulo">Entenda seu cálculo</div><p id="entendeAp"></p></div>
+          <div class="subsecao-label">Detalhamento</div>
+          <div id="itensAp"></div>
+          <div class="acoes-exportar"><button onclick="gerarPdf('avisoprevio')">📄 PDF</button><button onclick="compartilharWhatsapp('avisoprevio')">💬 WhatsApp</button><button onclick="enviarEmail('avisoprevio')">✉️ E-mail</button></div>
+          <div class="aviso-legal">Cálculo estimado, não substitui orientação de contador ou advogado trabalhista.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="calculadora tela-modulo" id="valetransporte">
+    <div class="topo-modulo"><button class="btn-voltar" onclick="voltarHome()">← Voltar</button><span class="topo-modulo-titulo">Vale Transporte</span></div>
+    <div class="calc-head"><div class="eyebrow">Módulo · Salário</div><h2 class="calc-title">Vale Transporte</h2></div>
+    <div class="calc-grid">
+      <div class="form-card">
+        <div class="field"><label>Salário Bruto (R$)</label><input type="number" id="vtSalario" value="3500" step="0.01"></div>
+        <div class="field"><label>Custo Real do Transporte no Mês (R$, opcional)</label><input type="number" id="vtCusto" placeholder="deixe em branco se não souber" step="0.01"></div>
+        <button class="btn-calcular" onclick="calcularValeTransporte()">Calcular vale transporte</button>
+      </div>
+      <div>
+        <div class="alerta" id="alertaVt"></div>
+        <div class="resultado-card" id="resultadoVt">
+          <div class="resultado-topo"><div class="label">Desconto no seu salário</div><div class="valor mono" id="valorVt">R$ 0,00</div><div class="selo-texto">✓ Lei 7.418/1985</div></div>
+          <div class="entenda-box"><div class="titulo">Entenda seu cálculo</div><p id="entendeVt"></p></div>
+          <div class="subsecao-label">Detalhamento</div>
+          <div id="itensVt"></div>
+          <div class="acoes-exportar"><button onclick="gerarPdf('valetransporte')">📄 PDF</button><button onclick="compartilharWhatsapp('valetransporte')">💬 WhatsApp</button><button onclick="enviarEmail('valetransporte')">✉️ E-mail</button></div>
+          <div class="aviso-legal">Cálculo estimado, não substitui orientação de contador.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="calculadora tela-modulo" id="bancohoras">
+    <div class="topo-modulo"><button class="btn-voltar" onclick="voltarHome()">← Voltar</button><span class="topo-modulo-titulo">Banco de Horas</span></div>
+    <div class="calc-head"><div class="eyebrow">Módulo · Jornada</div><h2 class="calc-title">Banco de Horas</h2></div>
+    <div class="calc-grid">
+      <div class="form-card">
+        <div class="field"><label>Salário Bruto (R$)</label><input type="number" id="bhSalario" value="3500" step="0.01"></div>
+        <div class="field"><label>Carga Horária Mensal (h)</label><input type="number" id="bhCarga" value="220"></div>
+        <div class="field-row">
+          <div class="field"><label>Horas Positivas (crédito)</label><input type="number" id="bhPositivas" value="8" step="0.5"></div>
+          <div class="field"><label>Horas Negativas (débito)</label><input type="number" id="bhNegativas" value="0" step="0.5"></div>
+        </div>
+        <button class="btn-calcular" onclick="calcularBancoHoras()">Calcular saldo</button>
+      </div>
+      <div>
+        <div class="alerta" id="alertaBh"></div>
+        <div class="resultado-card" id="resultadoBh">
+          <div class="resultado-topo"><div class="label">Saldo do banco de horas</div><div class="valor mono" id="valorBh">R$ 0,00</div><div class="selo-texto">✓ Art. 59, §2º CLT</div></div>
+          <div class="entenda-box"><div class="titulo">Entenda seu cálculo</div><p id="entendeBh"></p></div>
+          <div class="subsecao-label">Detalhamento</div>
+          <div id="itensBh"></div>
+          <div class="acoes-exportar"><button onclick="gerarPdf('bancohoras')">📄 PDF</button><button onclick="compartilharWhatsapp('bancohoras')">💬 WhatsApp</button><button onclick="enviarEmail('bancohoras')">✉️ E-mail</button></div>
+          <div class="aviso-legal">Cálculo estimado, não substitui orientação de contador.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="calculadora tela-modulo" id="adicionalnoturno">
+    <div class="topo-modulo"><button class="btn-voltar" onclick="voltarHome()">← Voltar</button><span class="topo-modulo-titulo">Adicional Noturno</span></div>
+    <div class="calc-head"><div class="eyebrow">Módulo · Jornada</div><h2 class="calc-title">Adicional Noturno</h2></div>
+    <div class="calc-grid">
+      <div class="form-card">
+        <div class="field"><label>Salário Bruto (R$)</label><input type="number" id="anSalario" value="3500" step="0.01"></div>
+        <div class="field"><label>Carga Horária Mensal (h)</label><input type="number" id="anCarga" value="220"></div>
+        <div class="field"><label>Horas Noturnas Trabalhadas no Mês (22h-5h)</label><input type="number" id="anHoras" value="20" step="0.5"></div>
+        <button class="btn-calcular" onclick="calcularAdicionalNoturnoModulo()">Calcular adicional noturno</button>
+      </div>
+      <div>
+        <div class="alerta" id="alertaAn"></div>
+        <div class="resultado-card" id="resultadoAn">
+          <div class="resultado-topo"><div class="label">Valor do adicional noturno</div><div class="valor mono" id="valorAn">R$ 0,00</div><div class="selo-texto">✓ Art. 73 CLT</div></div>
+          <div class="entenda-box"><div class="titulo">Entenda seu cálculo</div><p id="entendeAn"></p></div>
+          <div class="subsecao-label">Detalhamento</div>
+          <div id="itensAn"></div>
+          <div class="acoes-exportar"><button onclick="gerarPdf('adicionalnoturno')">📄 PDF</button><button onclick="compartilharWhatsapp('adicionalnoturno')">💬 WhatsApp</button><button onclick="enviarEmail('adicionalnoturno')">✉️ E-mail</button></div>
+          <div class="aviso-legal">Cálculo estimado, não substitui orientação de contador.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="calculadora tela-modulo" id="atrasos">
+    <div class="topo-modulo"><button class="btn-voltar" onclick="voltarHome()">← Voltar</button><span class="topo-modulo-titulo">Atrasos</span></div>
+    <div class="calc-head"><div class="eyebrow">Módulo · Jornada</div><h2 class="calc-title">Cálculo de Atrasos</h2></div>
+    <div class="calc-grid">
+      <div class="form-card">
+        <div class="field"><label>Salário Bruto (R$)</label><input type="number" id="atSalario" value="3500" step="0.01"></div>
+        <div class="field"><label>Carga Horária Mensal (h)</label><input type="number" id="atCarga" value="220"></div>
+        <div class="field"><label>Minutos de Atraso no Mês</label><input type="number" id="atMinutos" value="30"></div>
+        <button class="btn-calcular" onclick="calcularAtrasos()">Calcular desconto</button>
+      </div>
+      <div>
+        <div class="alerta" id="alertaAt"></div>
+        <div class="resultado-card" id="resultadoAt">
+          <div class="resultado-topo"><div class="label">Desconto aproximado</div><div class="valor mono" id="valorAt">R$ 0,00</div><div class="selo-texto">✓ Art. 58, §1º CLT</div></div>
+          <div class="entenda-box"><div class="titulo">Entenda seu cálculo</div><p id="entendeAt"></p></div>
+          <div class="subsecao-label">Detalhamento</div>
+          <div id="itensAt"></div>
+          <div class="acoes-exportar"><button onclick="gerarPdf('atrasos')">📄 PDF</button><button onclick="compartilharWhatsapp('atrasos')">💬 WhatsApp</button><button onclick="enviarEmail('atrasos')">✉️ E-mail</button></div>
+          <div class="aviso-legal">Cálculo estimado, não substitui orientação de contador.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="calculadora tela-modulo" id="dsr">
+    <div class="topo-modulo"><button class="btn-voltar" onclick="voltarHome()">← Voltar</button><span class="topo-modulo-titulo">DSR</span></div>
+    <div class="calc-head"><div class="eyebrow">Módulo · Jornada</div><h2 class="calc-title">Descanso Semanal Remunerado</h2></div>
+    <div class="calc-grid">
+      <div class="form-card">
+        <div class="field"><label>Total de Horas Extras no Mês (R$)</label><input type="number" id="dsrValorHe" value="300" step="0.01"></div>
+        <div class="field-row">
+          <div class="field"><label>Dias Úteis no Mês</label><input type="number" id="dsrDiasUteis" value="22"></div>
+          <div class="field"><label>Domingos + Feriados no Mês</label><input type="number" id="dsrDomingos" value="5"></div>
+        </div>
+        <button class="btn-calcular" onclick="calcularDsr()">Calcular DSR</button>
+      </div>
+      <div>
+        <div class="alerta" id="alertaDsr"></div>
+        <div class="resultado-card" id="resultadoDsr">
+          <div class="resultado-topo"><div class="label">Valor do DSR sobre horas extras</div><div class="valor mono" id="valorDsr">R$ 0,00</div><div class="selo-texto">✓ Lei 605/1949</div></div>
+          <div class="entenda-box"><div class="titulo">Entenda seu cálculo</div><p id="entendeDsr"></p></div>
+          <div class="subsecao-label">Detalhamento</div>
+          <div id="itensDsr"></div>
+          <div class="acoes-exportar"><button onclick="gerarPdf('dsr')">📄 PDF</button><button onclick="compartilharWhatsapp('dsr')">💬 WhatsApp</button><button onclick="enviarEmail('dsr')">✉️ E-mail</button></div>
+          <div class="aviso-legal">Cálculo estimado, não substitui orientação de contador.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="calculadora tela-modulo" id="calcinss">
+    <div class="topo-modulo"><button class="btn-voltar" onclick="voltarHome()">← Voltar</button><span class="topo-modulo-titulo">Calculadora de INSS</span></div>
+    <div class="calc-head"><div class="eyebrow">Módulo · Salário</div><h2 class="calc-title">Calculadora de INSS</h2></div>
+    <div class="calc-grid">
+      <div class="form-card">
+        <div class="field"><label>Remuneração (R$)</label><input type="number" id="ciRemuneracao" value="3500" step="0.01"></div>
+        <button class="btn-calcular" onclick="calcularModuloInss()">Calcular INSS</button>
+      </div>
+      <div>
+        <div class="alerta" id="alertaCi"></div>
+        <div class="resultado-card" id="resultadoCi">
+          <div class="resultado-topo"><div class="label">Desconto de INSS</div><div class="valor mono" id="valorCi">R$ 0,00</div><div class="selo-texto">✓ Tabela INSS 2026</div></div>
+          <div class="entenda-box"><div class="titulo">Entenda seu cálculo</div><p id="entendeCi"></p></div>
+          <div class="subsecao-label">Detalhamento</div>
+          <div id="itensCi"></div>
+          <div class="acoes-exportar"><button onclick="gerarPdf('calcinss')">📄 PDF</button><button onclick="compartilharWhatsapp('calcinss')">💬 WhatsApp</button><button onclick="enviarEmail('calcinss')">✉️ E-mail</button></div>
+          <div class="aviso-legal">Cálculo estimado, não substitui orientação de contador.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="calculadora tela-modulo" id="calcirrf">
+    <div class="topo-modulo"><button class="btn-voltar" onclick="voltarHome()">← Voltar</button><span class="topo-modulo-titulo">Calculadora de IRRF</span></div>
+    <div class="calc-head"><div class="eyebrow">Módulo · Salário</div><h2 class="calc-title">Calculadora de IRRF</h2></div>
+    <div class="calc-grid">
+      <div class="form-card">
+        <div class="field"><label>Renda Bruta Mensal (R$)</label><input type="number" id="cirRenda" value="5500" step="0.01"></div>
+        <div class="field"><label>Dependentes</label><input type="number" id="cirDependentes" value="0" min="0"></div>
+        <button class="btn-calcular" onclick="calcularModuloIrrf()">Calcular IRRF</button>
+      </div>
+      <div>
+        <div class="alerta" id="alertaCir"></div>
+        <div class="resultado-card" id="resultadoCir">
+          <div class="resultado-topo"><div class="label">Desconto de IRRF</div><div class="valor mono" id="valorCir">R$ 0,00</div><div class="selo-texto">✓ Lei 15.270/2025</div></div>
+          <div class="entenda-box"><div class="titulo">Entenda seu cálculo</div><p id="entendeCir"></p></div>
+          <div class="subsecao-label">Detalhamento</div>
+          <div id="itensCir"></div>
+          <div class="acoes-exportar"><button onclick="gerarPdf('calcirrf')">📄 PDF</button><button onclick="compartilharWhatsapp('calcirrf')">💬 WhatsApp</button><button onclick="enviarEmail('calcirrf')">✉️ E-mail</button></div>
+          <div class="aviso-legal">Cálculo estimado, não substitui orientação de contador.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="calculadora tela-modulo" id="simulacaoaumento">
+    <div class="topo-modulo"><button class="btn-voltar" onclick="voltarHome()">← Voltar</button><span class="topo-modulo-titulo">Simulador de Aumento</span></div>
+    <div class="calc-head"><div class="eyebrow">Módulo · Planejamento</div><h2 class="calc-title">Simulador de Aumento ou Promoção</h2></div>
+    <div class="calc-grid">
+      <div class="form-card">
+        <div class="field"><label>Salário Atual (R$)</label><input type="number" id="saAtual" value="3500" step="0.01"></div>
+        <div class="field"><label>Salário Novo / Proposta (R$)</label><input type="number" id="saNovo" value="4200" step="0.01"></div>
+        <div class="field"><label>Dependentes (IRRF)</label><input type="number" id="saDependentes" value="0" min="0"></div>
+        <button class="btn-calcular" onclick="calcularSimulacaoAumento()">Comparar</button>
+      </div>
+      <div>
+        <div class="alerta" id="alertaSa"></div>
+        <div class="resultado-card" id="resultadoSa">
+          <div class="resultado-topo"><div class="label">Diferença líquida mensal</div><div class="valor mono" id="valorSa">R$ 0,00</div><div class="selo-texto">✓ Cálculo conforme CLT · tabelas 2026</div></div>
+          <div class="entenda-box"><div class="titulo">Entenda seu cálculo</div><p id="entendeSa"></p></div>
+          <div class="subsecao-label">Detalhamento</div>
+          <div id="itensSa"></div>
+          <div class="acoes-exportar"><button onclick="gerarPdf('simulacaoaumento')">📄 PDF</button><button onclick="compartilharWhatsapp('simulacaoaumento')">💬 WhatsApp</button><button onclick="enviarEmail('simulacaoaumento')">✉️ E-mail</button></div>
+          <div class="aviso-legal">Cálculo estimado, não substitui orientação de contador.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="calculadora tela-modulo" id="cltpj">
+    <div class="topo-modulo"><button class="btn-voltar" onclick="voltarHome()">← Voltar</button><span class="topo-modulo-titulo">CLT x PJ</span></div>
+    <div class="calc-head"><div class="eyebrow">Módulo · Planejamento</div><h2 class="calc-title">CLT x PJ</h2></div>
+    <div class="calc-grid">
+      <div class="form-card">
+        <div class="field"><label>Salário CLT Bruto (R$)</label><input type="number" id="cpCltBruto" value="5000" step="0.01"></div>
+        <div class="field"><label>Valor Bruto Mensal como PJ (R$)</label><input type="number" id="cpPjBruto" value="6500" step="0.01"></div>
+        <div class="field"><label>% de Impostos Estimado no PJ</label><input type="number" id="cpPjImposto" value="6" step="0.1"></div>
+        <button class="btn-calcular" onclick="calcularCltPj()">Comparar</button>
+      </div>
+      <div>
+        <div class="alerta" id="alertaCp"></div>
+        <div class="resultado-card" id="resultadoCp">
+          <div class="resultado-topo"><div class="label">Diferença mensal (PJ - CLT)</div><div class="valor mono" id="valorCp">R$ 0,00</div><div class="selo-texto">✓ Estimativa simplificada</div></div>
+          <div class="entenda-box"><div class="titulo">Entenda seu cálculo</div><p id="entendeCp"></p></div>
+          <div class="subsecao-label">Detalhamento</div>
+          <div id="itensCp"></div>
+          <div class="acoes-exportar"><button onclick="gerarPdf('cltpj')">📄 PDF</button><button onclick="compartilharWhatsapp('cltpj')">💬 WhatsApp</button><button onclick="enviarEmail('cltpj')">✉️ E-mail</button></div>
+          <div class="aviso-legal">Estimativa simplificada — não considera regime tributário específico do PJ (MEI, Simples, etc.) nem todos os riscos e benefícios de cada regime. Consulte um contador antes de decidir.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="calculadora tela-modulo" id="conversores">
+    <div class="topo-modulo"><button class="btn-voltar" onclick="voltarHome()">← Voltar</button><span class="topo-modulo-titulo">Quanto Vale Minha Hora</span></div>
+    <div class="calc-head"><div class="eyebrow">Módulo · Jornada</div><h2 class="calc-title">Quanto Vale Minha Hora</h2></div>
+    <div class="calc-grid">
+      <div class="form-card">
+        <div class="field"><label>Salário Mensal (R$)</label><input type="number" id="cvSalario" value="3500" step="0.01"></div>
+        <div class="field"><label>Carga Horária Mensal (h)</label><input type="number" id="cvCarga" value="220"></div>
+        <button class="btn-calcular" onclick="calcularConversores()">Converter</button>
+      </div>
+      <div>
+        <div class="alerta" id="alertaCv"></div>
+        <div class="resultado-card" id="resultadoCv">
+          <div class="resultado-topo"><div class="label">Valor da sua hora</div><div class="valor mono" id="valorCv">R$ 0,00</div><div class="selo-texto">✓ Súmula 431 TST</div></div>
+          <div class="entenda-box"><div class="titulo">Entenda seu cálculo</div><p id="entendeCv"></p></div>
+          <div class="subsecao-label">Detalhamento</div>
+          <div id="itensCv"></div>
+          <div class="acoes-exportar"><button onclick="gerarPdf('conversores')">📄 PDF</button><button onclick="compartilharWhatsapp('conversores')">💬 WhatsApp</button><button onclick="enviarEmail('conversores')">✉️ E-mail</button></div>
+          <div class="aviso-legal">Cálculo estimado, não substitui orientação de contador.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="calculadora tela-modulo" id="planejamentoferias">
+    <div class="topo-modulo"><button class="btn-voltar" onclick="voltarHome()">← Voltar</button><span class="topo-modulo-titulo">Planejamento de Férias</span></div>
+    <div class="calc-head"><div class="eyebrow">Módulo · Planejamento</div><h2 class="calc-title">Planejamento de Férias</h2></div>
+    <div class="calc-grid">
+      <div class="form-card">
+        <div class="field"><label>Data de Admissão</label><input type="date" id="pfAdmissao" value="2024-03-10"></div>
+        <div class="field"><label>Salário Bruto (R$)</label><input type="number" id="pfSalario" value="3500" step="0.01"></div>
+        <button class="btn-calcular" onclick="calcularPlanejamentoFerias()">Ver meu planejamento</button>
+      </div>
+      <div>
+        <div class="alerta" id="alertaPf"></div>
+        <div class="resultado-card" id="resultadoPf">
+          <div class="resultado-topo"><div class="label">Valor estimado se tirar agora</div><div class="valor mono" id="valorPf">R$ 0,00</div><div class="selo-texto">✓ Art. 130 e 134 CLT</div></div>
+          <div class="entenda-box"><div class="titulo">Entenda seu cálculo</div><p id="entendePf"></p></div>
+          <div class="subsecao-label">Detalhamento</div>
+          <div id="itensPf"></div>
+          <div class="acoes-exportar"><button onclick="gerarPdf('planejamentoferias')">📄 PDF</button><button onclick="compartilharWhatsapp('planejamentoferias')">💬 WhatsApp</button><button onclick="enviarEmail('planejamentoferias')">✉️ E-mail</button></div>
+          <div class="aviso-legal">Cálculo estimado, não substitui orientação de contador.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="calculadora tela-modulo" id="direitos">
+    <div class="topo-modulo"><button class="btn-voltar" onclick="voltarHome()">← Voltar</button><span class="topo-modulo-titulo">Meus Direitos</span></div>
+    <div class="calc-head"><div class="eyebrow">Módulo · Orientação</div><h2 class="calc-title">Quais São Meus Direitos?</h2></div>
+    <div class="calc-grid">
+      <div class="form-card">
+        <div class="field"><label>Qual sua situação?</label>
+          <select id="drSituacao">
+            <option value="sem_justa_causa">Fui demitido sem justa causa</option>
+            <option value="pedido_demissao">Pedi demissão</option>
+            <option value="justa_causa">Fui demitido por justa causa</option>
+            <option value="ativo">Ainda estou empregado</option>
+            <option value="prazo_determinado">Meu contrato por prazo determinado terminou</option>
+          </select>
+        </div>
+        <div class="field"><label>Tempo de empresa (anos)</label><input type="number" id="drTempo" value="2" step="0.5" min="0"></div>
+        <div class="checkbox-field"><input type="checkbox" id="drCarteira" checked><label for="drCarteira">Tenho carteira assinada (CLT)</label></div>
+        <button class="btn-calcular" onclick="calcularDireitos()">Ver meus direitos</button>
+      </div>
+      <div>
+        <div class="alerta" id="alertaDr"></div>
+        <div class="resultado-card" id="resultadoDr">
+          <div class="resultado-topo"><div class="label">Direitos identificados</div><div class="valor mono" id="valorDr" style="font-size:24px;">—</div><div class="selo-texto">✓ Baseado na CLT</div></div>
+          <div class="entenda-box"><div class="titulo">Entenda sua situação</div><p id="entendeDr"></p></div>
+          <div class="subsecao-label">Seus direitos provavelmente incluem</div>
+          <div id="itensDr"></div>
+          <div class="acoes-exportar"><button onclick="gerarPdf('direitos')">📄 PDF</button><button onclick="compartilharWhatsapp('direitos')">💬 WhatsApp</button><button onclick="enviarEmail('direitos')">✉️ E-mail</button></div>
+          <div class="aviso-legal">Orientação geral, não substitui análise de um advogado trabalhista sobre o seu caso específico.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="calculadora tela-modulo" id="custocontratacao">
+    <div class="topo-modulo"><button class="btn-voltar" onclick="voltarHome()">← Voltar</button><span class="topo-modulo-titulo">Custo de Contratar</span></div>
+    <div class="calc-head"><div class="eyebrow">Módulo · Empresários</div><h2 class="calc-title">Quanto Custa Contratar um Funcionário</h2></div>
+    <div class="calc-grid">
+      <div class="form-card">
+        <div class="field"><label>Salário Bruto Oferecido (R$)</label><input type="number" id="ccSalario" value="3000" step="0.01"></div>
+        <div class="checkbox-field"><input type="checkbox" id="ccSimples" checked><label for="ccSimples">Minha empresa é do Simples Nacional</label></div>
+        <button class="btn-calcular" onclick="calcularCustoContratacao()">Calcular custo total</button>
+      </div>
+      <div>
+        <div class="alerta" id="alertaCc"></div>
+        <div class="resultado-card" id="resultadoCc">
+          <div class="resultado-topo"><div class="label">Custo mensal estimado</div><div class="valor mono" id="valorCc">R$ 0,00</div><div class="selo-texto">✓ Estimativa com encargos</div></div>
+          <div class="entenda-box"><div class="titulo">Entenda seu cálculo</div><p id="entendeCc"></p></div>
+          <div class="subsecao-label">Detalhamento</div>
+          <div id="itensCc"></div>
+          <div class="acoes-exportar"><button onclick="gerarPdf('custocontratacao')">📄 PDF</button><button onclick="compartilharWhatsapp('custocontratacao')">💬 WhatsApp</button><button onclick="enviarEmail('custocontratacao')">✉️ E-mail</button></div>
+          <div class="aviso-legal">Estimativa simplificada — encargos reais variam por CNAE, RAT e acordos coletivos. Consulte seu contador.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="calculadora tela-modulo" id="comparador">
+    <div class="topo-modulo"><button class="btn-voltar" onclick="voltarHome()">← Voltar</button><span class="topo-modulo-titulo">Comparador de Propostas</span></div>
+    <div class="calc-head"><div class="eyebrow">Módulo · Planejamento</div><h2 class="calc-title">Comparador de Propostas de Emprego</h2></div>
+    <div class="calc-grid">
+      <div class="form-card">
+        <div class="subsecao-label" style="margin-top:0;">Empresa A</div>
+        <div class="field"><label>Salário (R$)</label><input type="number" id="cmpASalario" value="3500" step="0.01"></div>
+        <div class="field"><label>VA/VR (R$)</label><input type="number" id="cmpABeneficios" value="600" step="0.01"></div>
+        <div class="checkbox-field"><input type="checkbox" id="cmpAPlano" checked><label for="cmpAPlano">Tem plano de saúde</label></div>
+        <div class="subsecao-label">Empresa B</div>
+        <div class="field"><label>Salário (R$)</label><input type="number" id="cmpBSalario" value="4000" step="0.01"></div>
+        <div class="field"><label>VA/VR (R$)</label><input type="number" id="cmpBBeneficios" value="300" step="0.01"></div>
+        <div class="checkbox-field"><input type="checkbox" id="cmpBPlano"><label for="cmpBPlano">Tem plano de saúde</label></div>
+        <button class="btn-calcular" onclick="calcularComparador()">Comparar propostas</button>
+      </div>
+      <div>
+        <div class="alerta" id="alertaCmp"></div>
+        <div class="resultado-card" id="resultadoCmp">
+          <div class="resultado-topo"><div class="label">Diferença mensal (B - A)</div><div class="valor mono" id="valorCmp">R$ 0,00</div><div class="selo-texto">✓ Comparação simplificada</div></div>
+          <div class="entenda-box"><div class="titulo">Entenda seu cálculo</div><p id="entendeCmp"></p></div>
+          <div class="subsecao-label">Detalhamento</div>
+          <div id="itensCmp"></div>
+          <div class="acoes-exportar"><button onclick="gerarPdf('comparador')">📄 PDF</button><button onclick="compartilharWhatsapp('comparador')">💬 WhatsApp</button><button onclick="enviarEmail('comparador')">✉️ E-mail</button></div>
+          <div class="aviso-legal">O valor do plano de saúde não entra na soma por variar muito de empresa pra empresa — considere-o à parte.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="calculadora tela-modulo" id="reajuste">
+    <div class="topo-modulo"><button class="btn-voltar" onclick="voltarHome()">← Voltar</button><span class="topo-modulo-titulo">Reajuste Salarial</span></div>
+    <div class="calc-head"><div class="eyebrow">Módulo · Salário</div><h2 class="calc-title">Reajuste Salarial</h2></div>
+    <div class="calc-grid">
+      <div class="form-card">
+        <div class="field"><label>Salário Atual (R$)</label><input type="number" id="rjAtual" value="3500" step="0.01"></div>
+        <div class="field"><label>Percentual de Reajuste (%)</label><input type="number" id="rjPercentual" value="5" step="0.1"></div>
+        <button class="btn-calcular" onclick="calcularReajuste()">Calcular novo salário</button>
+      </div>
+      <div>
+        <div class="alerta" id="alertaRj"></div>
+        <div class="resultado-card" id="resultadoRj">
+          <div class="resultado-topo"><div class="label">Novo salário</div><div class="valor mono" id="valorRj">R$ 0,00</div><div class="selo-texto">✓ Cálculo direto</div></div>
+          <div class="entenda-box"><div class="titulo">Entenda seu cálculo</div><p id="entendeRj"></p></div>
+          <div class="subsecao-label">Detalhamento</div>
+          <div id="itensRj"></div>
+          <div class="acoes-exportar"><button onclick="gerarPdf('reajuste')">📄 PDF</button><button onclick="compartilharWhatsapp('reajuste')">💬 WhatsApp</button><button onclick="enviarEmail('reajuste')">✉️ E-mail</button></div>
+          <div class="aviso-legal">Cálculo estimado, não substitui orientação de contador.</div>
+        </div>
+      </div>
+    </div>
+  </section>
 </div>
 
 <footer>ContabCalc AI — feito para quem precisa entender a lei, não só o número.</footer>
@@ -694,7 +1096,9 @@
 
 <script>
 /* ===================== navegação entre telas (app-like) ===================== */
-const MODULOS_IDS = ['calculadora','ferias','decimo','fgts','salarioliquido','horas','segurodesemprego','adicionais'];
+const MODULOS_IDS = ['calculadora','ferias','decimo','fgts','salarioliquido','horas','segurodesemprego','adicionais',
+  'avisoprevio','valetransporte','bancohoras','adicionalnoturno','atrasos','dsr','calcinss','calcirrf',
+  'simulacaoaumento','cltpj','conversores','planejamentoferias','direitos','custocontratacao','comparador','reajuste'];
 
 function mostrarTela(id) {
   document.getElementById('telaHome').style.display = id ? 'none' : 'block';
@@ -965,6 +1369,14 @@ function renderItem(item){
   return `<div class="item-linha">
     <div class="item-topo"><span>${item.descricao}</span><span class="valor ${classe}">${fmt(item.valor)}</span></div>
     <div class="item-formula">${item.formula}</div>
+    <div class="item-explicacao">${item.explicacao}</div>
+    <span class="item-base">${item.baseLegal}</span>
+  </div>`;
+}
+
+function renderItemChecklist(item){
+  return `<div class="item-linha">
+    <div class="item-topo"><span>✓ ${item.descricao}</span></div>
     <div class="item-explicacao">${item.explicacao}</div>
     <span class="item-base">${item.baseLegal}</span>
   </div>`;
@@ -1433,6 +1845,539 @@ function enviarEmail(chave) {
   const texto = montarTextoResumo(chave).replace(/\*/g, '');
   const assunto = encodeURIComponent(`ContabCalc AI — ${r ? r.titulo : 'Cálculo'}`);
   window.location.href = `mailto:?subject=${assunto}&body=${encodeURIComponent(texto)}`;
+}
+
+/* ===================== Aviso Prévio ===================== */
+async function calcularAvisoPrevio(){
+  if (!(await garantirAcesso())) return;
+  const salario = parseFloat(document.getElementById('apSalario').value);
+  const admissao = document.getElementById('apAdmissao').value;
+  const desligamento = document.getElementById('apDesligamento').value;
+  const tipo = document.getElementById('apTipo').value;
+  const alertaBox = document.getElementById('alertaAp');
+  alertaBox.style.display = 'none';
+  if (!(salario>0)) { alertaBox.style.display='block'; alertaBox.textContent='Informe um salário bruto maior que zero.'; return; }
+  if (new Date(desligamento) < new Date(admissao)) { alertaBox.style.display='block'; alertaBox.textContent='A data de desligamento não pode ser anterior à admissão.'; return; }
+
+  const dias = calcularDiasAvisoPrevio(admissao, desligamento);
+  const itens = [];
+  let total = 0;
+  let entenda = '';
+
+  if (tipo === 'indenizado') {
+    const valor = (salario/30)*dias;
+    itens.push({codigo:"dias",descricao:"Dias de Aviso Prévio",valor:dias,formula:"30 dias + 3 por ano completo de casa, até 90",baseLegal:"Lei 12.506/2011",explicacao:"O tempo de aviso cresce com o tempo de casa."});
+    itens.push({codigo:"valor",descricao:"Valor do Aviso Prévio Indenizado",valor:round2(valor),formula:`(salário ÷ 30) × ${dias} dias`,baseLegal:"Lei 12.506/2011",explicacao:"Pago em dinheiro porque a empresa não exigiu que você trabalhasse esse período."});
+    total = round2(valor);
+    entenda = `Você tem direito a ${dias} dias de aviso prévio. Como ele foi indenizado (você não trabalhou esse período), a empresa paga esse tempo em dinheiro: ${fmt(total)}.`;
+  } else if (tipo === 'trabalhado') {
+    itens.push({codigo:"dias",descricao:"Dias de Aviso Prévio",valor:dias,formula:"30 dias + 3 por ano completo de casa, até 90",baseLegal:"Lei 12.506/2011",explicacao:"Você continua trabalhando normalmente durante esse período."});
+    itens.push({codigo:"info",descricao:"Como é Pago",valor:0,formula:"—",baseLegal:"Art. 487 CLT",explicacao:"No aviso trabalhado, você recebe seu salário normal durante esses dias — não há valor extra, pois é trabalho de verdade sendo remunerado como sempre."});
+    entenda = `Você vai trabalhar ${dias} dias de aviso prévio, recebendo seu salário normalmente nesse período — não é um valor extra separado, é o próprio salário desses dias.`;
+  } else {
+    const valor = (salario/30)*dias;
+    itens.push({codigo:"dias",descricao:"Dias de Aviso Não Cumprido",valor:dias,formula:"30 dias + 3 por ano completo de casa, até 90",baseLegal:"Lei 12.506/2011",explicacao:"Mesmo pedindo demissão, o prazo de aviso é o mesmo."});
+    itens.push({codigo:"desconto",descricao:"Desconto no Acerto Rescisório",valor:-round2(valor),formula:`(salário ÷ 30) × ${dias} dias`,baseLegal:"Art. 487, §2º CLT",explicacao:"Como você pediu demissão e não cumpriu o aviso, a empresa pode descontar esse valor do que você tem a receber."});
+    total = -round2(valor);
+    entenda = `Como você pediu demissão e não vai cumprir o aviso de ${dias} dias, a empresa pode descontar ${fmt(Math.abs(total))} do seu acerto rescisório.`;
+  }
+
+  RESULTADOS['avisoprevio'] = { titulo: 'Aviso Prévio', itens, descontos: [], valorFinal: total };
+  await registrarUso();
+  document.getElementById('valorAp').textContent = fmt(total);
+  document.getElementById('entendeAp').textContent = entenda;
+  document.getElementById('itensAp').innerHTML = itens.map(renderItem).join('');
+  document.getElementById('resultadoAp').style.display = 'block';
+}
+
+/* ===================== Vale Transporte ===================== */
+async function calcularValeTransporte(){
+  if (!(await garantirAcesso())) return;
+  const salario = parseFloat(document.getElementById('vtSalario').value);
+  const custoStr = document.getElementById('vtCusto').value;
+  const custo = custoStr === '' ? null : parseFloat(custoStr);
+  const alertaBox = document.getElementById('alertaVt');
+  alertaBox.style.display = 'none';
+  if (!(salario>0)) { alertaBox.style.display='block'; alertaBox.textContent='Informe um salário bruto maior que zero.'; return; }
+
+  const tetoLegal = salario*0.06;
+  const descontoFuncionario = custo!==null ? Math.min(tetoLegal, custo) : tetoLegal;
+  const itens = [];
+  itens.push({codigo:"teto",descricao:"Desconto Máximo Permitido (6%)",valor:round2(tetoLegal),formula:"salário × 6%",baseLegal:"Lei 7.418/1985, Art. 4º",explicacao:"A lei limita o desconto do VT a no máximo 6% do salário bruto, não importa o custo real do transporte."});
+  itens.push({codigo:"desconto_func",descricao:"Participação do Empregado",valor:round2(descontoFuncionario),formula: custo!==null ? "menor valor entre 6% do salário e o custo real informado" : "6% do salário (sem custo real informado)",baseLegal:"Lei 7.418/1985",explicacao:"É o valor efetivamente descontado do seu salário."});
+  let entenda;
+  if (custo !== null && custo > tetoLegal) {
+    const participacaoEmpresa = custo - descontoFuncionario;
+    itens.push({codigo:"empresa",descricao:"Participação da Empresa",valor:round2(participacaoEmpresa),formula:"custo real − desconto do empregado",baseLegal:"Lei 7.418/1985",explicacao:"Como o custo real do transporte é maior que 6% do seu salário, a empresa paga a diferença."});
+    entenda = `O transporte custa ${fmt(custo)}, mas por lei você só paga no máximo 6% do seu salário (${fmt(round2(tetoLegal))}). A empresa cobre o resto: ${fmt(round2(participacaoEmpresa))}.`;
+  } else {
+    entenda = `Seu desconto de vale transporte é de ${fmt(round2(descontoFuncionario))}, que é 6% do seu salário bruto — o máximo permitido por lei.`;
+  }
+
+  RESULTADOS['valetransporte'] = { titulo: 'Vale Transporte', itens, descontos: [], valorFinal: round2(descontoFuncionario) };
+  await registrarUso();
+  document.getElementById('valorVt').textContent = fmt(round2(descontoFuncionario));
+  document.getElementById('entendeVt').textContent = entenda;
+  document.getElementById('itensVt').innerHTML = itens.map(renderItem).join('');
+  document.getElementById('resultadoVt').style.display = 'block';
+}
+
+/* ===================== Banco de Horas ===================== */
+async function calcularBancoHoras(){
+  if (!(await garantirAcesso())) return;
+  const salario = parseFloat(document.getElementById('bhSalario').value);
+  const carga = parseFloat(document.getElementById('bhCarga').value) || 220;
+  const positivas = parseFloat(document.getElementById('bhPositivas').value) || 0;
+  const negativas = parseFloat(document.getElementById('bhNegativas').value) || 0;
+  const alertaBox = document.getElementById('alertaBh');
+  alertaBox.style.display = 'none';
+  if (!(salario>0)) { alertaBox.style.display='block'; alertaBox.textContent='Informe um salário bruto maior que zero.'; return; }
+
+  const valorHora = salario/carga;
+  const saldo = positivas - negativas;
+  const valorSaldo = saldo*valorHora;
+  const itens = [
+    {codigo:"positivas",descricao:"Horas Positivas (crédito)",valor:positivas,formula:"informado",baseLegal:"Art. 59, §2º CLT",explicacao:"Horas que você trabalhou a mais e ainda não compensou."},
+    {codigo:"negativas",descricao:"Horas Negativas (débito)",valor:-negativas,formula:"informado",baseLegal:"Art. 59, §2º CLT",explicacao:"Horas que faltam ao seu banco (saiu mais cedo, faltou parte do dia, etc.)."},
+    {codigo:"saldo",descricao:"Saldo em Horas",valor:round2(saldo),formula:"positivas − negativas",baseLegal:"Acordo/convenção coletiva",explicacao:"Esse é o saldo que resta no seu banco de horas."},
+  ];
+  const entenda = saldo >= 0
+    ? `Você está com ${saldo.toFixed(1)}h de crédito no banco de horas, equivalente a ${fmt(round2(valorSaldo))} se fosse pago em dinheiro (na prática, o mais comum é compensar com folga).`
+    : `Você está devendo ${Math.abs(saldo).toFixed(1)}h ao banco de horas, equivalente a ${fmt(Math.abs(round2(valorSaldo)))} — normalmente compensado trabalhando mais horas depois, não descontado do salário.`;
+
+  RESULTADOS['bancohoras'] = { titulo: 'Banco de Horas', itens, descontos: [], valorFinal: round2(valorSaldo) };
+  await registrarUso();
+  document.getElementById('valorBh').textContent = (saldo>=0? '': '-') + fmt(Math.abs(round2(valorSaldo)));
+  document.getElementById('entendeBh').textContent = entenda;
+  document.getElementById('itensBh').innerHTML = itens.map(renderItem).join('');
+  document.getElementById('resultadoBh').style.display = 'block';
+}
+
+/* ===================== Adicional Noturno (dedicado) ===================== */
+async function calcularAdicionalNoturnoModulo(){
+  if (!(await garantirAcesso())) return;
+  const salario = parseFloat(document.getElementById('anSalario').value);
+  const carga = parseFloat(document.getElementById('anCarga').value) || 220;
+  const horas = parseFloat(document.getElementById('anHoras').value) || 0;
+  const alertaBox = document.getElementById('alertaAn');
+  alertaBox.style.display = 'none';
+  if (!(salario>0)) { alertaBox.style.display='block'; alertaBox.textContent='Informe um salário bruto maior que zero.'; return; }
+
+  const valorHora = salario/carga;
+  const horasComputadas = horas * (60/52.5);
+  const adicional = valorHora * 0.20 * horasComputadas;
+  const itens = [
+    {codigo:"reducao",descricao:"Horas Convertidas (hora noturna reduzida)",valor:round2(horasComputadas),formula:`${horas}h × (60 ÷ 52,5)`,baseLegal:"Art. 73, §1º CLT",explicacao:"A 'hora noturna' dura só 52 minutos e 30 segundos, mas é paga como se fosse uma hora cheia — por isso as horas reais 'crescem' nesse cálculo."},
+    {codigo:"adicional",descricao:"Adicional Noturno (20%)",valor:round2(adicional),formula:"valor hora × 20% × horas convertidas",baseLegal:"Art. 73 CLT",explicacao:"Adicional de 20% sobre a hora, pago a mais por trabalhar no período noturno (22h às 5h)."},
+  ];
+  const entenda = `Você trabalhou ${horas}h no período noturno. Como cada hora noturna 'conta' um pouco mais (por ser mais curta na prática), isso equivale a ${horasComputadas.toFixed(2)}h para pagamento, gerando um adicional de ${fmt(round2(adicional))}.`;
+
+  RESULTADOS['adicionalnoturno'] = { titulo: 'Adicional Noturno', itens, descontos: [], valorFinal: round2(adicional) };
+  await registrarUso();
+  document.getElementById('valorAn').textContent = fmt(round2(adicional));
+  document.getElementById('entendeAn').textContent = entenda;
+  document.getElementById('itensAn').innerHTML = itens.map(renderItem).join('');
+  document.getElementById('resultadoAn').style.display = 'block';
+}
+
+/* ===================== Atrasos ===================== */
+async function calcularAtrasos(){
+  if (!(await garantirAcesso())) return;
+  const salario = parseFloat(document.getElementById('atSalario').value);
+  const carga = parseFloat(document.getElementById('atCarga').value) || 220;
+  const minutos = parseFloat(document.getElementById('atMinutos').value) || 0;
+  const alertaBox = document.getElementById('alertaAt');
+  alertaBox.style.display = 'none';
+  if (!(salario>0)) { alertaBox.style.display='block'; alertaBox.textContent='Informe um salário bruto maior que zero.'; return; }
+
+  const valorMinuto = (salario/carga)/60;
+  const desconto = valorMinuto*minutos;
+  const itens = [
+    {codigo:"valor_minuto",descricao:"Valor do Seu Minuto",valor:round2(valorMinuto),formula:"(salário ÷ carga horária) ÷ 60",baseLegal:"Art. 58, §1º CLT",explicacao:"Base para calcular o desconto de atrasos."},
+    {codigo:"desconto",descricao:"Desconto por Atraso",valor:-round2(desconto),formula:`valor do minuto × ${minutos} minutos`,baseLegal:"Art. 58, §1º CLT",explicacao:"A lei permite descontar atrasos e faltas proporcionalmente ao tempo não trabalhado."},
+  ];
+  const entenda = `Você teve ${minutos} minutos de atraso no mês. Isso gera um desconto aproximado de ${fmt(round2(desconto))} no seu salário.`;
+
+  RESULTADOS['atrasos'] = { titulo: 'Cálculo de Atrasos', itens, descontos: [], valorFinal: -round2(desconto) };
+  await registrarUso();
+  document.getElementById('valorAt').textContent = fmt(-round2(desconto));
+  document.getElementById('entendeAt').textContent = entenda;
+  document.getElementById('itensAt').innerHTML = itens.map(renderItem).join('');
+  document.getElementById('resultadoAt').style.display = 'block';
+}
+
+/* ===================== DSR ===================== */
+async function calcularDsr(){
+  if (!(await garantirAcesso())) return;
+  const valorHe = parseFloat(document.getElementById('dsrValorHe').value);
+  const diasUteis = parseFloat(document.getElementById('dsrDiasUteis').value) || 0;
+  const domingos = parseFloat(document.getElementById('dsrDomingos').value) || 0;
+  const alertaBox = document.getElementById('alertaDsr');
+  alertaBox.style.display = 'none';
+  if (!(valorHe>=0)) { alertaBox.style.display='block'; alertaBox.textContent='Informe o valor de horas extras do mês.'; return; }
+  if (!(diasUteis>0)) { alertaBox.style.display='block'; alertaBox.textContent='Informe os dias úteis do mês (maior que zero).'; return; }
+
+  const dsr = (valorHe/diasUteis)*domingos;
+  const itens = [
+    {codigo:"dsr",descricao:"Valor do DSR sobre Horas Extras",valor:round2(dsr),formula:"(total de horas extras ÷ dias úteis) × domingos e feriados",baseLegal:"Lei 605/1949, Súmula 172 TST",explicacao:"Quando você faz hora extra com habitualidade, esse valor também reflete no seu descanso semanal remunerado — é um valor a mais, não incluído nas próprias horas extras."},
+  ];
+  const entenda = `Você fez ${fmt(valorHe)} em horas extras, distribuídas em ${diasUteis} dias úteis. Isso gera um reflexo de ${fmt(round2(dsr))} no seu descanso semanal remunerado (domingos e feriados).`;
+
+  RESULTADOS['dsr'] = { titulo: 'DSR sobre Horas Extras', itens, descontos: [], valorFinal: round2(dsr) };
+  await registrarUso();
+  document.getElementById('valorDsr').textContent = fmt(round2(dsr));
+  document.getElementById('entendeDsr').textContent = entenda;
+  document.getElementById('itensDsr').innerHTML = itens.map(renderItem).join('');
+  document.getElementById('resultadoDsr').style.display = 'block';
+}
+
+/* ===================== Calculadora de INSS (standalone) ===================== */
+async function calcularModuloInss(){
+  if (!(await garantirAcesso())) return;
+  const remuneracao = parseFloat(document.getElementById('ciRemuneracao').value);
+  const alertaBox = document.getElementById('alertaCi');
+  alertaBox.style.display = 'none';
+  if (!(remuneracao>0)) { alertaBox.style.display='block'; alertaBox.textContent='Informe uma remuneração maior que zero.'; return; }
+
+  const inss = calcularInss(remuneracao);
+  const liquido = remuneracao + inss.valor;
+  const itens = [inss, {codigo:"liquido",descricao:"Remuneração Após o Desconto",valor:round2(liquido),formula:"remuneração − INSS",baseLegal:"—",explicacao:"Valor que resta depois de descontado apenas o INSS (sem considerar IRRF ou outros descontos)."}];
+  const entenda = `Sobre uma remuneração de ${fmt(remuneracao)}, o desconto de INSS é de ${fmt(Math.abs(inss.valor))}, restando ${fmt(round2(liquido))} (sem contar outros descontos como IRRF).`;
+
+  RESULTADOS['calcinss'] = { titulo: 'Calculadora de INSS', itens, descontos: [], valorFinal: Math.abs(inss.valor) };
+  await registrarUso();
+  document.getElementById('valorCi').textContent = fmt(Math.abs(inss.valor));
+  document.getElementById('entendeCi').textContent = entenda;
+  document.getElementById('itensCi').innerHTML = itens.map(renderItem).join('');
+  document.getElementById('resultadoCi').style.display = 'block';
+}
+
+/* ===================== Calculadora de IRRF (standalone) ===================== */
+async function calcularModuloIrrf(){
+  if (!(await garantirAcesso())) return;
+  const renda = parseFloat(document.getElementById('cirRenda').value);
+  const dependentes = parseInt(document.getElementById('cirDependentes').value) || 0;
+  const alertaBox = document.getElementById('alertaCir');
+  alertaBox.style.display = 'none';
+  if (!(renda>0)) { alertaBox.style.display='block'; alertaBox.textContent='Informe uma renda maior que zero.'; return; }
+
+  const inss = calcularInss(renda);
+  const irrf = calcularIrrf(renda, Math.abs(inss.valor), dependentes);
+  const itens = [inss, irrf];
+  const entenda = irrf.valor === 0
+    ? `Sobre uma renda de ${fmt(renda)}, o IRRF fica zerado — seja pela faixa de isenção, seja pelo redutor da Lei 15.270/2025.`
+    : `Sobre uma renda de ${fmt(renda)}, depois de descontar o INSS (${fmt(Math.abs(inss.valor))}), o IRRF fica em ${fmt(Math.abs(irrf.valor))}.`;
+
+  RESULTADOS['calcirrf'] = { titulo: 'Calculadora de IRRF', itens, descontos: [], valorFinal: Math.abs(irrf.valor) };
+  await registrarUso();
+  document.getElementById('valorCir').textContent = fmt(Math.abs(irrf.valor));
+  document.getElementById('entendeCir').textContent = entenda;
+  document.getElementById('itensCir').innerHTML = itens.map(renderItem).join('');
+  document.getElementById('resultadoCir').style.display = 'block';
+}
+
+/* ===================== Simulador de Aumento/Promoção ===================== */
+async function calcularSimulacaoAumento(){
+  if (!(await garantirAcesso())) return;
+  const atual = parseFloat(document.getElementById('saAtual').value);
+  const novo = parseFloat(document.getElementById('saNovo').value);
+  const dependentes = parseInt(document.getElementById('saDependentes').value) || 0;
+  const alertaBox = document.getElementById('alertaSa');
+  alertaBox.style.display = 'none';
+  if (!(atual>0) || !(novo>0)) { alertaBox.style.display='block'; alertaBox.textContent='Informe os dois salários, maiores que zero.'; return; }
+
+  function liquidoSimulacao(sal) {
+    const inss = calcularInss(sal);
+    const irrf = calcularIrrf(sal, Math.abs(inss.valor), dependentes);
+    return sal + inss.valor + irrf.valor;
+  }
+  const liquidoAtual = liquidoSimulacao(atual);
+  const liquidoNovo = liquidoSimulacao(novo);
+  const diferenca = liquidoNovo - liquidoAtual;
+
+  const itens = [
+    {codigo:"atual",descricao:"Salário Líquido Atual",valor:round2(liquidoAtual),formula:"salário atual − INSS − IRRF",baseLegal:"—",explicacao:"O que você recebe hoje, líquido."},
+    {codigo:"novo",descricao:"Salário Líquido Novo",valor:round2(liquidoNovo),formula:"salário novo − INSS − IRRF",baseLegal:"—",explicacao:"O que você passaria a receber, líquido."},
+    {codigo:"diferenca",descricao:"Diferença Mensal",valor:round2(diferenca),formula:"líquido novo − líquido atual",baseLegal:"—",explicacao:"Quanto a mais (ou a menos) você recebe por mês."},
+    {codigo:"diferenca_anual",descricao:"Diferença Anual Estimada",valor:round2(diferenca*13),formula:"diferença mensal × 13 (considerando 13º)",baseLegal:"—",explicacao:"Estimativa simplificada considerando o 13º salário também reajustado."},
+  ];
+  const entenda = diferenca >= 0
+    ? `Com esse aumento, seu salário líquido sobe ${fmt(round2(diferenca))} por mês — cerca de ${fmt(round2(diferenca*13))} a mais por ano, considerando o 13º.`
+    : `Atenção: nesse cenário, seu líquido mensal ficaria ${fmt(Math.abs(round2(diferenca)))} menor — confira se os números estão certos.`;
+
+  RESULTADOS['simulacaoaumento'] = { titulo: 'Simulador de Aumento', itens, descontos: [], valorFinal: round2(diferenca) };
+  await registrarUso();
+  document.getElementById('valorSa').textContent = fmt(round2(diferenca));
+  document.getElementById('entendeSa').textContent = entenda;
+  document.getElementById('itensSa').innerHTML = itens.map(renderItem).join('');
+  document.getElementById('resultadoSa').style.display = 'block';
+}
+
+/* ===================== CLT x PJ ===================== */
+async function calcularCltPj(){
+  if (!(await garantirAcesso())) return;
+  const cltBruto = parseFloat(document.getElementById('cpCltBruto').value);
+  const pjBruto = parseFloat(document.getElementById('cpPjBruto').value);
+  const pjImposto = parseFloat(document.getElementById('cpPjImposto').value) || 0;
+  const alertaBox = document.getElementById('alertaCp');
+  alertaBox.style.display = 'none';
+  if (!(cltBruto>0) || !(pjBruto>0)) { alertaBox.style.display='block'; alertaBox.textContent='Informe os dois valores, maiores que zero.'; return; }
+
+  const inss = calcularInss(cltBruto);
+  const irrf = calcularIrrf(cltBruto, Math.abs(inss.valor), 0);
+  const cltLiquido = cltBruto + inss.valor + irrf.valor;
+  const decimoTerceiroMensal = cltBruto/12;
+  const feriasMensal = (cltBruto + cltBruto/3)/12;
+  const fgtsMensal = cltBruto*0.08;
+  const cltTotalMensalizado = cltLiquido + decimoTerceiroMensal + feriasMensal + fgtsMensal;
+
+  const pjImpostoValor = pjBruto*(pjImposto/100);
+  const pjLiquido = pjBruto - pjImpostoValor;
+
+  const diferenca = pjLiquido - cltTotalMensalizado;
+
+  const itens = [
+    {codigo:"clt_liquido",descricao:"CLT — Salário Líquido Mensal",valor:round2(cltLiquido),formula:"salário bruto − INSS − IRRF",baseLegal:"—",explicacao:"O que cai na conta todo mês como CLT."},
+    {codigo:"clt_beneficios",descricao:"CLT — 13º + Férias + FGTS (mensalizado)",valor:round2(decimoTerceiroMensal+feriasMensal+fgtsMensal),formula:"(13º ÷ 12) + (férias+1/3 ÷ 12) + (FGTS 8%)",baseLegal:"—",explicacao:"Benefícios que você só vê de fato uma vez por ano (13º, férias) ou ao sair do emprego (FGTS), mas que valem dinheiro todo mês."},
+    {codigo:"clt_total",descricao:"CLT — Valor Total Mensalizado",valor:round2(cltTotalMensalizado),formula:"líquido + 13º/12 + férias/12 + FGTS",baseLegal:"—",explicacao:"Essa é a comparação justa com o PJ — inclui tudo que a CLT te dá, não só o que cai na conta no mês."},
+    {codigo:"pj_liquido",descricao:"PJ — Valor Líquido Mensal",valor:round2(pjLiquido),formula:`bruto PJ − ${pjImposto}% de impostos`,baseLegal:"—",explicacao:"Estimativa considerando só o percentual de impostos que você informou — não inclui custo de contador, INSS por conta própria, nem a ausência de férias/13º remunerados."},
+  ];
+  const entenda = diferenca >= 0
+    ? `Considerando tudo (13º, férias e FGTS mensalizados), o PJ te deixaria ${fmt(round2(diferenca))} a mais por mês — mas lembre que como PJ você não tem férias remuneradas, 13º nem FGTS de verdade, e precisa se planejar sozinho para isso.`
+    : `Considerando tudo (13º, férias e FGTS mensalizados), a CLT te deixaria ${fmt(Math.abs(round2(diferenca)))} a mais por mês do que essa proposta PJ.`;
+
+  RESULTADOS['cltpj'] = { titulo: 'CLT x PJ', itens, descontos: [], valorFinal: round2(diferenca) };
+  await registrarUso();
+  document.getElementById('valorCp').textContent = fmt(round2(diferenca));
+  document.getElementById('entendeCp').textContent = entenda;
+  document.getElementById('itensCp').innerHTML = itens.map(renderItem).join('');
+  document.getElementById('resultadoCp').style.display = 'block';
+}
+
+/* ===================== Quanto Vale Minha Hora (Conversor) ===================== */
+async function calcularConversores(){
+  if (!(await garantirAcesso())) return;
+  const salario = parseFloat(document.getElementById('cvSalario').value);
+  const carga = parseFloat(document.getElementById('cvCarga').value) || 220;
+  const alertaBox = document.getElementById('alertaCv');
+  alertaBox.style.display = 'none';
+  if (!(salario>0)) { alertaBox.style.display='block'; alertaBox.textContent='Informe um salário maior que zero.'; return; }
+
+  const hora = salario/carga;
+  const minuto = hora/60;
+  const dia = salario/30;
+  const semana = dia*7;
+  const itens = [
+    {codigo:"mes",descricao:"Por Mês",valor:round2(salario),formula:"valor informado",baseLegal:"—",explicacao:"Seu salário mensal, como referência."},
+    {codigo:"semana",descricao:"Por Semana",valor:round2(semana),formula:"(salário ÷ 30) × 7",baseLegal:"Art. 459 CLT",explicacao:"Usando o critério de dias corridos (mesma lógica de saldo de salário e férias)."},
+    {codigo:"dia",descricao:"Por Dia",valor:round2(dia),formula:"salário ÷ 30",baseLegal:"Art. 459 CLT",explicacao:"Valor de um dia corrido do seu salário."},
+    {codigo:"hora",descricao:"Por Hora",valor:round2(hora),formula:`salário ÷ ${carga}h`,baseLegal:"Súmula 431 TST",explicacao:"Usando sua carga horária mensal de trabalho."},
+    {codigo:"minuto",descricao:"Por Minuto",valor:round2(minuto),formula:"valor da hora ÷ 60",baseLegal:"Súmula 431 TST",explicacao:"O quanto vale cada minuto do seu trabalho."},
+  ];
+  const entenda = `Sua hora de trabalho vale ${fmt(round2(hora))}. Isso equivale a ${fmt(round2(dia))} por dia e ${fmt(round2(semana))} por semana.`;
+
+  RESULTADOS['conversores'] = { titulo: 'Quanto Vale Minha Hora', itens, descontos: [], valorFinal: round2(hora) };
+  await registrarUso();
+  document.getElementById('valorCv').textContent = fmt(round2(hora));
+  document.getElementById('entendeCv').textContent = entenda;
+  document.getElementById('itensCv').innerHTML = itens.map(renderItem).join('');
+  document.getElementById('resultadoCv').style.display = 'block';
+}
+
+/* ===================== Planejamento de Férias ===================== */
+async function calcularPlanejamentoFerias(){
+  if (!(await garantirAcesso())) return;
+  const admissao = document.getElementById('pfAdmissao').value;
+  const salario = parseFloat(document.getElementById('pfSalario').value);
+  const alertaBox = document.getElementById('alertaPf');
+  alertaBox.style.display = 'none';
+  if (!(salario>0)) { alertaBox.style.display='block'; alertaBox.textContent='Informe um salário maior que zero.'; return; }
+  if (!admissao) { alertaBox.style.display='block'; alertaBox.textContent='Informe a data de admissão.'; return; }
+
+  const hoje = new Date();
+  const anosCompletos = contarAnosCompletos(admissao, hoje.toISOString().slice(0,10));
+  const dataAdmissaoObj = new Date(admissao + 'T00:00:00');
+  const vencimentoAtual = new Date(dataAdmissaoObj);
+  vencimentoAtual.setFullYear(dataAdmissaoObj.getFullYear() + anosCompletos + 1);
+  const prazoLimite = new Date(vencimentoAtual);
+  prazoLimite.setFullYear(vencimentoAtual.getFullYear() + 1);
+
+  const valorBase = salario;
+  const terco = salario/3;
+  const fmtData = (d) => d.toLocaleDateString('pt-BR');
+
+  const itens = [
+    {codigo:"ferias_base",descricao:"Férias (salário integral)",valor:round2(valorBase),formula:"1 salário bruto",baseLegal:"Art. 130 CLT",explicacao:"Valor base das férias caso você tire hoje."},
+    {codigo:"terco",descricao:"Terço Constitucional",valor:round2(terco),formula:"salário ÷ 3",baseLegal:"Art. 7º, XVII CF",explicacao:"Adicional obrigatório de 1/3 sobre o valor das férias."},
+  ];
+  const entenda = `Seu período de férias vence em ${fmtData(vencimentoAtual)}. A empresa tem até ${fmtData(prazoLimite)} para te conceder o descanso — passando disso, tem que pagar em dobro. Se tirasse hoje, você receberia aproximadamente ${fmt(round2(valorBase+terco))}.`;
+
+  RESULTADOS['planejamentoferias'] = { titulo: 'Planejamento de Férias', itens, descontos: [], valorFinal: round2(valorBase+terco) };
+  await registrarUso();
+  document.getElementById('valorPf').textContent = fmt(round2(valorBase+terco));
+  document.getElementById('entendePf').textContent = entenda;
+  document.getElementById('itensPf').innerHTML = itens.map(renderItem).join('');
+  document.getElementById('resultadoPf').style.display = 'block';
+}
+
+/* ===================== Meus Direitos (quiz) ===================== */
+async function calcularDireitos(){
+  if (!(await garantirAcesso())) return;
+  const situacao = document.getElementById('drSituacao').value;
+  const tempo = parseFloat(document.getElementById('drTempo').value) || 0;
+  const carteira = document.getElementById('drCarteira').checked;
+
+  const itens = [];
+  let entenda = '';
+  let resumo = '';
+
+  if (!carteira) {
+    itens.push({codigo:"sem_carteira",descricao:"Vínculo Empregatício Não Formalizado",valor:0,formula:"—",baseLegal:"Art. 3º da CLT",explicacao:"Mesmo sem carteira assinada, se existem os requisitos de emprego (subordinação, habitualidade, pessoalidade, onerosidade), você pode ter direito a todas as verbas de um empregado CLT — mas vai precisar provar o vínculo, o que geralmente exige buscar o sindicato da categoria ou um advogado trabalhista."});
+    entenda = 'Sem carteira assinada, seus direitos ainda podem existir na prática, mas provar o vínculo empregatício é o primeiro passo — e isso normalmente exige ajuda de um advogado trabalhista ou do sindicato.';
+    resumo = 'Buscar orientação jurídica';
+  } else if (situacao === 'sem_justa_causa') {
+    itens.push(
+      {codigo:"aviso",descricao:"Aviso Prévio",valor:0,formula:"—",baseLegal:"Lei 12.506/2011",explicacao:"30 dias + 3 por ano completo de casa."},
+      {codigo:"ferias",descricao:"Férias Vencidas e Proporcionais + 1/3",valor:0,formula:"—",baseLegal:"Art. 7º, XVII CF",explicacao:"Inclui o período em curso e qualquer período vencido não gozado."},
+      {codigo:"decimo",descricao:"13º Proporcional",valor:0,formula:"—",baseLegal:"Lei 4.090/1962",explicacao:"1/12 por mês trabalhado no ano."},
+      {codigo:"fgts",descricao:"FGTS + Multa de 40%",valor:0,formula:"—",baseLegal:"Lei 8.036/1990",explicacao:"Direito de sacar todo o saldo, mais a multa de 40%."}
+    );
+    if (tempo >= 1) itens.push({codigo:"seguro",descricao:"Seguro-Desemprego (provável)",valor:0,formula:"—",baseLegal:"Lei 7.998/1990",explicacao:"Com mais de 12 meses trabalhados, você provavelmente tem direito."});
+    entenda = 'Na dispensa sem justa causa você tem direito ao "pacote completo": aviso prévio, férias, 13º, FGTS com multa de 40%, e provavelmente seguro-desemprego.';
+    resumo = `${itens.length} direitos identificados`;
+  } else if (situacao === 'pedido_demissao') {
+    itens.push(
+      {codigo:"ferias",descricao:"Férias Vencidas e Proporcionais + 1/3",valor:0,formula:"—",baseLegal:"Art. 7º, XVII CF",explicacao:"Você tem direito normalmente, mesmo pedindo demissão."},
+      {codigo:"decimo",descricao:"13º Proporcional",valor:0,formula:"—",baseLegal:"Lei 4.090/1962",explicacao:"1/12 por mês trabalhado no ano."},
+      {codigo:"fgts_sem_multa",descricao:"FGTS (sem multa, sem saque imediato)",valor:0,formula:"—",baseLegal:"Lei 8.036/1990",explicacao:"O saldo continua na conta, mas fica retido até uma hipótese legal de saque."}
+    );
+    entenda = 'Pedindo demissão, você mantém direito a férias, 13º e ao saldo do FGTS (sem a multa de 40% e sem poder sacar agora). Não há aviso prévio a receber, nem seguro-desemprego.';
+    resumo = `${itens.length} direitos identificados`;
+  } else if (situacao === 'justa_causa') {
+    itens.push({codigo:"saldo",descricao:"Saldo de Salário",valor:0,formula:"—",baseLegal:"Art. 459 CLT",explicacao:"Dias trabalhados no mês, sempre devidos."});
+    itens.push({codigo:"ferias_vencidas",descricao:"Férias Vencidas (se houver)",valor:0,formula:"—",baseLegal:"Súmula 171 TST",explicacao:"Só as já vencidas antes da falta, não as proporcionais do período em curso."});
+    entenda = 'Na justa causa você perde a maioria dos direitos rescisórios (aviso, 13º proporcional, férias proporcionais, multa do FGTS), mas mantém saldo de salário e férias já vencidas antes da falta.';
+    resumo = '2 direitos identificados';
+  } else if (situacao === 'prazo_determinado') {
+    itens.push(
+      {codigo:"saldo",descricao:"Saldo de Salário",valor:0,formula:"—",baseLegal:"Art. 459 CLT",explicacao:"Dias trabalhados no mês."},
+      {codigo:"ferias",descricao:"Férias Proporcionais + 1/3",valor:0,formula:"—",baseLegal:"Art. 7º, XVII CF",explicacao:"Proporcional ao tempo trabalhado no contrato."},
+      {codigo:"decimo",descricao:"13º Proporcional",valor:0,formula:"—",baseLegal:"Lei 4.090/1962",explicacao:"1/12 por mês trabalhado."},
+      {codigo:"fgts",descricao:"FGTS (sem multa de 40%)",valor:0,formula:"—",baseLegal:"Lei 8.036/1990",explicacao:"Depósitos acumulados, sacáveis ao fim do contrato — sem a multa de 40%."}
+    );
+    entenda = 'No fim natural de um contrato por prazo determinado, você recebe as verbas proporcionais normalmente, mas sem aviso prévio nem a multa de 40% do FGTS.';
+    resumo = `${itens.length} direitos identificados`;
+  } else {
+    itens.push({codigo:"ativo",descricao:"Direitos Contínuos (empregado ativo)",valor:0,formula:"—",baseLegal:"CLT",explicacao:"Salário em dia, FGTS depositado mensalmente, férias após 12 meses, 13º ao fim do ano, e demais direitos trabalhistas normais."});
+    entenda = 'Como você ainda está empregado, seus direitos são os contínuos: salário em dia, FGTS mensal, férias após completar 12 meses, e 13º salário ao fim do ano.';
+    resumo = 'Direitos contínuos';
+  }
+
+  RESULTADOS['direitos'] = { titulo: 'Meus Direitos Trabalhistas', itens, descontos: [], valorFinal: 0 };
+  await registrarUso();
+  document.getElementById('valorDr').textContent = resumo;
+  document.getElementById('entendeDr').textContent = entenda;
+  document.getElementById('itensDr').innerHTML = itens.map(renderItemChecklist).join('');
+  document.getElementById('resultadoDr').style.display = 'block';
+}
+
+/* ===================== Custo de Contratar ===================== */
+async function calcularCustoContratacao(){
+  if (!(await garantirAcesso())) return;
+  const salario = parseFloat(document.getElementById('ccSalario').value);
+  const simples = document.getElementById('ccSimples').checked;
+  const alertaBox = document.getElementById('alertaCc');
+  alertaBox.style.display = 'none';
+  if (!(salario>0)) { alertaBox.style.display='block'; alertaBox.textContent='Informe um salário maior que zero.'; return; }
+
+  const fgts = salario*0.08;
+  const decimoProvisao = salario/12;
+  const feriasProvisao = (salario + salario/3)/12;
+  const inssPatronal = simples ? 0 : salario*0.268;
+  const itens = [
+    {codigo:"salario",descricao:"Salário Bruto",valor:round2(salario),formula:"valor oferecido",baseLegal:"—",explicacao:"O que o funcionário recebe diretamente."},
+    {codigo:"fgts",descricao:"FGTS (8%)",valor:round2(fgts),formula:"salário × 8%",baseLegal:"Lei 8.036/1990",explicacao:"Depósito mensal obrigatório."},
+    {codigo:"decimo",descricao:"Provisão de 13º (mensalizado)",valor:round2(decimoProvisao),formula:"salário ÷ 12",baseLegal:"Lei 4.090/1962",explicacao:"Reserva mensal para pagar o 13º no fim do ano."},
+    {codigo:"ferias",descricao:"Provisão de Férias + 1/3 (mensalizado)",valor:round2(feriasProvisao),formula:"(salário + 1/3) ÷ 12",baseLegal:"Art. 7º, XVII CF",explicacao:"Reserva mensal para as férias do funcionário."},
+  ];
+  if (!simples) {
+    itens.push({codigo:"inss_patronal",descricao:"INSS Patronal + RAT + Terceiros (~26,8%)",valor:round2(inssPatronal),formula:"salário × 26,8% (estimativa)",baseLegal:"Lei 8.212/1991",explicacao:"Encargo que empresas fora do Simples Nacional pagam sobre a folha. Varia por CNAE e grau de risco (RAT)."});
+  } else {
+    itens.push({codigo:"simples_info",descricao:"INSS Patronal (incluso no Simples)",valor:0,formula:"—",baseLegal:"LC 123/2006",explicacao:"Empresas do Simples Nacional já pagam o equivalente ao INSS patronal dentro do DAS — não soma separadamente aqui."});
+  }
+  const custoTotal = salario + fgts + decimoProvisao + feriasProvisao + inssPatronal;
+  itens.push({codigo:"total",descricao:"Custo Total Mensal Estimado",valor:round2(custoTotal),formula:"salário + todos os encargos",baseLegal:"—",explicacao:"É esse o valor real que sai do caixa da empresa todo mês por esse funcionário — bem mais que só o salário."});
+
+  const entenda = `Contratar alguém por ${fmt(salario)} custa de verdade cerca de ${fmt(round2(custoTotal))} por mês pra empresa, considerando FGTS, 13º e férias provisionados${simples ? '' : ' e os encargos patronais'}.`;
+
+  RESULTADOS['custocontratacao'] = { titulo: 'Custo de Contratar', itens, descontos: [], valorFinal: round2(custoTotal) };
+  await registrarUso();
+  document.getElementById('valorCc').textContent = fmt(round2(custoTotal));
+  document.getElementById('entendeCc').textContent = entenda;
+  document.getElementById('itensCc').innerHTML = itens.map(renderItem).join('');
+  document.getElementById('resultadoCc').style.display = 'block';
+}
+
+/* ===================== Comparador de Propostas ===================== */
+async function calcularComparador(){
+  if (!(await garantirAcesso())) return;
+  const aSalario = parseFloat(document.getElementById('cmpASalario').value) || 0;
+  const aBeneficios = parseFloat(document.getElementById('cmpABeneficios').value) || 0;
+  const aPlano = document.getElementById('cmpAPlano').checked;
+  const bSalario = parseFloat(document.getElementById('cmpBSalario').value) || 0;
+  const bBeneficios = parseFloat(document.getElementById('cmpBBeneficios').value) || 0;
+  const bPlano = document.getElementById('cmpBPlano').checked;
+  const alertaBox = document.getElementById('alertaCmp');
+  alertaBox.style.display = 'none';
+  if (!(aSalario>0) || !(bSalario>0)) { alertaBox.style.display='block'; alertaBox.textContent='Informe o salário das duas propostas.'; return; }
+
+  const totalA = aSalario + aBeneficios;
+  const totalB = bSalario + bBeneficios;
+  const diferenca = totalB - totalA;
+
+  const itens = [
+    {codigo:"a_total",descricao:"Empresa A — Salário + VA/VR",valor:round2(totalA),formula:`${fmt(aSalario)} + ${fmt(aBeneficios)}`,baseLegal:"—",explicacao:aPlano ? "Também oferece plano de saúde (não somado ao valor, considere à parte)." : "Não oferece plano de saúde."},
+    {codigo:"b_total",descricao:"Empresa B — Salário + VA/VR",valor:round2(totalB),formula:`${fmt(bSalario)} + ${fmt(bBeneficios)}`,baseLegal:"—",explicacao:bPlano ? "Também oferece plano de saúde (não somado ao valor, considere à parte)." : "Não oferece plano de saúde."},
+    {codigo:"diferenca",descricao:"Diferença (B − A)",valor:round2(diferenca),formula:"total B − total A",baseLegal:"—",explicacao:"Valor mensal a mais (ou a menos) na proposta B comparada à A."},
+  ];
+  const avisoPlano = (aPlano!==bPlano) ? ' Mas lembre que o plano de saúde não entrou nessa conta — considere-o separadamente.' : '';
+  const entenda = diferenca >= 0
+    ? `A proposta B vale ${fmt(round2(diferenca))} a mais por mês que a A, somando salário e VA/VR.${avisoPlano}`
+    : `A proposta A vale ${fmt(Math.abs(round2(diferenca)))} a mais por mês que a B, somando salário e VA/VR.${avisoPlano}`;
+
+  RESULTADOS['comparador'] = { titulo: 'Comparador de Propostas', itens, descontos: [], valorFinal: round2(diferenca) };
+  await registrarUso();
+  document.getElementById('valorCmp').textContent = fmt(round2(diferenca));
+  document.getElementById('entendeCmp').textContent = entenda;
+  document.getElementById('itensCmp').innerHTML = itens.map(renderItem).join('');
+  document.getElementById('resultadoCmp').style.display = 'block';
+}
+
+/* ===================== Reajuste Salarial ===================== */
+async function calcularReajuste(){
+  if (!(await garantirAcesso())) return;
+  const atual = parseFloat(document.getElementById('rjAtual').value);
+  const percentual = parseFloat(document.getElementById('rjPercentual').value);
+  const alertaBox = document.getElementById('alertaRj');
+  alertaBox.style.display = 'none';
+  if (!(atual>0)) { alertaBox.style.display='block'; alertaBox.textContent='Informe um salário maior que zero.'; return; }
+  if (isNaN(percentual)) { alertaBox.style.display='block'; alertaBox.textContent='Informe o percentual de reajuste.'; return; }
+
+  const novo = atual*(1+percentual/100);
+  const diferenca = novo-atual;
+  const itens = [
+    {codigo:"novo",descricao:"Novo Salário",valor:round2(novo),formula:`salário atual × (1 + ${percentual}%)`,baseLegal:"—",explicacao:"Salário bruto após aplicar o reajuste."},
+    {codigo:"diferenca",descricao:"Diferença Mensal",valor:round2(diferenca),formula:"novo − atual",baseLegal:"—",explicacao:"Quanto a mais você passa a ganhar por mês, em valores brutos."},
+    {codigo:"diferenca_anual",descricao:"Diferença Anual Estimada (× 13)",valor:round2(diferenca*13),formula:"diferença mensal × 13",baseLegal:"—",explicacao:"Estimativa simplificada considerando o 13º salário também reajustado."},
+  ];
+  const entenda = `Com um reajuste de ${percentual}%, seu salário bruto passa de ${fmt(atual)} para ${fmt(round2(novo))} — uma diferença de ${fmt(round2(diferenca))} por mês.`;
+
+  RESULTADOS['reajuste'] = { titulo: 'Reajuste Salarial', itens, descontos: [], valorFinal: round2(novo) };
+  await registrarUso();
+  document.getElementById('valorRj').textContent = fmt(round2(novo));
+  document.getElementById('entendeRj').textContent = entenda;
+  document.getElementById('itensRj').innerHTML = itens.map(renderItem).join('');
+  document.getElementById('resultadoRj').style.display = 'block';
 }
 
 /* ===================== hero ledger (demo automática) ===================== */
