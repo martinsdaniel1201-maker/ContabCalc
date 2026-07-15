@@ -270,7 +270,6 @@
       <p class="hero-sub">Rescisão, férias, 13º, FGTS, INSS e IRRF — com a fórmula, o artigo de lei e a explicação por trás de cada valor. Para contadores, RH e quem só quer saber quanto vai receber.</p>
       <div class="cta-row">
         <button class="btn-primary" onclick="abrirModulo('calculadora')">Calcular minha rescisão</button>
-        <span class="cta-note">Grátis · sem cadastro</span>
       </div>
     </div>
     <div class="ledger-card">
@@ -1064,7 +1063,7 @@
   <div class="modal-card" style="position:relative;">
     <button class="modal-fechar" onclick="fecharModal('modalAuth')">✕</button>
     <h3>Criar conta grátis</h3>
-    <div class="sub">3 cálculos grátis pra você testar. Sem cartão de crédito.</div>
+    <div class="sub">10 cálculos grátis pra você testar. Sem cartão de crédito.</div>
     <div class="modal-msg erro" id="authMsgErro"></div>
     <div class="modal-msg ok" id="authMsgOk"></div>
     <div class="field" id="campoNomeAuth"><label>Nome</label><input type="text" id="authNome" placeholder="Seu nome"></div>
@@ -1079,7 +1078,7 @@
   <div class="modal-card" style="position:relative; text-align:center;">
     <button class="modal-fechar" onclick="fecharModal('modalPaywall')">✕</button>
     <div class="paywall-icon" style="margin:0 auto 14px;">🔒</div>
-    <h3>Seus 3 cálculos grátis acabaram</h3>
+    <h3>Seus 10 cálculos grátis acabaram</h3>
     <div class="sub">Assine o ContabCalc e calcule sem limites, com todos os 8 módulos liberados.</div>
     <a class="btn-primary" style="display:block; text-decoration:none; box-sizing:border-box;" href="https://pay.hotmart.com/SEU-CODIGO-AQUI" target="_blank" rel="noopener">Assinar agora</a>
     <button class="btn-secundario" onclick="verificarPagamento()">Já assinei — verificar acesso</button>
@@ -1138,7 +1137,7 @@ const SUPABASE_URL = "https://umlwcilvhpoxhnqaalqn.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_JncXnt4TujKmX7AHgoivLw_O7a_mk15";
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { db: { schema: "contabcalc" } });
 
-const LIMITE_TRIAL = 3;
+const LIMITE_TRIAL = 10;
 let sessaoAtual = null;
 let perfilAtual = null;
 let modoCadastro = true;
