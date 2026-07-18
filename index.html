@@ -1488,14 +1488,6 @@
   </div>
 </div>
 
-<div class="pwa-banner" id="bannerAtualizar">
-  <div class="texto"><strong>Nova versão disponível</strong>Atualize para ver as últimas melhorias.</div>
-  <div class="acoes">
-    <button class="btn-instalar" onclick="aplicarAtualizacao()">Atualizar</button>
-    <button class="btn-dispensar" onclick="dispensarBanner('bannerAtualizar')">Depois</button>
-  </div>
-</div>
-
 <script>
 /* ===================== navegação entre telas (app-like) ===================== */
 const MODULOS_IDS = ['calculadora','ferias','decimo','fgts','salarioliquido','horas','segurodesemprego','adicionais',
@@ -3095,13 +3087,13 @@ function dispensarBanner(id) {
 }
 
 let swRegistration = null;
+let _atualizacaoJaAplicada = false;
 
-function aplicarAtualizacao() {
-  dispensarBanner('bannerAtualizar');
-  if (swRegistration && swRegistration.waiting) {
-    swRegistration.waiting.postMessage('SKIP_WAITING');
-  }
-  window.location.reload();
+function _forcarAtualizacaoAgora() {
+  if (_atualizacaoJaAplicada) return;
+  _atualizacaoJaAplicada = true;
+  mostrarToast('Atualizando para a versão mais recente…');
+  setTimeout(() => window.location.reload(), 500);
 }
 
 if ('serviceWorker' in navigator) {
@@ -3114,12 +3106,16 @@ if ('serviceWorker' in navigator) {
       reg.addEventListener('updatefound', () => {
         const novoWorker = reg.installing;
         novoWorker.addEventListener('statechange', () => {
+          // Sempre que há uma versão nova pronta, aplicamos na hora — sem pedir permissão.
           if (novoWorker.state === 'installed' && navigator.serviceWorker.controller) {
-            document.getElementById('bannerAtualizar').classList.add('show');
+            novoWorker.postMessage('SKIP_WAITING');
           }
         });
       });
     }).catch(() => { /* PWA opcional — se falhar, o app continua funcionando normalmente */ });
+    // Dispara quando o novo service worker efetivamente assume o controle da página —
+    // esse é o momento certo (e único) para recarregar, evitando recarregar cedo demais.
+    navigator.serviceWorker.addEventListener('controllerchange', _forcarAtualizacaoAgora);
   });
 }
 /* ===================== Home — busca, favoritos, recentes, mais usados =====================
