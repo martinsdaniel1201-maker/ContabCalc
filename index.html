@@ -1458,14 +1458,27 @@
   <div class="modal-card" style="position:relative;" role="dialog" aria-modal="true" aria-labelledby="modalAuthTitulo">
     <button class="modal-fechar" onclick="fecharModal('modalAuth')"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-close"/></svg><span class="sr-only">Fechar</span></button>
     <h3 id="modalAuthTitulo">Criar conta grátis</h3>
-    <div class="sub">10 cálculos grátis pra você testar. Sem cartão de crédito.</div>
+    <div class="sub" id="modalAuthSub">10 cálculos grátis pra você testar. Sem cartão de crédito.</div>
     <div class="modal-msg erro" id="authMsgErro" role="alert"></div>
     <div class="modal-msg ok" id="authMsgOk" role="status"></div>
     <div class="field" id="campoNomeAuth"><label for="authNome">Nome</label><input type="text" id="authNome" placeholder="Seu nome"></div>
     <div class="field"><label for="authEmail">E-mail</label><input type="email" id="authEmail" placeholder="voce@email.com"></div>
-    <div class="field"><label for="authSenha">Senha</label><input type="password" id="authSenha" placeholder="••••••••"></div>
+    <div class="field" id="campoSenhaAuth"><label for="authSenha">Senha</label><input type="password" id="authSenha" placeholder="••••••••"></div>
+    <div class="modal-link-alternar" onclick="mostrarRecuperacaoSenha()" id="linkEsqueciSenha" role="button" tabindex="0" style="display:none; text-align:right; margin:-8px 0 14px;">Esqueceu a senha?</div>
     <button class="btn-primary" id="btnAuthAcao" onclick="executarAuth()">Criar conta e continuar</button>
     <div class="modal-link-alternar" onclick="alternarModoAuth()" id="linkAlternarAuth" role="button" tabindex="0">Já tem conta? <span>Entrar</span></div>
+  </div>
+</div>
+
+<div class="modal-fundo" id="modalNovaSenha">
+  <div class="modal-card" style="position:relative;" role="dialog" aria-modal="true" aria-labelledby="modalNovaSenhaTitulo">
+    <button class="modal-fechar" onclick="fecharModal('modalNovaSenha')"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-close"/></svg><span class="sr-only">Fechar</span></button>
+    <h3 id="modalNovaSenhaTitulo">Defina uma nova senha</h3>
+    <div class="sub">Você seguiu o link de recuperação enviado por e-mail. Escolha sua nova senha abaixo.</div>
+    <div class="modal-msg erro" id="novaSenhaMsgErro" role="alert"></div>
+    <div class="modal-msg ok" id="novaSenhaMsgOk" role="status"></div>
+    <div class="field"><label for="novaSenhaInput">Nova senha</label><input type="password" id="novaSenhaInput" placeholder="••••••••"></div>
+    <button class="btn-primary" onclick="salvarNovaSenha()">Salvar nova senha</button>
   </div>
 </div>
 
@@ -1529,7 +1542,7 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { db: { schema
 const LIMITE_TRIAL = 10;
 let sessaoAtual = null;
 let perfilAtual = null;
-let modoCadastro = true;
+let modoAuth = 'cadastro'; // 'cadastro' | 'login' | 'recuperacao'
 let _ultimoFocoAntesDoModal = null;
 
 function _elementosFocaveis(container) {
@@ -1551,17 +1564,59 @@ function fecharModal(id) {
 function abrirModalAuth() {
   document.getElementById('authMsgErro').style.display = 'none';
   document.getElementById('authMsgOk').style.display = 'none';
+  modoAuth = 'cadastro';
+  _aplicarModoAuthNaTela();
   document.getElementById('modalAuth').classList.add('show');
   _focarPrimeiroCampo('modalAuth');
 }
 
+function _aplicarModoAuthNaTela() {
+  const sub = document.getElementById('modalAuthSub');
+  const campoNome = document.getElementById('campoNomeAuth');
+  const campoSenha = document.getElementById('campoSenhaAuth');
+  const linkEsqueci = document.getElementById('linkEsqueciSenha');
+  const linkAlternar = document.getElementById('linkAlternarAuth');
+  const btnAcao = document.getElementById('btnAuthAcao');
+
+  if (modoAuth === 'cadastro') {
+    document.getElementById('modalAuthTitulo').textContent = 'Criar conta grátis';
+    sub.textContent = '10 cálculos grátis pra você testar. Sem cartão de crédito.';
+    campoNome.style.display = 'block';
+    campoSenha.style.display = 'block';
+    linkEsqueci.style.display = 'none';
+    btnAcao.textContent = 'Criar conta e continuar';
+    linkAlternar.innerHTML = 'Já tem conta? <span>Entrar</span>';
+  } else if (modoAuth === 'login') {
+    document.getElementById('modalAuthTitulo').textContent = 'Entrar';
+    sub.textContent = 'Acesse sua conta para continuar calculando.';
+    campoNome.style.display = 'none';
+    campoSenha.style.display = 'block';
+    linkEsqueci.style.display = 'block';
+    btnAcao.textContent = 'Entrar';
+    linkAlternar.innerHTML = 'Ainda não tem conta? <span>Criar conta grátis</span>';
+  } else { // recuperacao
+    document.getElementById('modalAuthTitulo').textContent = 'Recuperar senha';
+    sub.textContent = 'Informe seu e-mail — vamos te enviar um link para criar uma nova senha.';
+    campoNome.style.display = 'none';
+    campoSenha.style.display = 'none';
+    linkEsqueci.style.display = 'none';
+    btnAcao.textContent = 'Enviar link de recuperação';
+    linkAlternar.innerHTML = 'Lembrou a senha? <span>Entrar</span>';
+  }
+}
+
 function alternarModoAuth() {
-  modoCadastro = !modoCadastro;
-  document.getElementById('btnAuthAcao').textContent = modoCadastro ? 'Criar conta e continuar' : 'Entrar';
-  document.getElementById('campoNomeAuth').style.display = modoCadastro ? 'block' : 'none';
-  document.getElementById('linkAlternarAuth').innerHTML = modoCadastro
-    ? 'Já tem conta? <span>Entrar</span>'
-    : 'Ainda não tem conta? <span>Criar conta grátis</span>';
+  modoAuth = (modoAuth === 'cadastro') ? 'login' : 'cadastro';
+  document.getElementById('authMsgErro').style.display = 'none';
+  document.getElementById('authMsgOk').style.display = 'none';
+  _aplicarModoAuthNaTela();
+}
+
+function mostrarRecuperacaoSenha() {
+  modoAuth = 'recuperacao';
+  document.getElementById('authMsgErro').style.display = 'none';
+  document.getElementById('authMsgOk').style.display = 'none';
+  _aplicarModoAuthNaTela();
 }
 
 async function executarAuth() {
@@ -1573,9 +1628,18 @@ async function executarAuth() {
   erroBox.style.display = 'none';
   okBox.style.display = 'none';
 
+  if (modoAuth === 'recuperacao') {
+    if (!email) { erroBox.textContent = 'Informe seu e-mail.'; erroBox.style.display = 'block'; return; }
+    const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + window.location.pathname });
+    if (error) { erroBox.textContent = error.message; erroBox.style.display = 'block'; return; }
+    okBox.textContent = 'Enviamos um link de recuperação para ' + email + '. Verifique sua caixa de entrada.';
+    okBox.style.display = 'block';
+    return;
+  }
+
   if (!email || !senha) { erroBox.textContent = 'Preencha e-mail e senha.'; erroBox.style.display = 'block'; return; }
 
-  if (modoCadastro) {
+  if (modoAuth === 'cadastro') {
     const { error } = await sb.auth.signUp({ email, password: senha, options: { data: { nome } } });
     if (error) { erroBox.textContent = error.message; erroBox.style.display = 'block'; return; }
     const { error: erroLogin } = await sb.auth.signInWithPassword({ email, password: senha });
@@ -1591,6 +1655,27 @@ async function executarAuth() {
 
   await atualizarEstadoSessao();
   fecharModal('modalAuth');
+}
+
+async function salvarNovaSenha() {
+  const senha = document.getElementById('novaSenhaInput').value;
+  const erroBox = document.getElementById('novaSenhaMsgErro');
+  const okBox = document.getElementById('novaSenhaMsgOk');
+  erroBox.style.display = 'none';
+  okBox.style.display = 'none';
+
+  if (!senha || senha.length < 6) {
+    erroBox.textContent = 'A senha precisa ter pelo menos 6 caracteres.';
+    erroBox.style.display = 'block';
+    return;
+  }
+  const { error } = await sb.auth.updateUser({ password: senha });
+  if (error) { erroBox.textContent = error.message; erroBox.style.display = 'block'; return; }
+
+  okBox.textContent = 'Senha atualizada com sucesso!';
+  okBox.style.display = 'block';
+  await atualizarEstadoSessao();
+  setTimeout(() => fecharModal('modalNovaSenha'), 1200);
 }
 
 async function cliqueConta() {
@@ -1622,19 +1707,21 @@ async function atualizarEstadoSessao() {
 
 async function carregarPerfilAtual() {
   if (!sessaoAtual) return;
-  const { data, error } = await sb.from('perfis').select('plano, calculos_usados').eq('id', sessaoAtual.user.id).single();
+  const { data, error } = await sb.from('perfis').select('nome, plano, calculos_usados').eq('id', sessaoAtual.user.id).single();
   if (!error) perfilAtual = data;
 }
 
 function atualizarUsoPill() {
   const pill = document.getElementById('usoPill');
   if (!perfilAtual) { pill.style.display = 'none'; return; }
+  const primeiroNome = (perfilAtual.nome || '').trim().split(' ')[0];
+  const saudacao = primeiroNome ? `${primeiroNome} · ` : '';
   if (perfilAtual.plano === 'pago') {
-    pill.textContent = '✓ Acesso completo';
+    pill.textContent = `${saudacao}✓ Acesso completo`;
     pill.style.display = 'inline-block';
   } else {
     const restantes = Math.max(0, LIMITE_TRIAL - perfilAtual.calculos_usados);
-    pill.textContent = `${restantes}/${LIMITE_TRIAL} cálculos grátis`;
+    pill.textContent = `${saudacao}${restantes}/${LIMITE_TRIAL} cálculos grátis`;
     pill.style.display = 'inline-block';
   }
 }
@@ -1677,8 +1764,14 @@ async function registrarUso() {
   }
 }
 
-sb.auth.onAuthStateChange((_event, session) => {
+sb.auth.onAuthStateChange((event, session) => {
   sessaoAtual = session;
+  if (event === 'PASSWORD_RECOVERY') {
+    document.getElementById('novaSenhaMsgErro').style.display = 'none';
+    document.getElementById('novaSenhaMsgOk').style.display = 'none';
+    document.getElementById('modalNovaSenha').classList.add('show');
+    _focarPrimeiroCampo('modalNovaSenha');
+  }
 });
 
 atualizarEstadoSessao();
