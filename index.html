@@ -1452,7 +1452,7 @@
   </section>
 </div>
 
-<footer>ContabCalc — feito para quem precisa entender a lei, não só o número.</footer>
+<footer>ContabCalc — feito para quem precisa entender a lei, não só o número.<br><span class="modal-link-alternar" onclick="verificarAtualizacaoManual()" role="button" tabindex="0" style="display:inline-block; margin-top:6px; font-size:11.5px;">Verificar atualizações</span></footer>
 
 <div class="modal-fundo" id="modalAuth">
   <div class="modal-card" style="position:relative;" role="dialog" aria-modal="true" aria-labelledby="modalAuthTitulo">
@@ -3189,13 +3189,29 @@ function _forcarAtualizacaoAgora() {
   setTimeout(() => window.location.reload(), 500);
 }
 
+function _verificarAtualizacaoAgora() {
+  if (swRegistration) swRegistration.update().catch(() => {});
+}
+
+function verificarAtualizacaoManual() {
+  if (!swRegistration) { mostrarToast('Isso só funciona com o app instalado.'); return; }
+  mostrarToast('Verificando novas versões…');
+  swRegistration.update().then(() => {
+    setTimeout(() => {
+      if (!_atualizacaoJaAplicada) mostrarToast('Você já está na versão mais recente.');
+    }, 1500);
+  }).catch(() => mostrarToast('Não foi possível verificar agora.'));
+}
+
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').then((reg) => {
+    // updateViaCache:'none' garante que o navegador nunca sirva o sw.js do cache HTTP
+    // ao checar por atualização — em iOS isso é frequentemente o motivo de o app
+    // instalado na tela inicial nunca perceber que existe uma versão nova.
+    navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).then((reg) => {
       swRegistration = reg;
-      reg.update(); // verifica na hora, toda vez que o app abre — não espera os 30 min
-      // Verifica atualização a cada 30 minutos também, para quem deixa o app aberto
-      setInterval(() => reg.update(), 30 * 60 * 1000);
+      reg.update();
+      setInterval(_verificarAtualizacaoAgora, 30 * 60 * 1000);
       reg.addEventListener('updatefound', () => {
         const novoWorker = reg.installing;
         novoWorker.addEventListener('statechange', () => {
@@ -3206,10 +3222,15 @@ if ('serviceWorker' in navigator) {
         });
       });
     }).catch(() => { /* PWA opcional — se falhar, o app continua funcionando normalmente */ });
-    // Dispara quando o novo service worker efetivamente assume o controle da página —
-    // esse é o momento certo (e único) para recarregar, evitando recarregar cedo demais.
     navigator.serviceWorker.addEventListener('controllerchange', _forcarAtualizacaoAgora);
   });
+
+  // Apps instalados na tela inicial do iOS quase nunca disparam um 'load' novo ao
+  // reabrir — o WebKit costuma restaurar a página do bfcache. 'pageshow' com
+  // event.persisted, e 'visibilitychange', cobrem esse caso e forçam a checagem
+  // toda vez que a pessoa volta a abrir o app.
+  window.addEventListener('pageshow', (e) => { if (e.persisted) _verificarAtualizacaoAgora(); });
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') _verificarAtualizacaoAgora(); });
 }
 /* ===================== Home — busca, favoritos, recentes, mais usados =====================
    Camada só de navegação/UX: não altera nenhum cálculo nem cadastro.
