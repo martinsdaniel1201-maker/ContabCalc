@@ -535,7 +535,9 @@
   .busca-caixa input {
     flex: 1; min-width: 0; border: none; outline: none; background: transparent;
     font-family: var(--font-body); font-size: var(--text-lg); color: var(--ink);
+    -webkit-appearance: none; appearance: none;
   }
+  .busca-caixa input::-webkit-search-cancel-button { -webkit-appearance: none; }
   .busca-caixa input::placeholder { color: var(--ink-muted); }
   .busca-atalho {
     font-family: var(--font-mono); font-size: 11px; color: var(--ink-muted);
@@ -670,7 +672,7 @@
   <section class="busca-home">
     <div class="busca-caixa">
       <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-search"/></svg>
-      <input type="text" id="buscaModulo" oninput="filtrarModulos()" placeholder="Buscar calculadora — rescisão, férias, INSS, horas extras..." autocomplete="off" aria-label="Buscar calculadora">
+      <input type="search" id="buscaModulo" name="busca-calculadora" oninput="filtrarModulos()" placeholder="Buscar calculadora — rescisão, férias, INSS, horas extras..." autocomplete="off" aria-label="Buscar calculadora">
       <span class="busca-atalho">/</span>
     </div>
   </section>
@@ -1461,11 +1463,13 @@
     <div class="sub" id="modalAuthSub">10 cálculos grátis pra você testar. Sem cartão de crédito.</div>
     <div class="modal-msg erro" id="authMsgErro" role="alert"></div>
     <div class="modal-msg ok" id="authMsgOk" role="status"></div>
-    <div class="field" id="campoNomeAuth"><label for="authNome">Nome</label><input type="text" id="authNome" placeholder="Seu nome"></div>
-    <div class="field"><label for="authEmail">E-mail</label><input type="email" id="authEmail" placeholder="voce@email.com"></div>
-    <div class="field" id="campoSenhaAuth"><label for="authSenha">Senha</label><input type="password" id="authSenha" placeholder="••••••••"></div>
-    <div class="modal-link-alternar" onclick="mostrarRecuperacaoSenha()" id="linkEsqueciSenha" role="button" tabindex="0" style="display:none; text-align:right; margin:-8px 0 14px;">Esqueceu a senha?</div>
-    <button class="btn-primary" id="btnAuthAcao" onclick="executarAuth()">Criar conta e continuar</button>
+    <form onsubmit="event.preventDefault(); executarAuth();" autocomplete="on">
+      <div class="field" id="campoNomeAuth"><label for="authNome">Nome</label><input type="text" id="authNome" name="name" placeholder="Seu nome" autocomplete="name"></div>
+      <div class="field"><label for="authEmail">E-mail</label><input type="email" id="authEmail" name="email" placeholder="voce@email.com" autocomplete="email"></div>
+      <div class="field" id="campoSenhaAuth"><label for="authSenha">Senha</label><input type="password" id="authSenha" name="password" placeholder="••••••••" autocomplete="current-password"></div>
+      <div class="modal-link-alternar" onclick="mostrarRecuperacaoSenha()" id="linkEsqueciSenha" role="button" tabindex="0" style="display:none; text-align:right; margin:-8px 0 14px;">Esqueceu a senha?</div>
+      <button class="btn-primary" id="btnAuthAcao" type="submit">Criar conta e continuar</button>
+    </form>
     <div class="modal-link-alternar" onclick="alternarModoAuth()" id="linkAlternarAuth" role="button" tabindex="0">Já tem conta? <span>Entrar</span></div>
   </div>
 </div>
@@ -1477,8 +1481,10 @@
     <div class="sub">Você seguiu o link de recuperação enviado por e-mail. Escolha sua nova senha abaixo.</div>
     <div class="modal-msg erro" id="novaSenhaMsgErro" role="alert"></div>
     <div class="modal-msg ok" id="novaSenhaMsgOk" role="status"></div>
-    <div class="field"><label for="novaSenhaInput">Nova senha</label><input type="password" id="novaSenhaInput" placeholder="••••••••"></div>
-    <button class="btn-primary" onclick="salvarNovaSenha()">Salvar nova senha</button>
+    <form onsubmit="event.preventDefault(); salvarNovaSenha();">
+      <div class="field"><label for="novaSenhaInput">Nova senha</label><input type="password" id="novaSenhaInput" name="new-password" placeholder="••••••••" autocomplete="new-password"></div>
+      <button class="btn-primary" type="submit">Salvar nova senha</button>
+    </form>
   </div>
 </div>
 
@@ -1488,8 +1494,10 @@
     <h3 id="modalNomeTitulo">Como podemos te chamar?</h3>
     <div class="sub">Vamos usar isso só para te dar as boas-vindas por aqui — não pedimos de novo depois.</div>
     <div class="modal-msg erro" id="nomeMsgErro" role="alert"></div>
-    <div class="field"><label for="nomeInput">Nome</label><input type="text" id="nomeInput" placeholder="Seu nome" autocomplete="name"></div>
-    <button class="btn-primary" onclick="salvarNomePerfil()">Salvar</button>
+    <form onsubmit="event.preventDefault(); salvarNomePerfil();">
+      <div class="field"><label for="nomeInput">Nome</label><input type="text" id="nomeInput" name="name" placeholder="Seu nome" autocomplete="name"></div>
+      <button class="btn-primary" type="submit">Salvar</button>
+    </form>
   </div>
 </div>
 
