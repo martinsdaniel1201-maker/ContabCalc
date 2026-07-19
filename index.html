@@ -1452,7 +1452,7 @@
   </section>
 </div>
 
-<footer>ContabCalc — feito para quem precisa entender a lei, não só o número.<br><span class="modal-link-alternar" onclick="verificarAtualizacaoManual()" role="button" tabindex="0" style="display:inline-block; margin-top:6px; font-size:11.5px;">Verificar atualizações</span></footer>
+<footer>ContabCalc — feito para quem precisa entender a lei, não só o número.<br><span class="modal-link-alternar" onclick="limparCacheEAtualizar()" role="button" tabindex="0" style="display:inline-block; margin-top:6px; font-size:11.5px;">Limpar cache e buscar atualizações</span></footer>
 
 <div class="modal-fundo" id="modalAuth">
   <div class="modal-card" style="position:relative;" role="dialog" aria-modal="true" aria-labelledby="modalAuthTitulo">
@@ -1479,6 +1479,17 @@
     <div class="modal-msg ok" id="novaSenhaMsgOk" role="status"></div>
     <div class="field"><label for="novaSenhaInput">Nova senha</label><input type="password" id="novaSenhaInput" placeholder="••••••••"></div>
     <button class="btn-primary" onclick="salvarNovaSenha()">Salvar nova senha</button>
+  </div>
+</div>
+
+<div class="modal-fundo" id="modalNome">
+  <div class="modal-card" style="position:relative;" role="dialog" aria-modal="true" aria-labelledby="modalNomeTitulo">
+    <button class="modal-fechar" onclick="fecharModal('modalNome')"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-close"/></svg><span class="sr-only">Fechar</span></button>
+    <h3 id="modalNomeTitulo">Como podemos te chamar?</h3>
+    <div class="sub">Vamos usar isso só para te dar as boas-vindas por aqui — não pedimos de novo depois.</div>
+    <div class="modal-msg erro" id="nomeMsgErro" role="alert"></div>
+    <div class="field"><label for="nomeInput">Nome</label><input type="text" id="nomeInput" placeholder="Seu nome" autocomplete="name"></div>
+    <button class="btn-primary" onclick="salvarNomePerfil()">Salvar</button>
   </div>
 </div>
 
@@ -1704,12 +1715,50 @@ async function atualizarEstadoSessao() {
   btn.textContent = 'Sair';
   await carregarPerfilAtual();
   atualizarUsoPill();
+  _verificarSeFaltaNome();
 }
 
 async function carregarPerfilAtual() {
   if (!sessaoAtual) return;
   const { data, error } = await sb.from('perfis').select('nome, plano, calculos_usados').eq('id', sessaoAtual.user.id).single();
   if (!error) perfilAtual = data;
+}
+
+// Contas antigas (ou criadas sem nome) tiveram o e-mail salvo no lugar do nome
+// pelo trigger padrão do banco. Nunca mostramos isso como "nome" na tela.
+function _nomeEhValido(nome) {
+  if (!nome) return false;
+  const n = nome.trim();
+  if (!n) return false;
+  if (n.includes('@')) return false;
+  if (sessaoAtual && n.toLowerCase() === sessaoAtual.user.email.toLowerCase()) return false;
+  return true;
+}
+
+function _verificarSeFaltaNome() {
+  if (!perfilAtual || !sessaoAtual) return;
+  if (_nomeEhValido(perfilAtual.nome)) return;
+  document.getElementById('nomeMsgErro').style.display = 'none';
+  document.getElementById('nomeInput').value = '';
+  document.getElementById('modalNome').classList.add('show');
+  _focarPrimeiroCampo('modalNome');
+}
+
+async function salvarNomePerfil() {
+  const nome = document.getElementById('nomeInput').value.trim();
+  const erroBox = document.getElementById('nomeMsgErro');
+  erroBox.style.display = 'none';
+
+  if (!nome) { erroBox.textContent = 'Digite seu nome.'; erroBox.style.display = 'block'; return; }
+  if (nome.includes('@')) { erroBox.textContent = 'Digite seu nome, não o e-mail.'; erroBox.style.display = 'block'; return; }
+
+  const { error } = await sb.from('perfis').update({ nome }).eq('id', sessaoAtual.user.id);
+  if (error) { erroBox.textContent = 'Não foi possível salvar agora. Tente de novo.'; erroBox.style.display = 'block'; return; }
+
+  perfilAtual = { ...perfilAtual, nome };
+  atualizarUsoPill();
+  fecharModal('modalNome');
+  mostrarToast('Nome salvo!');
 }
 
 const HERO_EYEBROW_PADRAO = 'Cálculos trabalhistas · Brasil · 2026';
@@ -1722,7 +1771,7 @@ function atualizarUsoPill() {
 
   if (!perfilAtual) { pill.style.display = 'none'; return; }
 
-  const primeiroNome = (perfilAtual.nome || '').trim().split(' ')[0];
+  const primeiroNome = _nomeEhValido(perfilAtual.nome) ? perfilAtual.nome.trim().split(' ')[0] : '';
   const saudacao = primeiroNome ? `${primeiroNome} · ` : '';
 
   if (perfilAtual.plano === 'pago') {
@@ -3213,14 +3262,19 @@ function _verificarAtualizacaoAgora() {
   if (swRegistration) swRegistration.update().catch(() => {});
 }
 
-function verificarAtualizacaoManual() {
-  if (!swRegistration) { mostrarToast('Isso só funciona com o app instalado.'); return; }
-  mostrarToast('Verificando novas versões…');
-  swRegistration.update().then(() => {
-    setTimeout(() => {
-      if (!_atualizacaoJaAplicada) mostrarToast('Você já está na versão mais recente.');
-    }, 1500);
-  }).catch(() => mostrarToast('Não foi possível verificar agora.'));
+async function limparCacheEAtualizar() {
+  mostrarToast('Limpando cache e buscando a versão mais recente…');
+  try {
+    if ('caches' in window) {
+      const nomes = await caches.keys();
+      await Promise.all(nomes.map(n => caches.delete(n)));
+    }
+    if ('serviceWorker' in navigator) {
+      const registros = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(registros.map(r => r.unregister()));
+    }
+  } catch (e) { /* mesmo se algo falhar aqui, ainda vale tentar recarregar */ }
+  setTimeout(() => window.location.reload(), 500);
 }
 
 if ('serviceWorker' in navigator) {
