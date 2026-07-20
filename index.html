@@ -3314,6 +3314,23 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('pageshow', (e) => { if (e.persisted) _verificarAtualizacaoAgora(); });
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') _verificarAtualizacaoAgora(); });
 }
+
+// Apps instalados na tela inicial não recarregam do zero ao reabrir como uma aba
+// normal do Safari — então, se a pessoa já deu zoom com os dedos alguma vez, esse
+// zoom pode ficar "grudado" nas próximas aberturas, dando sensação de site
+// ampliado em vez de app. Isso reseta o zoom sempre que o app volta a ficar
+// visível, sem tirar a possibilidade de dar zoom de novo quando quiser.
+function _resetarZoomSeNecessario() {
+  const viewport = document.querySelector('meta[name="viewport"]');
+  if (!viewport) return;
+  const original = viewport.getAttribute('content');
+  viewport.setAttribute('content', original + ', maximum-scale=1.0');
+  setTimeout(() => viewport.setAttribute('content', original), 350);
+}
+_resetarZoomSeNecessario();
+window.addEventListener('pageshow', () => _resetarZoomSeNecessario());
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') _resetarZoomSeNecessario(); });
+
 /* ===================== Home — busca, favoritos, recentes, mais usados =====================
    Camada só de navegação/UX: não altera nenhum cálculo nem cadastro.
    Tudo fica salvo localmente no navegador (localStorage), por dispositivo. */
