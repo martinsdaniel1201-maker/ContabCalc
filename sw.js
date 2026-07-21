@@ -1,7 +1,7 @@
 // sw.js — ContabCalc AI
 // Cache-first para o app shell, para funcionar offline (o motor de cálculo é 100% local,
 // não depende de rede — só a fonte do Google Fonts precisa de conexão na 1ª visita).
-const CACHE_NAME = "contabcalc-v19";
+const CACHE_NAME = "contabcalc-v20";
 const APP_SHELL = [
   "./",
   "./index.html",
