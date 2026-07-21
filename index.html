@@ -320,16 +320,14 @@
 
   /* ---------- 11. TOPO / MARCA ---------- */
   .shell { max-width: 1120px; margin: 0 auto; padding: 0 max(28px, env(safe-area-inset-left)) 0 max(28px, env(safe-area-inset-right)); }
-  /* app-shell: a Home usa uma coluna mais estreita e centralizada — no
-     desktop isso lê como um aplicativo, não como um site largo. */
-  .app-shell { max-width: 640px; padding: 0 20px; }
+  .app-shell { padding: 0 20px; }
   header.top {
     position: sticky; top: 0; z-index: 40; backdrop-filter: blur(8px);
     background: color-mix(in srgb, var(--paper) 88%, transparent);
     border-bottom: var(--border-hairline);
     padding-top: env(safe-area-inset-top);
   }
-  .top-inner { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; gap: 10px; max-width: 640px; margin: 0 auto; }
+  .top-inner { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; gap: 10px; }
   .brand { display: flex; align-items: center; gap: 8px; font-family: var(--font-display); font-weight: 600; font-size: 19px; letter-spacing: 0.01em; flex-shrink: 0; white-space: nowrap; }
   .brand .mark {
     width: 26px; height: 26px; border: 1.5px solid var(--ink); border-radius: var(--radius-circle);
@@ -346,6 +344,25 @@
   .config-linha:last-of-type { border-bottom: none; }
   .config-linha .btn-conta { flex-shrink: 0; }
   .config-rodape { font-size: 11.5px; color: var(--ink-muted); margin-top: 18px; line-height: 1.5; }
+
+  /* ---------- 11b. DESKTOP — "quadro de aplicativo" ----------
+     Só em telas de verdade largas (≥900px): cabeçalho e conteúdo passam a
+     usar a MESMA largura estreita (antes o cabeçalho ficava em 640px e o
+     conteúdo em 1120px — descasado). O app fica centralizado, com fundo
+     ao redor e cantos arredondados, para não parecer um site esticado.
+     Isso não altera em nada o layout mobile. */
+  @media (min-width: 900px) {
+    body { background: var(--paper-sunken); }
+    header.top {
+      max-width: 720px; margin: 24px auto 0; top: 24px; border-radius: 20px 20px 0 0;
+      border: var(--border-hairline); border-bottom: none; box-shadow: var(--shadow-2);
+    }
+    .shell:not(.top-inner) {
+      max-width: 720px; background: var(--paper); border: var(--border-hairline); border-top: none;
+      border-radius: 0 0 20px 20px; box-shadow: var(--shadow-2); padding-bottom: 8px; min-height: 70vh;
+    }
+    .bottom-nav { display: none; }
+  }
 
   /* ---------- 12. SAUDAÇÃO (Home compacta, no lugar do antigo hero) ---------- */
   .home-saudacao { padding: 28px 0 20px; }
@@ -428,17 +445,23 @@
 
   /* ---------- 16. NAVEGAÇÃO INFERIOR (mobile) ---------- */
   .bottom-nav {
-    position: fixed; left: 0; right: 0; bottom: 0; z-index: 50; display: flex;
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 50; display: flex; gap: 4px;
     background: color-mix(in srgb, var(--paper-raised) 94%, transparent); backdrop-filter: blur(10px);
     border-top: var(--border-hairline); padding: 8px max(12px, env(safe-area-inset-left)) calc(8px + env(safe-area-inset-bottom));
   }
   .bottom-nav-item {
     flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
-    background: none; border: none; color: var(--ink-muted); font-family: var(--font-body); font-size: 10.5px;
-    padding: 4px; cursor: pointer; transition: color var(--duration-base) var(--ease-out); -webkit-tap-highlight-color: transparent;
+    background: none; border: none; border-radius: var(--radius-app); color: var(--ink-muted);
+    font-family: var(--font-body); font-size: 10.5px; font-weight: 500;
+    padding: 6px 4px; cursor: pointer; -webkit-tap-highlight-color: transparent;
+    transition: color var(--duration-base) var(--ease-out), background var(--duration-base) var(--ease-out);
   }
   .bottom-nav-item .icon { width: 21px; height: 21px; }
-  .bottom-nav-item.ativo { color: var(--selo); }
+  .bottom-nav-item.ativo {
+    color: var(--selo); font-weight: 700;
+    background: var(--selo-soft);
+  }
+  html[data-theme="dark"] .bottom-nav-item.ativo { background: color-mix(in srgb, var(--selo) 20%, transparent); }
   @media (min-width: 720px) { .bottom-nav { display: none; } }
   @media (max-width: 719px) { body { padding-bottom: calc(64px + env(safe-area-inset-bottom)); } }
 
