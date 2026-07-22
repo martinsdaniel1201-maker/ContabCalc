@@ -339,6 +339,12 @@
     cursor: pointer; flex-shrink: 0; transition: border-color var(--duration-base) var(--ease-out), color var(--duration-base) var(--ease-out);
   }
   .btn-config:hover { border-color: var(--selo); color: var(--selo); }
+  .btn-entrar-topo {
+    background: var(--selo-botao); color: #fff; border: none; border-radius: var(--radius-pill);
+    padding: 9px 18px; font-family: var(--font-body); font-weight: 600; font-size: var(--text-sm);
+    cursor: pointer; white-space: nowrap; transition: background var(--duration-base) var(--ease-out);
+  }
+  .btn-entrar-topo:hover { background: var(--selo-botao-hover); }
   .uso-pill { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-muted); border: var(--border-hairline); padding: 6px 10px; border-radius: var(--radius-pill); white-space: nowrap; }
   .config-linha { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: var(--text-base); }
   .config-linha:last-of-type { border-bottom: none; }
@@ -372,6 +378,19 @@
   .eyebrow .icon { width: 13px; height: 13px; }
 
   /* ---------- 13. DESTAQUES (mais usados — cards grandes) ---------- */
+  .icon-seta-direita { transform: rotate(180deg); }
+  .banner-planos {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%;
+    background: var(--selo); color: #fff; border: none; border-radius: var(--radius-app);
+    padding: 14px 16px; cursor: pointer; text-align: left; font-family: var(--font-body);
+    -webkit-tap-highlight-color: transparent; transition: transform var(--duration-fast) var(--ease-out);
+  }
+  .banner-planos:active { transform: scale(0.98); }
+  .banner-planos-texto { display: flex; flex-direction: column; gap: 2px; }
+  .banner-planos-texto strong { font-size: 14px; }
+  .banner-planos-texto span:last-child { font-size: 12px; opacity: 0.85; }
+  .banner-planos .icon { color: #fff; flex-shrink: 0; }
+
   .home-destaques { padding: 8px 0 4px; }
   .section-label-app {
     font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: 0.1em; text-transform: uppercase;
@@ -600,6 +619,27 @@
     display: flex; align-items: center; justify-content: center; margin-bottom: 14px;
   }
 
+  .planos-lista { display: flex; gap: 10px; margin: 18px 0 14px; }
+  .plano-card {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;
+    text-decoration: none; color: var(--ink); background: var(--paper); border: var(--border-hairline);
+    border-radius: var(--radius-app); padding: 16px 10px; position: relative;
+    transition: border-color var(--duration-base) var(--ease-out), transform var(--duration-fast) var(--ease-out);
+  }
+  .plano-card:hover { border-color: var(--line-strong); }
+  .plano-card:active { transform: scale(0.97); }
+  .plano-card .plano-nome { font-family: var(--font-mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-muted); }
+  .plano-card .plano-preco { font-family: var(--font-display); font-weight: 600; font-size: 21px; color: var(--ink); }
+  .plano-card .plano-preco-periodo { font-family: var(--font-body); font-weight: 500; font-size: 12px; color: var(--ink-muted); }
+  .plano-card .plano-nota { font-size: 10.5px; color: var(--ink-muted); }
+  .plano-destaque { border-color: var(--selo); background: var(--selo-soft); }
+  .plano-destaque .plano-preco { color: var(--selo-strong); }
+  .plano-selo {
+    position: absolute; top: -9px; left: 50%; transform: translateX(-50%);
+    background: var(--selo); color: #fff; font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: 0.04em; text-transform: uppercase; padding: 3px 9px; border-radius: var(--radius-pill); white-space: nowrap;
+  }
+
   /* ---------- 19. HOME — busca ---------- */
   .busca-home { margin: 4px 0 28px; }
   .busca-caixa {
@@ -719,9 +759,12 @@
 <header class="top">
   <div class="shell top-inner">
     <div class="brand" style="cursor:pointer;" onclick="voltarHome()" role="button" tabindex="0" aria-label="Voltar à página inicial"><span class="mark">§</span>ContabCalc</div>
-    <button class="btn-config" onclick="abrirConfiguracoes()" aria-label="Configurações">
-      <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-settings"/></svg>
-    </button>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <button class="btn-entrar-topo" id="btnEntrarTopo" onclick="cliqueConta()" style="display:none;">Entrar</button>
+      <button class="btn-config" onclick="abrirConfiguracoes()" aria-label="Configurações">
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-settings"/></svg>
+      </button>
+    </div>
   </div>
 </header>
 
@@ -732,6 +775,9 @@
     <div class="config-linha">
       <span class="uso-pill" id="usoPill" style="display:none;"></span>
       <button class="btn-conta" id="btnConta" onclick="cliqueConta()">Entrar</button>
+    </div>
+    <div class="config-linha">
+      <span class="modal-link-alternar" onclick="fecharModal('modalConfig'); abrirModalPaywall('planos');" role="button" tabindex="0" style="margin:0;">Ver planos e preços</span>
     </div>
     <div class="config-linha">
       <span>Tema claro/escuro</span>
@@ -757,6 +803,16 @@
       <input type="search" id="buscaModulo" name="busca-calculadora" oninput="filtrarModulos()" placeholder="O que você deseja calcular?" autocomplete="off" aria-label="Buscar calculadora">
       <span class="busca-atalho">/</span>
     </div>
+  </section>
+
+  <section id="bannerPlanos" style="display:none; margin-bottom: 24px;">
+    <button class="banner-planos" onclick="abrirModalPaywall('planos')">
+      <span class="banner-planos-texto">
+        <strong>Acesso completo a partir de R$ 9,99</strong>
+        <span>24 ferramentas, sem limite de cálculos</span>
+      </span>
+      <svg class="icon icon-seta-direita" aria-hidden="true" focusable="false"><use href="#i-back"/></svg>
+    </button>
   </section>
 
   <section class="home-destaques" id="secaoDestaques">
@@ -1603,9 +1659,22 @@
     <button class="modal-fechar" onclick="fecharModal('modalPaywall')"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-close"/></svg><span class="sr-only">Fechar</span></button>
     <div class="paywall-icon" style="margin:0 auto 14px;"><svg class="icon icon-lg" aria-hidden="true" focusable="false"><use href="#i-lock"/></svg></div>
     <h3 id="modalPaywallTitulo">Seus 10 cálculos grátis acabaram</h3>
-    <div class="sub">Assine o ContabCalc e calcule sem limites, com todas as 24 ferramentas liberadas.</div>
-    <a class="btn-primary" id="linkAssinarMensal" style="display:block; text-decoration:none; box-sizing:border-box; margin-bottom:8px;" href="https://pay.kiwify.com.br/C5HIsG6" target="_blank" rel="noopener">Assinar plano mensal</a>
-    <a class="btn-secundario" id="linkAssinarAnual" style="display:block; text-decoration:none; box-sizing:border-box;" href="https://pay.kiwify.com.br/KCb7DlB" target="_blank" rel="noopener">Assinar plano anual</a>
+    <div class="sub" id="modalPaywallSub">Assine o ContabCalc e calcule sem limites, com todas as 24 ferramentas liberadas.</div>
+
+    <div class="planos-lista">
+      <a class="plano-card" id="linkAssinarMensal" href="https://pay.kiwify.com.br/C5HIsG6" target="_blank" rel="noopener">
+        <span class="plano-nome">Mensal</span>
+        <span class="plano-preco">R$ 19,90<span class="plano-preco-periodo">/mês</span></span>
+        <span class="plano-nota">1º mês por R$ 9,99</span>
+      </a>
+      <a class="plano-card plano-destaque" id="linkAssinarAnual" href="https://pay.kiwify.com.br/KCb7DlB" target="_blank" rel="noopener">
+        <span class="plano-selo">Economize 25%</span>
+        <span class="plano-nome">Anual</span>
+        <span class="plano-preco">R$ 179,90<span class="plano-preco-periodo">/ano</span></span>
+        <span class="plano-nota">equivale a R$ 14,99/mês</span>
+      </a>
+    </div>
+
     <button class="btn-secundario" onclick="verificarPagamento()">Já assinei — verificar acesso</button>
   </div>
 </div>
@@ -1816,11 +1885,17 @@ async function atualizarEstadoSessao() {
     btn.textContent = 'Entrar';
     pill.style.display = 'none';
     perfilAtual = null;
+    const bannerPlanos = document.getElementById('bannerPlanos');
+    if (bannerPlanos) bannerPlanos.style.display = '';
+    const btnTopo = document.getElementById('btnEntrarTopo');
+    if (btnTopo) btnTopo.style.display = '';
     _atualizarSaudacaoHome();
     return;
   }
 
   btn.textContent = 'Sair';
+  const btnTopo2 = document.getElementById('btnEntrarTopo');
+  if (btnTopo2) btnTopo2.style.display = 'none';
   await carregarPerfilAtual();
   atualizarUsoPill();
   _verificarSeFaltaNome();
@@ -1886,15 +1961,24 @@ function _atualizarSaudacaoHome() {
 
 function atualizarUsoPill() {
   const pill = document.getElementById('usoPill');
-  if (!perfilAtual) { pill.style.display = 'none'; _atualizarSaudacaoHome(); return; }
+  const bannerPlanos = document.getElementById('bannerPlanos');
+
+  if (!perfilAtual) {
+    pill.style.display = 'none';
+    if (bannerPlanos) bannerPlanos.style.display = '';
+    _atualizarSaudacaoHome();
+    return;
+  }
 
   if (perfilAtual.plano === 'pago') {
     pill.textContent = '✓ Assinante · acesso completo';
     pill.style.display = 'inline-block';
+    if (bannerPlanos) bannerPlanos.style.display = 'none';
   } else {
     const restantes = Math.max(0, LIMITE_TRIAL - perfilAtual.calculos_usados);
     pill.textContent = `${restantes}/${LIMITE_TRIAL} cálculos grátis restantes`;
     pill.style.display = 'inline-block';
+    if (bannerPlanos) bannerPlanos.style.display = '';
   }
   _atualizarSaudacaoHome();
 }
@@ -1914,7 +1998,16 @@ function navegarApp(destino) {
   document.getElementById(idAlvo)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-function abrirModalPaywall() {
+function abrirModalPaywall(motivo) {
+  const titulo = document.getElementById('modalPaywallTitulo');
+  const sub = document.getElementById('modalPaywallSub');
+  if (motivo === 'planos') {
+    titulo.textContent = 'Planos ContabCalc';
+    sub.textContent = 'Escolha o plano ideal e tenha acesso completo às 24 ferramentas, sem limite de cálculos.';
+  } else {
+    titulo.textContent = 'Seus 10 cálculos grátis acabaram';
+    sub.textContent = 'Assine o ContabCalc e calcule sem limites, com todas as 24 ferramentas liberadas.';
+  }
   _prepararLinksAssinatura();
   document.getElementById('modalPaywall').classList.add('show');
   _focarPrimeiroCampo('modalPaywall');
