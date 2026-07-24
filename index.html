@@ -1676,6 +1676,15 @@
     </div>
 
     <button class="btn-secundario" onclick="verificarPagamento()">Já assinei — verificar acesso</button>
+
+    <div class="modal-link-alternar" onclick="mostrarRecuperarEmail()" role="button" tabindex="0" id="linkComprouOutroEmail" style="margin-top:10px;">Comprou com outro e-mail?</div>
+    <div id="recuperarEmailArea" style="display:none; margin-top:12px; text-align:left;">
+      <div class="modal-msg erro" id="recuperarEmailMsg" role="alert"></div>
+      <form onsubmit="event.preventDefault(); verificarEmailDiferente();">
+        <div class="field"><label for="emailCompraDiferente">E-mail usado na compra</label><input type="email" id="emailCompraDiferente" placeholder="voce@email.com"></div>
+        <button class="btn-secundario" type="submit" style="width:100%;">Verificar esse e-mail</button>
+      </form>
+    </div>
   </div>
 </div>
 
@@ -2009,6 +2018,12 @@ function abrirModalPaywall(motivo) {
     sub.textContent = 'Assine o ContabCalc e calcule sem limites, com todas as 24 ferramentas liberadas.';
   }
   _prepararLinksAssinatura();
+  document.getElementById('linkComprouOutroEmail').style.display = '';
+  document.getElementById('recuperarEmailArea').style.display = 'none';
+  document.getElementById('recuperarEmailMsg').style.display = 'none';
+  document.getElementById('emailCompraDiferente').value = '';
+  const botaoExistente = document.getElementById('btnUsarOutroEmail');
+  if (botaoExistente) botaoExistente.remove();
   document.getElementById('modalPaywall').classList.add('show');
   _focarPrimeiroCampo('modalPaywall');
 }
@@ -2033,9 +2048,72 @@ async function verificarPagamento() {
   atualizarUsoPill();
   if (perfilAtual && perfilAtual.plano === 'pago') {
     fecharModal('modalPaywall');
+    mostrarToast('Acesso liberado!');
   } else {
-    alert('Ainda não identificamos seu pagamento. Se você acabou de assinar, aguarde alguns instantes e tente de novo.');
+    mostrarToast('Ainda não identificamos seu pagamento nesse e-mail.');
   }
+}
+
+function mostrarRecuperarEmail() {
+  document.getElementById('linkComprouOutroEmail').style.display = 'none';
+  document.getElementById('recuperarEmailArea').style.display = 'block';
+  document.getElementById('emailCompraDiferente')?.focus();
+}
+
+async function verificarEmailDiferente() {
+  const email = document.getElementById('emailCompraDiferente').value.trim();
+  const msgBox = document.getElementById('recuperarEmailMsg');
+  msgBox.style.display = 'none';
+  if (!email) return;
+
+  const { data, error } = await sb.rpc('verificar_pagamento_email', { p_email: email });
+  if (error) {
+    msgBox.className = 'modal-msg erro';
+    msgBox.textContent = 'Não foi possível verificar agora. Tente de novo em instantes.';
+    msgBox.style.display = 'block';
+    return;
+  }
+
+  if (data === 'nao_encontrado') {
+    msgBox.className = 'modal-msg erro';
+    msgBox.textContent = 'Não encontramos nenhum pagamento com esse e-mail. Confira se digitou certo.';
+    msgBox.style.display = 'block';
+    return;
+  }
+
+  msgBox.className = 'modal-msg ok';
+  msgBox.textContent = data === 'pago_outro_email'
+    ? 'Encontramos! Já existe uma conta paga com esse e-mail — toque no botão abaixo para entrar nela.'
+    : 'Encontramos seu pagamento! Toque no botão abaixo para criar sua conta com esse e-mail e liberar o acesso.';
+  msgBox.style.display = 'block';
+
+  const modo = data === 'pago_outro_email' ? 'login' : 'cadastro';
+  const rotulo = data === 'pago_outro_email' ? 'Entrar com esse e-mail' : 'Criar conta com esse e-mail';
+  let botao = document.getElementById('btnUsarOutroEmail');
+  if (!botao) {
+    botao = document.createElement('button');
+    botao.id = 'btnUsarOutroEmail';
+    botao.className = 'btn-primary';
+    botao.style.width = '100%';
+    botao.style.marginTop = '10px';
+    msgBox.insertAdjacentElement('afterend', botao);
+  }
+  botao.textContent = rotulo;
+  botao.onclick = () => _trocarParaEmail(email, modo);
+}
+
+async function _trocarParaEmail(email, modo) {
+  await sb.auth.signOut();
+  sessaoAtual = null;
+  perfilAtual = null;
+  fecharModal('modalPaywall');
+  document.getElementById('authMsgErro').style.display = 'none';
+  document.getElementById('authMsgOk').style.display = 'none';
+  modoAuth = modo;
+  _aplicarModoAuthNaTela();
+  document.getElementById('modalAuth').classList.add('show');
+  document.getElementById('authEmail').value = email;
+  _focarPrimeiroCampo('modalAuth');
 }
 
 /**
